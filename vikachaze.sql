@@ -23,10 +23,10 @@ CREATE TABLE messages (
     attachment LONGBLOB,
     user_id INT NOT NULL,
 
-    CONSTRAINT fk_room FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE,
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_message_room FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE CASCADE,
+    CONSTRAINT fk_message_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
- 
+
 CREATE TABLE posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
 	sent_time TIMESTAMP NOT NULL,
@@ -36,4 +36,24 @@ CREATE TABLE posts (
     text VARCHAR(1000) NOT NULL,
     
     CONSTRAINT fk_post_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+	sent_time TIMESTAMP NOT NULL,
+    user_id INT NOT NULL,
+    post_id INT NOT NULL,
+    text VARCHAR(250) NOT NULL,
+    
+    CONSTRAINT fk_comment_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comment_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE post_likes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+	post_id INT NOT NULL,
+    
+    CONSTRAINT fk_post_like_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_liked_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
