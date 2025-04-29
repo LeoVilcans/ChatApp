@@ -72,7 +72,7 @@ public class Message {
 	public void setAttachment(Blob attachment) {
 		this.attachment = attachment;
 	}
-
+ 
 	public Image getAttachmentAsImage() throws SQLException, IOException {
 		InputStream in = attachment.getBinaryStream();  
 		BufferedImage image = ImageIO.read(in);

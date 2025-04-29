@@ -61,7 +61,7 @@ public class User {
 		this.pfp = pfp;
 	}
 	
-	public Image asImage() throws SQLException, IOException {
+	public Image getPfpAsImage() throws SQLException, IOException {
 		InputStream in = pfp.getBinaryStream();  
 		BufferedImage image = ImageIO.read(in);
 		return image;

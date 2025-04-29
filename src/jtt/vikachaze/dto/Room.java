@@ -41,7 +41,7 @@ private Blob icon;
 	public void setIcon(Blob icon) {
 		this.icon = icon;
 	}
-	
+	 
 	public Image getIconAsImage() throws SQLException, IOException {
 		InputStream in = icon.getBinaryStream();  
 		BufferedImage image = ImageIO.read(in);
