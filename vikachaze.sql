@@ -19,7 +19,7 @@ CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
 	room_id INT NOT NULL,
 	text VARCHAR(250) NOT NULL,
-	sent_time DATETIME NOT NULL,
+	sent_time TIMESTAMP NOT NULL,
     attachment LONGBLOB,
     user_id INT NOT NULL,
 
@@ -29,7 +29,7 @@ CREATE TABLE messages (
 
 CREATE TABLE posts (
     id INT AUTO_INCREMENT PRIMARY KEY,
-	sent_time DATETIME NOT NULL,
+	sent_time TIMESTAMP NOT NULL,
     attachment LONGBLOB,
     user_id INT NOT NULL,
 	title VARCHAR(100) NOT NULL,

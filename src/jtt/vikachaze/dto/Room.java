@@ -14,31 +14,37 @@ private int id;
 private String title;
 private Blob icon;
 
-public Room(String title) {
-this.title = title;
-}
-public int getId() {
-	return id;
-}
-public void setId(int id) {
-	this.id = id;
-}
-public String getTitle() {
-	return title;
-}
-public void setTitle(String title) {
+	public Room(String title) {
 	this.title = title;
-}
-public Blob getIcon() {
-	return icon;
-}
-public void setIcon(Blob icon) {
-	this.icon = icon;
-}
-
-public Image asImage() throws SQLException, IOException {
-	InputStream in = icon.getBinaryStream();  
-	BufferedImage image = ImageIO.read(in);
-	return image;
-}
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	public Blob getIcon() {
+		return icon;
+	}
+	
+	public void setIcon(Blob icon) {
+		this.icon = icon;
+	}
+	
+	public Image getIconAsImage() throws SQLException, IOException {
+		InputStream in = icon.getBinaryStream();  
+		BufferedImage image = ImageIO.read(in);
+		return image;
+	}
 }
