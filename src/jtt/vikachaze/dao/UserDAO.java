@@ -1,0 +1,12 @@
+package jtt.vikachaze.dao;
+
+import java.sql.SQLException;
+
+import jtt.vikachaze.dao.base.GenericDAO;
+import jtt.vikachaze.dto.User;
+
+public interface UserDAO extends GenericDAO<User>{
+	final String TABLE = "users";
+	
+	User getByUsername(String username) throws SQLException;
+}
