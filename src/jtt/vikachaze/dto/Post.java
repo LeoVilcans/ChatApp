@@ -13,14 +13,16 @@ import javax.imageio.ImageIO;
 public class Post {
 	private int id;
 	private String title;
+	private String text;
 	private Timestamp sent_time;
 	private Blob attachment;
 	private User user;
 	
-	public Post(String title, Timestamp sent_time, User user) {
-		this.title = title;
+	public Post(Timestamp sent_time, User user, String title, String text) {
 		this.sent_time = sent_time;
 		this.user = user;
+		this.title = title;
+		this.text = text;
 	}
 
 	public int getId() {
@@ -53,6 +55,14 @@ public class Post {
 
 	public void setAttachment(Blob attachment) {
 		this.attachment = attachment;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
 	}
 
 	public User getUser() {
