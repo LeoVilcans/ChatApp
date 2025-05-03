@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS vikachaze;
+CREATE DATABASE IF NOT EXISTS vikachaze CHARACTER SET utf8mb4 COLLATE utf8mb4_latvian_ci;
 USE vikachaze;
 
 CREATE TABLE users (

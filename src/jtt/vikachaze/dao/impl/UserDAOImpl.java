@@ -1,7 +1,9 @@
 package jtt.vikachaze.dao.impl;
 
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -66,8 +68,38 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 
 	@Override
 	public User getByID(int id) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_BY_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setInt(1, id);
+		
+		ResultSet result = statement.executeQuery();
+		
+		result.next();
+		
+		String username = result.getString("username");
+		String password = result.getString("password");
+		
+		String status = result.getString("status");
+		if (!result.wasNull()) {
+			status = null;
+		}
+		
+		Blob pfp = result.getBlob("pfp");
+		if (!result.wasNull()) {
+			pfp = null;
+		}
+		
+		User user = new User(username, password);
+		user.setId(id);
+		user.setPfp(pfp);
+		user.setStatus(status);
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return user;
 	}
 	
 	@Override
