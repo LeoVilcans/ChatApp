@@ -79,8 +79,48 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 
 	@Override
 	public List<Message> getByRoom(Room room) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_BY_ROOM_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setInt(1, room.getId());
+		
+		ResultSet result = statement.executeQuery();
+		
+		List<Message> messages = new ArrayList<Message>();
+		
+		HashMap<Integer, User> messageUsers = new HashMap<Integer, User>();
+		
+		while (result.next()) {
+			int id = result.getInt("id");
+			String text = result.getString("text");
+			Timestamp sent_time = result.getTimestamp("sent_time");
+			int user_id = result.getInt("user_id");
+			
+			Blob attachment = result.getBlob("attachment");
+			if (!result.wasNull()) {
+				attachment = null;
+			}
+			
+			User user;
+			if (messageUsers.containsKey(user_id)) {
+				user = messageUsers.get(user_id);
+			} else {
+				user = userDAO.getByID(user_id);
+				messageUsers.put(user.getId(), user);
+			}
+			
+			Message message = new Message(room, text, sent_time, user);
+			message.setId(id);
+			message.setAttachment(attachment);
+			
+			messages.add(message);
+		}
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return messages;
 	}
 
 	@Override
