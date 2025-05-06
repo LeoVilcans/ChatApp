@@ -55,26 +55,111 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 	}
 
 	@Override
-	public int update(Message value) throws SQLException {
-	    return 0;
+	public int update(Message message) throws SQLException {
+		Connection connection = Database.getConnection();
+	    PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
+	    
+	    //room_id, text, sent_time, attachment, user_id
+	    statement.setInt(1, message.getRoom().getId());
+	    statement.setString(2, message.getText());
+	    //sent_time nevajag, jo tas automatiski tiek pievienots ar INSERT_QUERY kā pašreizējais laiks uz servera.
+	    
+	    if (message.getAttachment() != null) {
+	    	statement.setBlob(3, message.getAttachment());
+	    } else {
+	    	statement.setNull(3, Types.BLOB);
+	    }
+	    
+	    statement.setInt(4, message.getUser().getId());
+	    
+	    int result = statement.executeUpdate();
+
+	    Database.closePreparedStatement(statement);
+	    Database.closeConnection(connection);
+	    return result;
 	}
 
 	@Override
-	public int delete(Message value) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete(Message message) throws SQLException {
+		Connection connection = Database.getConnection();
+	    PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
+	    
+	    statement.setInt(1, message.getId());
+
+	    int result = statement.executeUpdate();
+
+	    Database.closePreparedStatement(statement);
+	    Database.closeConnection(connection);
+	    return result;
 	}
 
 	@Override
-	public int getID(Message value) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getID(Message message) throws SQLException {
+		Connection connection = Database.getConnection();
+	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY);
+
+	    statement.setInt(1, message.getRoom().getId());
+	    statement.setString(2, message.getText());
+	    statement.setInt(3, message.getUser().getId());
+
+	    ResultSet result = statement.executeQuery();
+
+	    int id = 0;
+	    if (result.next()) {
+	        id = result.getInt("id");
+	    }
+
+	    Database.closeResultSet(result);
+	    Database.closePreparedStatement(statement);
+	    Database.closeConnection(connection);
+	    return id;
 	}
 
 	@Override
 	public List<Message> getSinceIndex(Room room, int index) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setInt(1, room.getId());
+		statement.setInt(2, index);
+		
+		ResultSet result = statement.executeQuery();
+		
+		List<Message> messages = new ArrayList<Message>();
+		
+		HashMap<Integer, User> messageUsers = new HashMap<Integer, User>();
+		
+		while (result.next()) {
+			int id = result.getInt("id");
+			String text = result.getString("text");
+			Timestamp sent_time = result.getTimestamp("sent_time");
+			int user_id = result.getInt("user_id");
+			
+			Blob attachment = result.getBlob("attachment");
+			if (!result.wasNull()) {
+				attachment = null;
+			}
+			
+			User user;
+			if (messageUsers.containsKey(user_id)) {
+				user = messageUsers.get(user_id);
+			} else {
+				user = userDAO.getByID(user_id);
+				messageUsers.put(user.getId(), user);
+			}
+			
+			Message message = new Message(room, text, sent_time, user);
+			message.setId(id);
+			message.setAttachment(attachment);
+			
+			messages.add(message);
+		}
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return messages;
 	}
 
 	@Override
@@ -125,26 +210,92 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 
 	@Override
 	public List<Message> getByUser(User user) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Message> getByTime(Timestamp time) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_BY_USER_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setInt(1, user.getId());
+		
+		ResultSet result = statement.executeQuery();
+		
+		List<Message> messages = new ArrayList<Message>();
+		
+		HashMap<Integer, Room> messagesRoom = new HashMap<Integer, Room>();
+		
+		while (result.next()) {
+			int id = result.getInt("id");
+			int room_id = result.getInt("room_id");
+			String text = result.getString("text");
+			Timestamp sent_time = result.getTimestamp("sent_time");
+			
+			Blob attachment = result.getBlob("attachment");
+			if (!result.wasNull()) {
+				attachment = null;
+			}
+			
+			Room room;
+			if (messagesRoom.containsKey(room_id)) {
+				room = messagesRoom.get(room_id);
+			} else {
+				room = roomDAO.getByID(room_id);
+				messagesRoom.put(room.getId(), room);
+			}
+			
+			Message message = new Message(room, text, sent_time, user);
+			message.setId(id);
+			message.setAttachment(attachment);
+			
+			messages.add(message);
+		}
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return messages;
 	}
 
 	@Override
 	public List<Message> getByText(String text) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Message> allMessages = getAllData();
+		
+		List<Message> searchedMesages = new ArrayList<Message>();
+		for (Message message : allMessages) {
+			if (message.getText().toLowerCase().contains(text.toLowerCase())) {
+				searchedMesages.add(message);
+			}
+		}
+		
+		return searchedMesages;
 	}
 
 	@Override
 	public Message getByID(int id) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_BY_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setInt(1, id);
+		
+		ResultSet result = statement.executeQuery();
+		
+		result.next();
+		
+		String text = result.getString("text");
+		Timestamp sent_time = result.getTimestamp("sent_time");
+		
+		int room_id = result.getInt("room_id");
+		Room room = roomDAO.getByID(room_id);
+		
+		int user_id = result.getInt("user_id");
+		User user = userDAO.getByID(user_id);
+		
+		Message messages = new Message(room, text, sent_time, user);
+		messages.setId(id);
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return messages;
 	}
 
 	@Override

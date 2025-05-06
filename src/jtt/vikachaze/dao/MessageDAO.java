@@ -15,6 +15,5 @@ public interface MessageDAO extends GenericDAO<Message>{
 	List<Message> getSinceIndex(Room room, int index) throws SQLException;
 	List<Message> getByRoom(Room room) throws SQLException;
 	List<Message> getByUser(User user) throws SQLException;
-	List<Message> getByTime(Timestamp time) throws SQLException; 
 	List<Message> getByText(String text) throws SQLException;
 }
