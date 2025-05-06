@@ -28,6 +28,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class RoomGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -115,10 +118,32 @@ public class RoomGUI extends JFrame {
 				Room r = currentRoom;
 				Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), u);
 				
-				// TODO 
+				try {
+					messageDAO.insert(m);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		
 		AddAllMessages();
+		
+		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+		ses.scheduleAtFixedRate(new Runnable() {
+		    @Override
+		    public void run() {
+		    	int lastIndex = messages.get(messages.size()-1).getId();
+		        try {
+					List<Message> newMessages = messageDAO.getSinceIndex(currentRoom, lastIndex);
+					
+					for (Message message : newMessages) {
+						messages.add(message);
+						AddMessage(message);
+					}
+				} catch (SQLException | IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}, 0, 1, TimeUnit.SECONDS);
 	}
 }
