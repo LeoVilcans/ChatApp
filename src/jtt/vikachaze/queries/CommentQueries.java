@@ -1,9 +1,9 @@
 package jtt.vikachaze.queries;
 
-public interface CommentsQueries {
+public interface CommentQueries {
 	public static final String TABLE = "comments";
 
-    public static final String INSERT_QUERY = "INSERT INTO " + TABLE + " (sent_time, user_id, post_id, text) VALUES (?, ?, ?, ?)";
+    public static final String INSERT_QUERY = "INSERT INTO " + TABLE + " (sent_time, user_id, post_id, text) VALUES (CURRENT_TIMESTAMP, ?, ?, ?)";
     
     public static final String UPDATE_QUERY = "UPDATE " + TABLE + " SET sent_time = ?, user_id = ?, post_id = ?, text = ? WHERE id = ?";
 
