@@ -140,7 +140,7 @@ public class RoomGUI extends JFrame {
 						messages.add(message);
 						AddMessage(message);
 						JScrollBar vertical = scrollPane.getVerticalScrollBar();
-						scrollPane.validate();
+						scrollPane.validate(); 
 						vertical.setValue( vertical.getMaximum() );
 					}
 					
