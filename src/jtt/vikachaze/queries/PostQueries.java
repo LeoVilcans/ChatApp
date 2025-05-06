@@ -3,7 +3,7 @@ package jtt.vikachaze.queries;
 public interface PostQueries {
 	public static final String TABLE = "posts";
 	
-    public static final String INSERT_QUERY = "INSERT INTO " + TABLE + " (sent_time, user_id, title, text) VALUES (?, ?, ?, ?)";
+    public static final String INSERT_QUERY = "INSERT INTO " + TABLE + " (sent_time, user_id, title, text, attachment) VALUES (CURRENT_TIMESTAMP, ?, ?, ?, ?)";
     
     public static final String UPDATE_QUERY = "UPDATE " + TABLE + " SET sent_time = ?, user_id = ?, title = ?, text = ? WHERE id = ?";
 
