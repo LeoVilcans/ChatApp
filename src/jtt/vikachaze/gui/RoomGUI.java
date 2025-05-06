@@ -139,7 +139,11 @@ public class RoomGUI extends JFrame {
 					for (Message message : newMessages) {
 						messages.add(message);
 						AddMessage(message);
+						JScrollBar vertical = scrollPane.getVerticalScrollBar();
+						scrollPane.validate();
+						vertical.setValue( vertical.getMaximum() );
 					}
+					
 				} catch (SQLException | IOException e) {
 					e.printStackTrace();
 				}
