@@ -21,7 +21,7 @@ public static final String TABLE = "messages";
     
     public static final String GET_BY_ID_QUERY = "SELECT * FROM " + TABLE + " WHERE id = ?";
     
-    public static final String GET_ID_QUERY = "SELECT id FROM " + TABLE + " WHERE room_id = ? AND text = ? AND sent_time = ? AND attachment = ? AND user_id = ?";
+    public static final String GET_ID_QUERY = "SELECT id FROM " + TABLE + " WHERE room_id = ? AND text = ? AND sent_time = ? AND user_id = ?";
     
     public static final String GET_ALL_QUERY = "SELECT * FROM " + TABLE;
 }

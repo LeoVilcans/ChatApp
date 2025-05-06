@@ -62,7 +62,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 	    //room_id, text, sent_time, attachment, user_id
 	    statement.setInt(1, message.getRoom().getId());
 	    statement.setString(2, message.getText());
-	    //sent_time nevajag, jo tas automatiski tiek pievienots ar INSERT_QUERY kā pašreizējais laiks uz servera.
+	    statement.setTimestamp(3, message.getSent_time());
 	    
 	    if (message.getAttachment() != null) {
 	    	statement.setBlob(3, message.getAttachment());
@@ -100,7 +100,8 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 
 	    statement.setInt(1, message.getRoom().getId());
 	    statement.setString(2, message.getText());
-	    statement.setInt(3, message.getUser().getId());
+	    statement.setTimestamp(3, message.getSent_time());
+	    statement.setInt(4, message.getUser().getId());
 
 	    ResultSet result = statement.executeQuery();
 
