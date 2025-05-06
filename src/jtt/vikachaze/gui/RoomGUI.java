@@ -57,6 +57,12 @@ public class RoomGUI extends JFrame {
 		messagePanel.setPreferredSize(new Dimension(messagePanel.getPreferredSize().width, currentMessageHeight));
 	}
 	
+	private void ScrollToBottom() {
+		JScrollBar vertical = scrollPane.getVerticalScrollBar();	
+		scrollPane.validate(); 
+		vertical.setValue( vertical.getMaximum() );
+	}
+	
 	private void AddAllMessages() throws SQLException, IOException {
 		messagePanel.removeAll();
 		currentMessageHeight = 0;
@@ -66,6 +72,7 @@ public class RoomGUI extends JFrame {
 		for (Message message : messages) {
 			AddMessage(message);
 		}
+		ScrollToBottom();
 	}
 	
 	public RoomGUI(User u, Room r) throws SQLException, IOException {
@@ -128,6 +135,7 @@ public class RoomGUI extends JFrame {
 		
 		AddAllMessages();
 		
+		// Pievieno čata atjaunošanas, jeb refresh funkcionalitāti. Tiek izpildīts ar 1hz frekvenci.
 		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 		ses.scheduleAtFixedRate(new Runnable() {
 		    @Override
@@ -139,9 +147,10 @@ public class RoomGUI extends JFrame {
 					for (Message message : newMessages) {
 						messages.add(message);
 						AddMessage(message);
-						JScrollBar vertical = scrollPane.getVerticalScrollBar();
-						scrollPane.validate(); 
-						vertical.setValue( vertical.getMaximum() );
+					}
+					
+					if (!newMessages.isEmpty()) {
+						ScrollToBottom();
 					}
 					
 				} catch (SQLException | IOException e) {
