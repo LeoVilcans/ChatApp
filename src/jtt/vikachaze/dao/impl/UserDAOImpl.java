@@ -5,11 +5,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dao.UserDAO;
+import jtt.vikachaze.dto.Message;
+import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.queries.UserQueries;
 
@@ -128,7 +132,7 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	}
 	
 	@Override
-	public User getByUsername(String username) throws SQLException {
+	public List<User> getByUsername(String username) throws SQLException {
 		Connection connection = Database.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USERNAME_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -136,32 +140,23 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		
 		ResultSet result = statement.executeQuery();
 		
-		result.next();
+		List<User> users = new ArrayList<User>();
 		
-		//String username = result.getString("username");
-		String password = result.getString("password");
-		int id = result.getInt("id");
-		
-		String status = result.getString("status");
-		if (result.wasNull()) {
-			status = null;
+		while (result.next()) {
+			int id = result.getInt("id");
+			String password = result.getString("password");
+			
+			User user = new User(username, password);
+			user.setId(id);
+			
+			users.add(user);
 		}
-		
-		Blob pfp = result.getBlob("pfp");
-		if (result.wasNull()) {
-			pfp = null;
-		}
-		
-		User user = new User(username, password);
-		user.setId(id);
-		user.setPfp(pfp);
-		user.setStatus(status);
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
 		Database.closeConnection(connection);
 		
-		return user;
+		return users;
 	}
 
 	@Override
