@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import jtt.vikachaze.connection.Database;
@@ -23,7 +24,9 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	    List<User> users = getAllData();
 	    
 	    for (User user : users) {
-	    	if (user.getUsername().equals(value.getUsername())) {
+	    	String newUserUsername = value.getUsername().toLowerCase();
+	    	String checkUsername = user.getUsername().toLowerCase();
+	    	if (newUserUsername.equals(checkUsername)) {
 	    		return 0;
 	    	}
 	    }
@@ -56,14 +59,36 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 
 	@Override
 	public int delete(User value) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		Connection connection = Database.getConnection();
+	    PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
+	    
+	    statement.setInt(1, value.getId());
+
+	    int result = statement.executeUpdate();
+
+	    Database.closePreparedStatement(statement);
+	    Database.closeConnection(connection);
+	    return result;
 	}
 
 	@Override
 	public int getID(User value) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setString(1, value.getUsername());
+		
+		ResultSet result = statement.executeQuery();
+		
+		result.next();
+		
+		int id = result.getInt("id");
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return id;
 	}
 
 	@Override
@@ -81,12 +106,12 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		String password = result.getString("password");
 		
 		String status = result.getString("status");
-		if (!result.wasNull()) {
+		if (result.wasNull()) {
 			status = null;
 		}
 		
 		Blob pfp = result.getBlob("pfp");
-		if (!result.wasNull()) {
+		if (result.wasNull()) {
 			pfp = null;
 		}
 		
@@ -104,13 +129,75 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	
 	@Override
 	public User getByUsername(String username) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_BY_USERNAME_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setString(1, username);
+		
+		ResultSet result = statement.executeQuery();
+		
+		result.next();
+		
+		//String username = result.getString("username");
+		String password = result.getString("password");
+		int id = result.getInt("id");
+		
+		String status = result.getString("status");
+		if (result.wasNull()) {
+			status = null;
+		}
+		
+		Blob pfp = result.getBlob("pfp");
+		if (result.wasNull()) {
+			pfp = null;
+		}
+		
+		User user = new User(username, password);
+		user.setId(id);
+		user.setPfp(pfp);
+		user.setStatus(status);
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return user;
 	}
 
 	@Override
 	public List<User> getAllData() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		ResultSet result = statement.executeQuery();
+		
+		List<User> users = new ArrayList<User>();
+		while (result.next()) {
+			String username = result.getString("username");
+			String password = result.getString("password");
+			int id = result.getInt("id");
+			
+			String status = result.getString("status");
+			if (result.wasNull()) {
+				status = null;
+			}
+			
+			Blob pfp = result.getBlob("pfp");
+			if (result.wasNull()) {
+				pfp = null;
+			}
+			
+			User user = new User(username, password);
+			user.setId(id);
+			user.setPfp(pfp);
+			user.setStatus(status);
+			users.add(user);
+		}
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return users;
 	}	
 }
