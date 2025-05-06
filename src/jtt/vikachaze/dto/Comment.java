@@ -2,16 +2,17 @@ package jtt.vikachaze.dto;
 
 import java.sql.Timestamp;
 
-public class Comments {
+public class Comment {
 private int id;
 private Timestamp sent_time;
 private User user;
-private Post postID;
+private Post post;
 private String text;
 
-public Comments(Timestamp sent_time,User user,Post postID,String text) {
+public Comment(Timestamp sent_time, User user, Post post, String text) {
 	this.sent_time = sent_time;
-	this.postID = postID;
+	this.user = user;
+	this.post = post;
 	this.text = text;
 }
 
@@ -39,12 +40,12 @@ public void setUser(User user) {
 	this.user = user;
 }
 
-public Post getPostID() {
-	return postID;
+public Post getPost() {
+	return post;
 }
 
-public void setPostID(Post postID) {
-	this.postID = postID;
+public void setPost(Post postID) {
+	this.post = postID;
 }
 
 public String getText() {
