@@ -1,5 +1,6 @@
 package jtt.vikachaze.gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -21,11 +22,20 @@ import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.MessageFactory;
+import jtt.vikachaze.util.Scalr;
+import jtt.vikachaze.util.Scalr.Method;
+import jtt.vikachaze.connection.Database;
 
 import javax.swing.JButton;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImagingOpException;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -133,6 +143,20 @@ public class RoomGUI extends JFrame {
 				
 				Room r = currentRoom;
 				Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser());
+					
+				/*
+				 *  SITAIS IR PRIEKS BILZU PIEVIENOSANAS
+				 * 
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				try {
+					ImageIO.write(Scalr.resize(ImageIO.read(new File("test.jpg")), 236), "png", baos);
+					Blob b1 = Database.getConnection().createBlob();
+					b1.setBytes(1,  baos.toByteArray());
+					m.setAttachment(b1);
+				} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
+					e.printStackTrace();
+				}
+				*/
 				try {
 					messagesSentThisSecond++;
 					messageDAO.insert(m);
