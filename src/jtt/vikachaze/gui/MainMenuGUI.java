@@ -1,0 +1,100 @@
+package jtt.vikachaze.gui;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.LayoutManager;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextField;
+import java.awt.Color;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+
+public class MainMenuGUI extends JFrame{
+	JPanel contentPane;
+	private JTextField searchTextField;
+	
+	public MainMenuGUI() {
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 659, 493);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JPanel roomPanel = new JPanel();
+		roomPanel.setLayout(null);
+		roomPanel.setBounds(0, 0, 163, 454);
+		contentPane.add(roomPanel);
+		
+		JScrollPane roomScrollPane = new JScrollPane();
+		roomScrollPane.setBounds(3, 34, 157, 420);
+		roomPanel.add(roomScrollPane);
+		roomScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		roomScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		JPanel messagePanel = new JPanel((LayoutManager) null);
+		roomScrollPane.setViewportView(messagePanel);
+		
+		JLabel roomListLabel = new JLabel("Rooms");
+		roomListLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		roomListLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		roomListLabel.setBounds(10, 11, 143, 17);
+		roomPanel.add(roomListLabel);
+		
+		JPanel postPanel = new JPanel();
+		postPanel.setLayout(null);
+		postPanel.setBounds(163, 0, 299, 454);
+		contentPane.add(postPanel);
+		
+		JScrollPane postScrollPane = new JScrollPane();
+		postScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		postScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		postScrollPane.setBounds(5, 34, 288, 420);
+		postPanel.add(postScrollPane);
+		
+		JPanel messagePanel_1 = new JPanel((LayoutManager) null);
+		postScrollPane.setViewportView(messagePanel_1);
+		
+		searchTextField = new JTextField();
+		searchTextField.setBounds(5, 8, 262, 20);
+		postPanel.add(searchTextField);
+		searchTextField.setColumns(10);
+		
+		JButton searchButton = new JButton("S");
+		searchButton.setBounds(264, 8, 29, 19);
+		postPanel.add(searchButton);
+		
+		JPanel roomPanel_1 = new JPanel();
+		roomPanel_1.setLayout(null);
+		roomPanel_1.setBounds(461, 0, 182, 454);
+		contentPane.add(roomPanel_1);
+		
+		JLabel pfpLabel = new JLabel("<<pfp>>");
+		pfpLabel.setBackground(new Color(128, 128, 128));
+		pfpLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		pfpLabel.setBounds(5, 12, 55, 44);
+		roomPanel_1.add(pfpLabel);
+		
+		JLabel profileUsernameLabel = new JLabel("<<Username>>");
+		profileUsernameLabel.setBounds(70, 26, 100, 16);
+		roomPanel_1.add(profileUsernameLabel);
+		
+		JButton profileEditButton = new JButton("edit");
+		profileEditButton.setBounds(6, 144, 55, 24);
+		roomPanel_1.add(profileEditButton);
+		
+		JButton btnLogOut = new JButton("log out");
+		btnLogOut.setBounds(70, 144, 100, 24);
+		roomPanel_1.add(btnLogOut);
+		
+		JLabel profileStatusLabel = new JLabel("<<status>>");
+		profileStatusLabel.setBounds(5, 68, 165, 64);
+		roomPanel_1.add(profileStatusLabel);
+	}
+}
