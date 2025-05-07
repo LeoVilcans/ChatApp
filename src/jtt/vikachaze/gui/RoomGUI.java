@@ -140,7 +140,11 @@ public class RoomGUI extends JFrame {
 		ses.scheduleAtFixedRate(new Runnable() {
 		    @Override
 		    public void run() {
-		    	int lastIndex = messages.get(messages.size()-1).getId();
+		    	int lastIndex = 0;
+		    	if (!messages.isEmpty()) {
+		    		lastIndex = messages.get(messages.size()-1).getId();
+		    	}
+
 		        try {
 					List<Message> newMessages = messageDAO.getSinceIndex(currentRoom, lastIndex);
 					
