@@ -132,7 +132,7 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	}
 	
 	@Override
-	public List<User> getByUsername(String username) throws SQLException {
+	public User getByUsername(String username) throws SQLException {
 		Connection connection = Database.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USERNAME_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -140,23 +140,24 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		
 		ResultSet result = statement.executeQuery();
 		
-		List<User> users = new ArrayList<User>();
+		result.next();
+		int id = result.getInt("id");
+		String password = result.getString("password");
 		
-		while (result.next()) {
-			int id = result.getInt("id");
-			String password = result.getString("password");
-			
-			User user = new User(username, password);
-			user.setId(id);
-			
-			users.add(user);
+		Blob pfp = result.getBlob("pfp");
+		if (result.wasNull()) {
+			pfp = null;
 		}
+		
+		User user = new User(username, password);
+		user.setId(id);
+		user.setPfp(pfp);
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
 		Database.closeConnection(connection);
 		
-		return users;
+		return user;
 	}
 
 	@Override

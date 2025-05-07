@@ -9,5 +9,5 @@ import jtt.vikachaze.dto.User;
 public interface UserDAO extends GenericDAO<User>{
 	final String TABLE = "users";
 	
-	List<User> getByUsername(String username) throws SQLException;
+	User getByUsername(String username) throws SQLException;
 }

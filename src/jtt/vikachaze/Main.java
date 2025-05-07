@@ -10,21 +10,18 @@ import jtt.vikachaze.dao.impl.MessageDAOImpl;
 import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.dto.User;
+import jtt.vikachaze.gui.LoginGUI;
 import jtt.vikachaze.gui.RoomGUI;
 
 public class Main {
+	private static User currentUser = null;
+	
 	public static void main(String[] args) throws SQLException, IOException {
 		System.out.println("Hello World!");
 		
-		User u = new User("Leo", "123");
-		u.setId(1);
-		
-		Room r = new Room("Ģenerālis");
-		r.setId(1);
-		
-		JFrame roomGUI = new RoomGUI(u, r);
-		roomGUI.setVisible(true);
-		
+		JFrame loginGUI = new LoginGUI();
+		loginGUI.setVisible(true);
+	
 		/*
 		MessageDAO messageDAO = new MessageDAOImpl();
 		
@@ -32,5 +29,29 @@ public class Main {
 			System.out.println("[" + m.getSent_time().toString() + "]" + m.getUser().getUsername() + ": " + m.getText());
 		}
 		*/
+	}
+	
+	public static void Login(User user) {
+		currentUser = user;
+		
+		Room r = new Room("Ģenerālis");
+		r.setId(1);
+		
+		JFrame roomGUI;
+		try {
+			roomGUI = new RoomGUI(currentUser, r);
+			roomGUI.setVisible(true);
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static boolean isLoggedIn() {
+		return !(currentUser == null);
+	}
+	
+	public static User getLoggedUser() {
+		return currentUser;
 	}
 }
