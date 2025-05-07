@@ -96,7 +96,7 @@ public class RoomGUI extends JFrame {
 		setResizable(false);
 		setTitle("VIKACHAZE - " + r.getTitle());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 659, 493);
+		setBounds(100, 100, 659, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -105,7 +105,7 @@ public class RoomGUI extends JFrame {
 		
 		inputPanel = new JPanel();
 		//panel_2.setBorder(new LineBorder(new Color(150, 150, 150)));
-		inputPanel.setBounds(0, 355, 656, 108);
+		inputPanel.setBounds(0, 462, 656, 108);
 		contentPane.add(inputPanel);
 		inputPanel.setLayout(null);
 		
@@ -121,7 +121,7 @@ public class RoomGUI extends JFrame {
 		inputPanel.add(sendButton);
 		
 		scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 0, 634, 356);
+        scrollPane.setBounds(10, 0, 634, 463);
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -157,6 +157,7 @@ public class RoomGUI extends JFrame {
 					e.printStackTrace();
 				}
 				*/
+				
 				try {
 					messagesSentThisSecond++;
 					messageDAO.insert(m);
