@@ -2,6 +2,7 @@ package jtt.vikachaze.gui;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.border.EmptyBorder;
@@ -13,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import jtt.vikachaze.Main;
 import jtt.vikachaze.dao.MessageDAO;
 import jtt.vikachaze.dao.impl.MessageDAOImpl;
 import jtt.vikachaze.dto.Message;
@@ -40,11 +42,12 @@ public class RoomGUI extends JFrame {
 	private JScrollPane scrollPane;
 	
 	private int currentMessageHeight = 0;
-	private User currentUser;
 	private Room currentRoom;
 	private List<Message> messages;
 	
 	private MessageDAO messageDAO;
+	
+	int messagesSentThisSecond = 0;
 	
 	private void AddMessage(Message message) throws SQLException, IOException {
 		JPanel newMessagePanel = MessageFactory.createMessagePanel(message);
@@ -75,8 +78,7 @@ public class RoomGUI extends JFrame {
 		ScrollToBottom();
 	}
 	
-	public RoomGUI(User u, Room r) throws SQLException, IOException {
-		currentUser = u;
+	public RoomGUI(Room r) throws SQLException, IOException {
 		currentRoom = r;
 		
 		messageDAO = new MessageDAOImpl();
@@ -121,12 +123,20 @@ public class RoomGUI extends JFrame {
 		sendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				User u = currentUser;
-				Room r = currentRoom;
-				Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), u);
+				if (textArea.getText().equals("")) {
+					return;
+				}
+				if (messagesSentThisSecond>1) {
+					JOptionPane.showMessageDialog(null, "Lūdzu NESPAMO");
+					return;
+				}
 				
+				Room r = currentRoom;
+				Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser());
 				try {
+					messagesSentThisSecond++;
 					messageDAO.insert(m);
+					textArea.setText("");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -140,6 +150,8 @@ public class RoomGUI extends JFrame {
 		ses.scheduleAtFixedRate(new Runnable() {
 		    @Override
 		    public void run() {
+		    	messagesSentThisSecond = 0;
+		    	
 		    	int lastIndex = 0;
 		    	if (!messages.isEmpty()) {
 		    		lastIndex = messages.get(messages.size()-1).getId();

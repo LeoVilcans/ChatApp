@@ -17,7 +17,6 @@ public class Main {
 	private static User currentUser = null;
 	
 	public static void main(String[] args) throws SQLException, IOException {
-		System.out.println("Hello World!");
 		
 		JFrame loginGUI = new LoginGUI();
 		loginGUI.setVisible(true);
@@ -31,7 +30,7 @@ public class Main {
 		
 		JFrame roomGUI;
 		try {
-			roomGUI = new RoomGUI(currentUser, r);
+			roomGUI = new RoomGUI(r);
 			roomGUI.setVisible(true);
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
