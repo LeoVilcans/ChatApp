@@ -137,7 +137,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 			int user_id = result.getInt("user_id");
 			
 			Blob attachment = result.getBlob("attachment");
-			if (!result.wasNull()) {
+			if (result.wasNull()) {
 				attachment = null;
 			}
 			
@@ -183,7 +183,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 			int user_id = result.getInt("user_id");
 			
 			Blob attachment = result.getBlob("attachment");
-			if (!result.wasNull()) {
+			if (result.wasNull()) {
 				attachment = null;
 			}
 			
@@ -289,8 +289,14 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 		int user_id = result.getInt("user_id");
 		User user = userDAO.getByID(user_id);
 		
+		Blob attachment = result.getBlob("attachment");
+		if (result.wasNull()) {
+			attachment = null;
+		}
+		
 		Message messages = new Message(room, text, sent_time, user);
 		messages.setId(id);
+		messages.setAttachment(attachment);
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
@@ -320,7 +326,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 			int user_id = result.getInt("user_id");
 			
 			Blob attachment = result.getBlob("attachment");
-			if (!result.wasNull()) {
+			if (result.wasNull()) {
 				attachment = null;
 			}
 			

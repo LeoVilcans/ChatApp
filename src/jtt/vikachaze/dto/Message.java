@@ -74,6 +74,10 @@ public class Message {
 	}
  
 	public Image getAttachmentAsImage() throws SQLException, IOException {
+		if (attachment == null) {
+			return null;
+		}
+		
 		InputStream in = attachment.getBinaryStream();  
 		BufferedImage image = ImageIO.read(in);
 		return image;

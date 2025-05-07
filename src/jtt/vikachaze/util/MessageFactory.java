@@ -3,10 +3,13 @@ package jtt.vikachaze.util;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -58,7 +61,23 @@ public class MessageFactory {
 		timeLabel.setBounds(12, 106, 512, 17);
 		
 		textPane.setSize(textPane.getWidth(), textPane.getPreferredSize().height);
-		timeLabel.setBounds(12, 37+textPane.getHeight()+10, timeLabel.getWidth(), 17);
+		
+		JLabel imageLabel = new JLabel();
+		imageLabel.setBounds(12, 37+textPane.getHeight()+10, 0, 0);
+		if (message.getAttachmentAsImage() != null) {
+			BufferedImage bimg = ImageIO.read(message.getAttachment().getBinaryStream());
+			
+			StretchIcon icon = new StretchIcon(bimg, true);
+			imageLabel.setIcon(icon);
+			
+			Double height = 236.0;
+			Double width = ((height/bimg.getHeight())*bimg.getWidth())+10;
+			//int width = messageContentPanel.getSize().width;
+			imageLabel.setBounds(12, 37+textPane.getHeight()+10, width.intValue(), height.intValue());
+		}
+		
+		
+		timeLabel.setBounds(12, 37+textPane.getHeight()+10 + imageLabel.getHeight(), timeLabel.getWidth(), 17);
 		messageContentPanel.setSize(messageContentPanel.getSize().width, timeLabel.getBounds().y + timeLabel.getBounds().height + 10);
 		messagePanel.setSize(634, messageContentPanel.getSize().height + 20);
 		
@@ -66,6 +85,7 @@ public class MessageFactory {
 		messagePanel.add(messageContentPanel);
 		messageContentPanel.add(usernameLabel);
 		messageContentPanel.add(textPane);
+		messageContentPanel.add(imageLabel);
 		messageContentPanel.add(timeLabel);
 		
 		//Random r = new Random();

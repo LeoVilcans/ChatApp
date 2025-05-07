@@ -21,14 +21,6 @@ public class Main {
 		
 		JFrame loginGUI = new LoginGUI();
 		loginGUI.setVisible(true);
-	
-		/*
-		MessageDAO messageDAO = new MessageDAOImpl();
-		
-		for (Message m : messageDAO.getAllData()) {
-			System.out.println("[" + m.getSent_time().toString() + "]" + m.getUser().getUsername() + ": " + m.getText());
-		}
-		*/
 	}
 	
 	public static void Login(User user) {
@@ -42,7 +34,6 @@ public class Main {
 			roomGUI = new RoomGUI(currentUser, r);
 			roomGUI.setVisible(true);
 		} catch (SQLException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
