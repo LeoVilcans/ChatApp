@@ -149,7 +149,7 @@ public class RoomGUI extends JFrame {
 				 * 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				try {
-					ImageIO.write(Scalr.resize(ImageIO.read(new File("test.jpg")), 236), "png", baos);
+					ImageIO.write(Scalr.resize(ImageIO.read(new File("test.jpg")), 236), "jpg", baos);
 					Blob b1 = Database.getConnection().createBlob();
 					b1.setBytes(1,  baos.toByteArray());
 					m.setAttachment(b1);
