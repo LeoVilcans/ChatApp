@@ -9,11 +9,8 @@ import jtt.vikachaze.dao.impl.RoomDAOImpl;
 import jtt.vikachaze.dto.Room;
 
 import java.awt.LayoutManager;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -30,7 +27,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 
 public class MainMenuGUI extends JFrame{
 	private JPanel contentPane;
@@ -40,11 +36,6 @@ public class MainMenuGUI extends JFrame{
 	private RoomDAOImpl roomDAO = new RoomDAOImpl();
 	
 	private DefaultListModel<String> room = new DefaultListModel<String>();
-	
-	public static void main(String[] args) {
-		MainMenuGUI form = new MainMenuGUI();
-		form.setVisible(true);
-	}
 	
 	public MainMenuGUI() {
 		setResizable(false);

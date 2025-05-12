@@ -11,6 +11,7 @@ import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.gui.LoginGUI;
+import jtt.vikachaze.gui.MainMenuGUI;
 import jtt.vikachaze.gui.RoomGUI;
 
 public class Main {
@@ -22,19 +23,12 @@ public class Main {
 		loginGUI.setVisible(true);
 	}
 	
-	public static void Login(User user) {
+	public static void Login(User user) throws SQLException, IOException {
 		currentUser = user;
 		
-		Room r = new Room("Ģenerālis");
-		r.setId(1);
-		
-		JFrame roomGUI;
-		try {
-			roomGUI = new RoomGUI(r);
-			roomGUI.setVisible(true);
-		} catch (SQLException | IOException e) {
-			e.printStackTrace();
-		}
+		JFrame mainMenu;
+		mainMenu = new MainMenuGUI();
+		mainMenu.setVisible(true);
 	}
 	
 	public static boolean isLoggedIn() {

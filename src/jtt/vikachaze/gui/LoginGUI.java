@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -88,7 +89,7 @@ public class LoginGUI extends JFrame {
 						Main.Login(user);
 						LoginGUI.this.dispose();
 					}
-				} catch (SQLException e1) {
+				} catch (SQLException | IOException e1) {
 					e1.printStackTrace();
 				}
 			}
