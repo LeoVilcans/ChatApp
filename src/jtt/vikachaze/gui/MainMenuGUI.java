@@ -30,18 +30,19 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JList;
+import javax.swing.JTextArea;
 
 public class MainMenuGUI extends JFrame{
 	private JPanel contentPane;
 	private JTextField searchTextField;
 	private JScrollPane roomScrollPane;
+	private JLabel profileUsernameLabel, pfpLabel;
+	private JTextArea profileStatusArea;
+	
 	private JList<String> roomList;
 	private RoomDAOImpl roomDAO = new RoomDAOImpl();
 	
 	private DefaultListModel<String> room = new DefaultListModel<String>();
-	
-	private JLabel profileStatusLabel, profileUsernameLabel, pfpLabel;
-	
 	
 	public MainMenuGUI() throws SQLException, IOException {
 		setResizable(false);
@@ -128,35 +129,38 @@ public class MainMenuGUI extends JFrame{
 		searchButton.setBounds(264, 8, 29, 19);
 		postPanel.add(searchButton);
 		
-		JPanel roomPanel_1 = new JPanel();
-		roomPanel_1.setLayout(null);
-		roomPanel_1.setBounds(461, 0, 182, 454);
-		contentPane.add(roomPanel_1);
+		JPanel userPanel = new JPanel();
+		userPanel.setLayout(null);
+		userPanel.setBounds(461, 0, 182, 454);
+		contentPane.add(userPanel);
 		
 		pfpLabel = new JLabel("");
 		pfpLabel.setBackground(new Color(128, 128, 128));
 		pfpLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		pfpLabel.setBounds(12, 12, 159, 159);
 		pfpLabel.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
-		roomPanel_1.add(pfpLabel);
+		userPanel.add(pfpLabel);
 		
 		profileUsernameLabel = new JLabel("<<Username>>");
 		profileUsernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 		profileUsernameLabel.setBounds(12, 177, 159, 21);
-		roomPanel_1.add(profileUsernameLabel);
+		userPanel.add(profileUsernameLabel);
 		
 		JButton profileEditButton = new JButton("edit");
 		profileEditButton.setBounds(7, 419, 55, 24);
-		roomPanel_1.add(profileEditButton);
+		userPanel.add(profileEditButton);
 		
 		JButton btnLogOut = new JButton("log out");
 		btnLogOut.setBounds(71, 419, 100, 24);
-		roomPanel_1.add(btnLogOut);
+		userPanel.add(btnLogOut);
 		
-		profileStatusLabel = new JLabel("<<status>>");
-		profileStatusLabel.setForeground(new Color(128, 128, 128));
-		profileStatusLabel.setBounds(12, 209, 158, 31);
-		roomPanel_1.add(profileStatusLabel);
+		profileStatusArea = new JTextArea();
+		profileStatusArea.setFont(new Font("Dialog", Font.ITALIC, 12));
+		profileStatusArea.setLineWrap(true);
+		profileStatusArea.setForeground(new Color(107, 107, 107));
+		profileStatusArea.setBackground(new Color(238, 238, 238));
+		profileStatusArea.setBounds(12, 201, 158, 119);
+		userPanel.add(profileStatusArea);
 		
 		updateProfile();
 		addRooms();
@@ -174,9 +178,9 @@ public class MainMenuGUI extends JFrame{
 		profileUsernameLabel.setText(user.getUsername());
 		
 		if (user.getStatus() != null) {
-			profileStatusLabel.setText('"' + user.getStatus() + '"');
+			profileStatusArea.setText('"' + user.getStatus() + '"');
 		} else {
-			profileStatusLabel.setText("");
+			profileStatusArea.setText("");
 		}
 	}
 	

@@ -141,8 +141,14 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		ResultSet result = statement.executeQuery();
 		
 		result.next();
-		int id = result.getInt("id");
+		
 		String password = result.getString("password");
+		int id = result.getInt("id");
+		
+		String status = result.getString("status");
+		if (result.wasNull()) {
+			status = null;
+		}
 		
 		Blob pfp = result.getBlob("pfp");
 		if (result.wasNull()) {
@@ -152,6 +158,7 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		User user = new User(username, password);
 		user.setId(id);
 		user.setPfp(pfp);
+		user.setStatus(status);
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
