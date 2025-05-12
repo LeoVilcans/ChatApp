@@ -155,6 +155,7 @@ public class MainMenuGUI extends JFrame{
 		userPanel.add(btnLogOut);
 		
 		profileStatusArea = new JTextArea();
+		profileStatusArea.setEditable(false);
 		profileStatusArea.setFont(new Font("Dialog", Font.ITALIC, 12));
 		profileStatusArea.setLineWrap(true);
 		profileStatusArea.setForeground(new Color(107, 107, 107));
