@@ -75,7 +75,6 @@ public class RoomDAOImpl implements RoomDAO, RoomQueries{
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY);
 
 	    statement.setString(1, value.getTitle());
-	    statement.setBlob(2, value.getIcon());
 	    
 	    ResultSet result = statement.executeQuery();
 

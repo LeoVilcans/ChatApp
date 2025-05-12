@@ -13,7 +13,7 @@ public interface RoomQueries {
     
     public static final String GET_BY_ID_QUERY = "SELECT * FROM " + TABLE + " WHERE id = ?";
     
-    public static final String GET_ID_QUERY = "SELECT id FROM " + TABLE + " WHERE title = ? AND icon = ?";
+    public static final String GET_ID_QUERY = "SELECT id FROM " + TABLE + " WHERE title = ?";
     
     public static final String GET_ALL_QUERY = "SELECT * FROM " + TABLE;
 }

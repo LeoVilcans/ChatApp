@@ -3,19 +3,48 @@ package jtt.vikachaze.gui;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+
+import jtt.vikachaze.dao.impl.RoomDAOImpl;
+import jtt.vikachaze.dto.Room;
+
 import java.awt.LayoutManager;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextField;
+
 import java.awt.Color;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 public class MainMenuGUI extends JFrame{
-	JPanel contentPane;
+	private JPanel contentPane;
 	private JTextField searchTextField;
+	private JScrollPane roomScrollPane;
+	private JList<String> roomList;
+	private RoomDAOImpl roomDAO = new RoomDAOImpl();
+	
+	private DefaultListModel<String> room = new DefaultListModel<String>();
+	
+	public static void main(String[] args) {
+		MainMenuGUI form = new MainMenuGUI();
+		form.setVisible(true);
+	}
 	
 	public MainMenuGUI() {
 		setResizable(false);
@@ -32,14 +61,46 @@ public class MainMenuGUI extends JFrame{
 		roomPanel.setBounds(0, 0, 163, 454);
 		contentPane.add(roomPanel);
 		
-		JScrollPane roomScrollPane = new JScrollPane();
+		roomScrollPane = new JScrollPane();
 		roomScrollPane.setBounds(3, 34, 157, 420);
 		roomPanel.add(roomScrollPane);
 		roomScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		roomScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
-		JPanel messagePanel = new JPanel((LayoutManager) null);
-		roomScrollPane.setViewportView(messagePanel);
+		roomList = new JList<String>(room);
+		roomScrollPane.setViewportView(roomList);
+		roomList.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2){
+					String currentRoom = roomList.getSelectedValue();
+					
+					Room tempRoom = new Room(currentRoom);
+					try {
+						int roomID = roomDAO.getID(tempRoom);
+						Room room = roomDAO.getByID(roomID);
+
+						RoomGUI roomGUI = new RoomGUI(room);
+						roomGUI.setVisible(true);
+					} catch (SQLException | IOException e1) {
+						e1.printStackTrace();
+					}
+		        }
+			}
+		});
 		
 		JLabel roomListLabel = new JLabel("Rooms");
 		roomListLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -66,7 +127,7 @@ public class MainMenuGUI extends JFrame{
 		postPanel.add(searchTextField);
 		searchTextField.setColumns(10);
 		
-		JButton searchButton = new JButton("S");
+		JButton searchButton = new JButton();
 		searchButton.setBounds(264, 8, 29, 19);
 		postPanel.add(searchButton);
 		
@@ -96,5 +157,19 @@ public class MainMenuGUI extends JFrame{
 		JLabel profileStatusLabel = new JLabel("<<status>>");
 		profileStatusLabel.setBounds(5, 68, 165, 64);
 		roomPanel_1.add(profileStatusLabel);
+		
+		addRooms();
+	}
+	
+	public void addRooms() {
+		try {
+			List<Room> rooms = roomDAO.getAllData();
+			
+			for (Room r : rooms) {
+				room.addElement(r.getTitle());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
