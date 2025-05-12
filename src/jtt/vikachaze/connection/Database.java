@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public class Database {
-	private static String url = "jdbc:mysql://34.159.193.168:3306/vikachaze";
+	private static String url = "jdbc:mysql://34.51.175.75:3306/vikachaze";
 	private static String user = "anon"; 
 	private static String password = "anon";
 	private static String charset = "utf-8";
