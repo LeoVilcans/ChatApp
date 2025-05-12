@@ -27,6 +27,8 @@ import jtt.vikachaze.util.Scalr.Method;
 import jtt.vikachaze.connection.Database;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -58,6 +60,8 @@ public class RoomGUI extends JFrame {
 	private MessageDAO messageDAO;
 	
 	int messagesSentThisSecond = 0;
+	
+	private File currentAttachment = null;
 	
 	private void AddMessage(Message message) throws SQLException, IOException {
 		JPanel newMessagePanel = MessageFactory.createMessagePanel(message);
@@ -96,7 +100,7 @@ public class RoomGUI extends JFrame {
 		setResizable(false);
 		setTitle("VIKACHAZE - " + r.getTitle());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 659, 600);
+		setBounds(100, 100, 668, 652);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -105,14 +109,14 @@ public class RoomGUI extends JFrame {
 		
 		inputPanel = new JPanel();
 		//panel_2.setBorder(new LineBorder(new Color(150, 150, 150)));
-		inputPanel.setBounds(0, 462, 656, 108);
+		inputPanel.setBounds(0, 462, 656, 151);
 		contentPane.add(inputPanel);
 		inputPanel.setLayout(null);
 		
 		textArea = new JTextArea();
 		textArea.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
 		textArea.setLineWrap(true);
-		textArea.setBounds(12, 12, 483, 84);
+		textArea.setBounds(10, 12, 485, 84);
 		inputPanel.add(textArea);
 		
 		sendButton = new JButton("Sūtīt");
@@ -120,6 +124,31 @@ public class RoomGUI extends JFrame {
 		sendButton.setBounds(507, 12, 137, 84);
 		inputPanel.add(sendButton);
 		
+		JButton imageButton = new JButton("Add attachment");
+		imageButton.setBackground(new Color(201, 239, 248));
+		imageButton.setBounds(0, 104, 656, 36);
+		inputPanel.add(imageButton);
+		
+		imageButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==imageButton && currentAttachment == null) {
+					JFileChooser fileChooser = new JFileChooser();
+					int response = fileChooser.showOpenDialog(null);
+					
+					if(response == JFileChooser.APPROVE_OPTION) {
+						currentAttachment = new File(fileChooser.getSelectedFile().getAbsolutePath());
+						JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				else {
+					currentAttachment = null;
+					JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika noņemta.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+
 		scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 0, 634, 463);
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
@@ -143,20 +172,18 @@ public class RoomGUI extends JFrame {
 				
 				Room r = currentRoom;
 				Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser());
-					
-				/*
-				 *  SITAIS IR PRIEKS BILZU PIEVIENOSANAS
-				 * 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				try {
-					ImageIO.write(Scalr.resize(ImageIO.read(new File("test.jpg")), 236), "jpg", baos);
-					Blob b1 = Database.getConnection().createBlob();
-					b1.setBytes(1,  baos.toByteArray());
-					m.setAttachment(b1);
-				} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
-					e.printStackTrace();
+				
+				if (currentAttachment != null) {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					try {
+						ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), "jpg", baos);
+						Blob b1 = Database.getConnection().createBlob();
+						b1.setBytes(1,  baos.toByteArray());
+						m.setAttachment(b1);
+					} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
+						e.printStackTrace();
+					}
 				}
-				*/
 				
 				try {
 					messagesSentThisSecond++;
