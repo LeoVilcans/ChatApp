@@ -109,7 +109,7 @@ public class RoomGUI extends JFrame {
 		
 		inputPanel = new JPanel();
 		//panel_2.setBorder(new LineBorder(new Color(150, 150, 150)));
-		inputPanel.setBounds(0, 462, 656, 151);
+		inputPanel.setBounds(0, 462, 652, 151);
 		contentPane.add(inputPanel);
 		inputPanel.setLayout(null);
 		
@@ -126,7 +126,7 @@ public class RoomGUI extends JFrame {
 		
 		JButton imageButton = new JButton("Add attachment");
 		imageButton.setBackground(new Color(201, 239, 248));
-		imageButton.setBounds(0, 104, 656, 36);
+		imageButton.setBounds(10, 104, 632, 36);
 		inputPanel.add(imageButton);
 		
 		imageButton.addActionListener(new ActionListener() {
@@ -139,11 +139,13 @@ public class RoomGUI extends JFrame {
 					
 					if(response == JFileChooser.APPROVE_OPTION) {
 						currentAttachment = new File(fileChooser.getSelectedFile().getAbsolutePath());
+						imageButton.setText("Remove attachment");
 						JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				else {
 					currentAttachment = null;
+					imageButton.setText("Add attachment");
 					JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika noņemta.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
@@ -163,8 +165,11 @@ public class RoomGUI extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (textArea.getText().equals("")) {
-					return;
+					if (currentAttachment == null) {
+						return;
+					}
 				}
+				
 				if (messagesSentThisSecond>1) {
 					JOptionPane.showMessageDialog(null, "Lūdzu NESPAMO");
 					return;
