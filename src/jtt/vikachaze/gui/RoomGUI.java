@@ -20,10 +20,8 @@ import jtt.vikachaze.dao.MessageDAO;
 import jtt.vikachaze.dao.impl.MessageDAOImpl;
 import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Room;
-import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.MessageFactory;
 import jtt.vikachaze.util.Scalr;
-import jtt.vikachaze.util.Scalr.Method;
 import jtt.vikachaze.connection.Database;
 
 import javax.swing.JButton;
@@ -31,12 +29,10 @@ import javax.swing.JFileChooser;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.awt.image.ImagingOpException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -90,6 +86,42 @@ public class RoomGUI extends JFrame {
 			AddMessage(message);
 		}
 		ScrollToBottom();
+	}
+	
+	public void sendMessage() {
+		if (textArea.getText().equals("")) {
+			if (currentAttachment == null) {
+				return;
+			}
+		}
+		
+		if (messagesSentThisSecond>1) {
+			JOptionPane.showMessageDialog(null, "Lūdzu NESPAMO");
+			return;
+		}
+		
+		Room r = currentRoom;
+		Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser());
+		
+		if (currentAttachment != null) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			try {
+				ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), "jpg", baos);
+				Blob b1 = Database.getConnection().createBlob();
+				b1.setBytes(1,  baos.toByteArray());
+				m.setAttachment(b1);
+			} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			messagesSentThisSecond++;
+			messageDAO.insert(m);
+			textArea.setText("");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public RoomGUI(Room r) throws SQLException, IOException {
@@ -162,41 +194,10 @@ public class RoomGUI extends JFrame {
         scrollPane.setViewportView(messagePanel);
         
 		sendButton.addActionListener(new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (textArea.getText().equals("")) {
-					if (currentAttachment == null) {
-						return;
-					}
-				}
-				
-				if (messagesSentThisSecond>1) {
-					JOptionPane.showMessageDialog(null, "Lūdzu NESPAMO");
-					return;
-				}
-				
-				Room r = currentRoom;
-				Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser());
-				
-				if (currentAttachment != null) {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					try {
-						ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), "jpg", baos);
-						Blob b1 = Database.getConnection().createBlob();
-						b1.setBytes(1,  baos.toByteArray());
-						m.setAttachment(b1);
-					} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
-						e.printStackTrace();
-					}
-				}
-				
-				try {
-					messagesSentThisSecond++;
-					messageDAO.insert(m);
-					textArea.setText("");
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				sendMessage();
 			}
 		});
 		
