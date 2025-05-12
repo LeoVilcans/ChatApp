@@ -4,9 +4,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-
+import jtt.vikachaze.Main;
 import jtt.vikachaze.dao.impl.RoomDAOImpl;
 import jtt.vikachaze.dto.Room;
+import jtt.vikachaze.dto.User;
+import jtt.vikachaze.util.StretchIcon;
 
 import java.awt.LayoutManager;
 import java.awt.event.MouseEvent;
@@ -21,6 +23,7 @@ import javax.swing.JTextField;
 
 import java.awt.Color;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -37,7 +40,10 @@ public class MainMenuGUI extends JFrame{
 	
 	private DefaultListModel<String> room = new DefaultListModel<String>();
 	
-	public MainMenuGUI() {
+	private JLabel profileStatusLabel, profileUsernameLabel, pfpLabel;
+	
+	
+	public MainMenuGUI() throws SQLException, IOException {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 659, 493);
@@ -127,29 +133,51 @@ public class MainMenuGUI extends JFrame{
 		roomPanel_1.setBounds(461, 0, 182, 454);
 		contentPane.add(roomPanel_1);
 		
-		JLabel pfpLabel = new JLabel("<<pfp>>");
+		pfpLabel = new JLabel("");
 		pfpLabel.setBackground(new Color(128, 128, 128));
 		pfpLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		pfpLabel.setBounds(5, 12, 55, 44);
+		pfpLabel.setBounds(12, 12, 159, 159);
+		pfpLabel.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
 		roomPanel_1.add(pfpLabel);
 		
-		JLabel profileUsernameLabel = new JLabel("<<Username>>");
-		profileUsernameLabel.setBounds(70, 26, 100, 16);
+		profileUsernameLabel = new JLabel("<<Username>>");
+		profileUsernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		profileUsernameLabel.setBounds(12, 177, 159, 21);
 		roomPanel_1.add(profileUsernameLabel);
 		
 		JButton profileEditButton = new JButton("edit");
-		profileEditButton.setBounds(6, 144, 55, 24);
+		profileEditButton.setBounds(7, 419, 55, 24);
 		roomPanel_1.add(profileEditButton);
 		
 		JButton btnLogOut = new JButton("log out");
-		btnLogOut.setBounds(70, 144, 100, 24);
+		btnLogOut.setBounds(71, 419, 100, 24);
 		roomPanel_1.add(btnLogOut);
 		
-		JLabel profileStatusLabel = new JLabel("<<status>>");
-		profileStatusLabel.setBounds(5, 68, 165, 64);
+		profileStatusLabel = new JLabel("<<status>>");
+		profileStatusLabel.setForeground(new Color(128, 128, 128));
+		profileStatusLabel.setBounds(12, 209, 158, 31);
 		roomPanel_1.add(profileStatusLabel);
 		
+		updateProfile();
 		addRooms();
+	}
+	
+	public void updateProfile() throws SQLException, IOException {
+		User user = Main.getLoggedUser();
+		
+		if (user.getPfp() == null) {
+			pfpLabel.setIcon(new StretchIcon("emptyPfp.jpg", false));
+		} else {
+			pfpLabel.setIcon(new StretchIcon(user.getPfpAsImage(), false));
+		}
+		
+		profileUsernameLabel.setText(user.getUsername());
+		
+		if (user.getStatus() != null) {
+			profileStatusLabel.setText('"' + user.getStatus() + '"');
+		} else {
+			profileStatusLabel.setText("");
+		}
 	}
 	
 	public void addRooms() {
