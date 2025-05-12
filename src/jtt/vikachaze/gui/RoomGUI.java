@@ -46,7 +46,7 @@ public class RoomGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane, inputPanel, messagePanel;
 	private JTextArea textArea;
-	private JButton sendButton;
+	private JButton sendButton, attachmentButton;
 	private JScrollPane scrollPane;
 	
 	private int currentMessageHeight = 0;
@@ -55,9 +55,10 @@ public class RoomGUI extends JFrame {
 	
 	private MessageDAO messageDAO;
 	
-	int messagesSentThisSecond = 0;
-	
 	private File currentAttachment = null;
+	
+	private static String ATTACHMENT_BUTTON_ADD_TEXT = "Add attachment";
+	private static String ATTACHMENT_BUTTON_REMOVE_TEXT = "Remove attachment";
 	
 	private void AddMessage(Message message) throws SQLException, IOException {
 		JPanel newMessagePanel = MessageFactory.createMessagePanel(message);
@@ -95,13 +96,12 @@ public class RoomGUI extends JFrame {
 			}
 		}
 		
-		if (messagesSentThisSecond>1) {
+		/*if (messagesSentThisSecond>1) {
 			JOptionPane.showMessageDialog(null, "Lūdzu NESPAMO");
 			return;
-		}
+		}*/
 		
-		Room r = currentRoom;
-		Message m = new Message(r, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser());
+		Message m = new Message(currentRoom, textArea.getText(), Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser());
 		
 		if (currentAttachment != null) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -116,21 +116,24 @@ public class RoomGUI extends JFrame {
 		}
 		
 		try {
-			messagesSentThisSecond++;
-			messageDAO.insert(m);
+			//messagesSentThisSecond++;
 			textArea.setText("");
+			
+			currentAttachment = null;
+			attachmentButton.setText(ATTACHMENT_BUTTON_ADD_TEXT);
+			
+			messageDAO.insert(m);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public RoomGUI(Room r) throws SQLException, IOException {
-		currentRoom = r;
-		
+	public RoomGUI(Room currentRoom) throws SQLException, IOException {
 		messageDAO = new MessageDAOImpl();
+		this.currentRoom = currentRoom;
 		
 		setResizable(false);
-		setTitle("VIKACHAZE - " + r.getTitle());
+		setTitle("VIKACHAZE - " + currentRoom.getTitle());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 668, 652);
 		contentPane = new JPanel();
@@ -156,28 +159,27 @@ public class RoomGUI extends JFrame {
 		sendButton.setBounds(507, 12, 137, 84);
 		inputPanel.add(sendButton);
 		
-		JButton imageButton = new JButton("Add attachment");
-		imageButton.setBackground(new Color(201, 239, 248));
-		imageButton.setBounds(10, 104, 632, 36);
-		inputPanel.add(imageButton);
+		attachmentButton = new JButton("Add attachment");
+		attachmentButton.setBackground(new Color(201, 239, 248));
+		attachmentButton.setBounds(10, 104, 632, 36);
+		inputPanel.add(attachmentButton);
 		
-		imageButton.addActionListener(new ActionListener() {
-			
+		attachmentButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(e.getSource()==imageButton && currentAttachment == null) {
+				if(e.getSource()==attachmentButton && currentAttachment == null) {
 					JFileChooser fileChooser = new JFileChooser();
 					int response = fileChooser.showOpenDialog(null);
 					
 					if(response == JFileChooser.APPROVE_OPTION) {
 						currentAttachment = new File(fileChooser.getSelectedFile().getAbsolutePath());
-						imageButton.setText("Remove attachment");
+						attachmentButton.setText(ATTACHMENT_BUTTON_REMOVE_TEXT);
 						JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				else {
 					currentAttachment = null;
-					imageButton.setText("Add attachment");
+					attachmentButton.setText(ATTACHMENT_BUTTON_ADD_TEXT);
 					JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika noņemta.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
@@ -194,7 +196,6 @@ public class RoomGUI extends JFrame {
         scrollPane.setViewportView(messagePanel);
         
 		sendButton.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				sendMessage();
@@ -207,9 +208,7 @@ public class RoomGUI extends JFrame {
 		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 		ses.scheduleAtFixedRate(new Runnable() {
 		    @Override
-		    public void run() {
-		    	messagesSentThisSecond = 0;
-		    	
+		    public void run() {   	
 		    	int lastIndex = 0;
 		    	if (!messages.isEmpty()) {
 		    		lastIndex = messages.get(messages.size()-1).getId();
