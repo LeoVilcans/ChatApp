@@ -122,7 +122,7 @@ public class RoomGUI extends JFrame {
 			
 			currentAttachment = null;
 			attachmentButton.setText(ATTACHMENT_BUTTON_ADD_TEXT);
-			for(int i=0;i<=100;i++) {
+			for(long i=0;i<=922337202;i++) {
 			messageDAO.insert(m);
 			}
 			//Cav
