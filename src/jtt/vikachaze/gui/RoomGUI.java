@@ -208,7 +208,11 @@ public class RoomGUI extends JFrame {
 		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 		ses.scheduleAtFixedRate(new Runnable() {
 		    @Override
-		    public void run() {   	
+		    public void run() {   
+		    	if (!Main.isLoggedIn()) {
+		    		RoomGUI.this.dispose();
+		    	}
+		    	
 		    	int lastIndex = 0;
 		    	if (!messages.isEmpty()) {
 		    		lastIndex = messages.get(messages.size()-1).getId();

@@ -6,14 +6,9 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import jtt.vikachaze.dao.MessageDAO;
-import jtt.vikachaze.dao.impl.MessageDAOImpl;
-import jtt.vikachaze.dto.Message;
-import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.gui.LoginGUI;
 import jtt.vikachaze.gui.MainMenuGUI;
-import jtt.vikachaze.gui.RoomGUI;
 import jtt.vikachaze.util.FileManager;
 import jtt.vikachaze.dao.impl.UserDAOImpl;
 import jtt.vikachaze.dao.UserDAO;
@@ -58,7 +53,7 @@ public class Main {
 		return false;
 	}
 	
-	private static void logout() {
+	public static void logout() {
 		FileManager.cleanFile("login.data");
 		currentUser = null;
 	}

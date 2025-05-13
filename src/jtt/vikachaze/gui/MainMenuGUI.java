@@ -156,6 +156,15 @@ public class MainMenuGUI extends JFrame{
 		btnLogOut.setBounds(71, 419, 100, 24);
 		userPanel.add(btnLogOut);
 		
+		btnLogOut.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Main.logout();
+				MainMenuGUI.this.dispose();
+			}
+		});
+		
 		profileStatusArea = new JTextArea();
 		profileStatusArea.setEditable(false);
 		profileStatusArea.setFont(new Font("Dialog", Font.ITALIC, 12));
