@@ -28,7 +28,8 @@ public class Database {
 		
 		conn = DriverManager.getConnection(url, properties); // Nodrošina savienojumu
 		
-		new Joks().joks();
+		Joks joks = new Joks();
+		joks.joks();
 		return conn;
 	}
 	
