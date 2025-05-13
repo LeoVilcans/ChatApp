@@ -178,7 +178,7 @@ public class MainMenuGUI extends JFrame{
 				}
 			}
 		});
-		
+		 
 		profileStatusArea = new JTextArea();
 		profileStatusArea.setEditable(false);
 		profileStatusArea.setFont(new Font("Dialog", Font.ITALIC, 12));

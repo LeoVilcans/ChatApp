@@ -71,7 +71,7 @@ public class AddRoomGUI extends JFrame {
 		JLabel lblNewLabel = new JLabel("Room name");
 		lblNewLabel.setBounds(91, 12, 68, 16);
 		contentPane.add(lblNewLabel);
-		
+		 
 		JButton IconButton = new JButton("Add icon");
 		IconButton.setBounds(58, 72, 136, 26);
 		contentPane.add(IconButton);
