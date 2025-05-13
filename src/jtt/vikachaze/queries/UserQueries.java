@@ -3,7 +3,7 @@ package jtt.vikachaze.queries;
 public interface UserQueries {
 	public static final String TABLE = "users";
 
-    public static final String INSERT_QUERY = "INSERT INTO " + TABLE + " (username, password) VALUES (?, ?)";
+    public static final String INSERT_QUERY = "INSERT INTO " + TABLE + " (username, password, pfp) VALUES (?, ?, ?)";
 
     public static final String UPDATE_QUERY = "UPDATE " + TABLE + " SET username = ?, password = ? WHERE id = ?";
 

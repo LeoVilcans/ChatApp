@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +25,7 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	@Override
 	public int insert(User value) throws SQLException {
 		Connection connection = Database.getConnection();
-	    PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
+	    PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
 	    
 	    List<User> users = getAllData();
 	    
@@ -37,12 +39,25 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	    
 	    statement.setString(1, value.getUsername());
 	    statement.setString(2, value.getPassword());
-
+	    
+	    if (value.getPfp() != null) {
+	    	statement.setBlob(3, value.getPfp());
+	    } else {
+	    	statement.setNull(3, Types.BLOB);
+	    }
+	    
 	    int result = statement.executeUpdate();
 
+	    ResultSet rs = statement.getGeneratedKeys();
+	    int insertedID = 0;
+        if(rs.next())
+        {
+               insertedID = rs.getInt(1);
+        }
+	    
 	    Database.closePreparedStatement(statement);
 	    Database.closeConnection(connection);
-	    return result;
+	    return insertedID;
 	}
 
 	@Override

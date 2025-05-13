@@ -34,7 +34,7 @@ public class LoginGUI extends JFrame {
 	public LoginGUI() {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 283, 283);
+		setBounds(100, 100, 283, 296);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -67,6 +67,19 @@ public class LoginGUI extends JFrame {
 		JButton loginButton = new JButton("Login");
 		loginButton.setBounds(10, 190, 247, 45);
 		contentPane.add(loginButton);
+		
+		JButton btnRegister = new JButton("No account? Register here.");
+		btnRegister.setBounds(10, 234, 247, 23);
+		contentPane.add(btnRegister);
+		
+		btnRegister.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RegisterGUI registerGUI = new RegisterGUI();
+				registerGUI.setVisible(true);
+				LoginGUI.this.dispose();
+			}
+		});
 		
 		userDAO = new UserDAOImpl();
 		

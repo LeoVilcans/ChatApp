@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import jtt.vikachaze.Main;
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dao.UserDAO;
 import jtt.vikachaze.dto.User;
@@ -39,28 +40,9 @@ public class RegisterGUI extends JFrame {
 	private UserDAO userDAO = new UserDAOImpl();
 	private File currentAttachment = null;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RegisterGUI frame = new RegisterGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public RegisterGUI() {
 		setTitle("Register");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 283, 379);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -95,15 +77,7 @@ public class RegisterGUI extends JFrame {
 		registerButton.setBounds(10, 282, 247, 45);
 		contentPane.add(registerButton);
 		
-		JLabel lblProfilePicture = new JLabel("Profile picture:");
-		lblProfilePicture.setBounds(10, 192, 96, 14);
-		contentPane.add(lblProfilePicture);
-		
-		JButton AddProfilePictureButton = new JButton("Add profile picture");
-		AddProfilePictureButton.setBounds(10, 219, 247, 45);
-		contentPane.add(AddProfilePictureButton);
-		
-registerButton.addActionListener(new ActionListener() {
+		registerButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -120,6 +94,14 @@ registerButton.addActionListener(new ActionListener() {
 
 			
 		});
+		
+		JLabel lblProfilePicture = new JLabel("Profile picture:");
+		lblProfilePicture.setBounds(10, 192, 96, 14);
+		contentPane.add(lblProfilePicture);
+		
+		JButton AddProfilePictureButton = new JButton("Add profile picture");
+		AddProfilePictureButton.setBounds(10, 219, 247, 45);
+		contentPane.add(AddProfilePictureButton);
 		
 		AddProfilePictureButton.addActionListener(new ActionListener() {
 
@@ -147,18 +129,21 @@ registerButton.addActionListener(new ActionListener() {
 		
 		User user = new User(username,str);
 		
-		
-		
-		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
 			ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), "jpg", baos);
 			Blob b1 = Database.getConnection().createBlob();
 			b1.setBytes(1,  baos.toByteArray());
 			user.setPfp(b1);
+			
+			int id  = userDAO.insert(user);
+			user.setId(id);
+			
+			Main.Login(user);
+			
+			RegisterGUI.this.dispose();
 		} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
 			e.printStackTrace();
 		}
-		userDAO.insert(user);
 	}
 }
