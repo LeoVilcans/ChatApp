@@ -5,8 +5,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.mysql.cj.conf.ConnectionUrl.Type;
 
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dao.RoomDAO;
@@ -29,7 +32,13 @@ public class RoomDAOImpl implements RoomDAO, RoomQueries{
 	    }
 	    
 	    statement.setString(1, value.getTitle());
+	    
+	    if (value.getIcon() != null) {
 	    statement.setBlob(2, value.getIcon());
+	    }else {
+	    	statement.setNull(2, Types.BLOB);
+	    }
+	    
 
 	    int result = statement.executeUpdate();
 

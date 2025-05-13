@@ -183,6 +183,18 @@ public class MainMenuGUI extends JFrame{
 		JButton AddPostButton = new JButton("add post");
 		AddPostButton.setBounds(7, 384, 164, 24);
 		userPanel.add(AddPostButton);
+		
+		JButton AddRoomButton = new JButton("Add room");
+		AddRoomButton.setBounds(7, 349, 164, 23);
+		userPanel.add(AddRoomButton);
+		AddRoomButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddRoomGUI form = new AddRoomGUI();
+				form.setVisible(true);
+			}
+		});
 		AddPostButton.addActionListener(new ActionListener() {
 			
 			@Override
