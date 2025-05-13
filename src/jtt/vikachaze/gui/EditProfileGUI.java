@@ -190,7 +190,8 @@ public class EditProfileGUI extends JFrame{
 	        User newUser = Main.getLoggedUser();
 	        
 	        if (file != null) {
-	            ImageIO.write(Scalr.resize(ImageIO.read(file), 236), "jpg", baos);
+	        	String format = file.toPath().getFileName().toString().split("\\.")[1];
+	            ImageIO.write(Scalr.resize(ImageIO.read(file), 236), format, baos);
 	            Blob b1 = Database.getConnection().createBlob();
 	            b1.setBytes(1, baos.toByteArray());
 	            newUser.setPfp(b1);

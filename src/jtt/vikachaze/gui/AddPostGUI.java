@@ -125,7 +125,8 @@ public class AddPostGUI extends JFrame {
 		Post post = new Post(Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser(),title,posttext);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), "jpg", baos);
+			String format = currentAttachment.toPath().getFileName().toString().split("\\.")[1];
+			ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), format, baos);
 			
 			Blob b1 = Database.getConnection().createBlob();
 			b1.setBytes(1,  baos.toByteArray());
