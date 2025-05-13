@@ -194,6 +194,9 @@ public class EditProfileGUI extends JFrame{
 	        
 	        newUser.setUsername(username);
 	        //newUser.setPassword(oldPasswo);
+	        if (status.isEmpty()) {
+	        	status = null;
+	        }
 	        newUser.setStatus(status);
 	        newUser.setId(oldUser.getId());
 	        userDAO.update(newUser); 

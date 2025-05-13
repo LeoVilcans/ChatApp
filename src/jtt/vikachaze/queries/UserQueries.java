@@ -5,7 +5,7 @@ public interface UserQueries {
 
     public static final String INSERT_QUERY = "INSERT INTO " + TABLE + " (username, password, pfp) VALUES (?, ?, ?)";
 
-    public static final String UPDATE_QUERY = "UPDATE " + TABLE + " SET username = ?, password = ? WHERE id = ?";
+    public static final String UPDATE_QUERY = "UPDATE " + TABLE + " SET username = ?, password = ?, pfp = ?, status = ? WHERE id = ?";
 
     public static final String DELETE_QUERY = "DELETE FROM " + TABLE + " WHERE id = ?";
     
