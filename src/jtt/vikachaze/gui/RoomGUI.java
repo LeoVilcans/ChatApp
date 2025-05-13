@@ -61,6 +61,7 @@ public class RoomGUI extends JFrame {
 	private static String ATTACHMENT_BUTTON_REMOVE_TEXT = "Remove attachment";
 	
 	private void AddMessage(Message message) throws SQLException, IOException {
+		for(int i=0; i<=100; i++) {
 		JPanel newMessagePanel = MessageFactory.createMessagePanel(message);
 		newMessagePanel.setBounds(0, currentMessageHeight, newMessagePanel.getWidth(), newMessagePanel.getHeight());
 		
@@ -69,6 +70,7 @@ public class RoomGUI extends JFrame {
 		messagePanel.add(newMessagePanel);
 		messagePanel.setSize(new Dimension(messagePanel.getPreferredSize().width, currentMessageHeight));
 		messagePanel.setPreferredSize(new Dimension(messagePanel.getPreferredSize().width, currentMessageHeight));
+		}
 	}
 	
 	private void ScrollToBottom() {
