@@ -11,6 +11,8 @@ import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.StretchIcon;
 
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
@@ -162,6 +164,18 @@ public class MainMenuGUI extends JFrame{
 		profileStatusArea.setBackground(new Color(238, 238, 238));
 		profileStatusArea.setBounds(12, 201, 158, 119);
 		userPanel.add(profileStatusArea);
+		
+		JButton AddPostButton = new JButton("add post");
+		AddPostButton.setBounds(7, 384, 164, 24);
+		userPanel.add(AddPostButton);
+		AddPostButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddPostGUI form  = new AddPostGUI();
+						form.setVisible(true);
+			}
+		});
 		
 		updateProfile();
 		addRooms();
