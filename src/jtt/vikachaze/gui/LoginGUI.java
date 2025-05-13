@@ -13,6 +13,7 @@ import jtt.vikachaze.dto.User;
 
 import javax.swing.JPasswordField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import java.awt.Font;
@@ -99,6 +100,8 @@ public class LoginGUI extends JFrame {
 					User user = userDAO.getByUsername(username);
 					
 					if (user == null) {
+						JOptionPane.showMessageDialog(LoginGUI.this, "Tāda lietotāja nav! Mēģiniet velreiz", getTitle(), JOptionPane.ERROR_MESSAGE);
+						
 						return;
 					}
 					
@@ -111,8 +114,6 @@ public class LoginGUI extends JFrame {
 				}
 			}
 		});
-		
-	
 		
 	}
 }
