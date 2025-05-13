@@ -67,7 +67,20 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	    
 	    statement.setString(1, value.getUsername());
 	    statement.setString(2, value.getPassword());
-	    statement.setInt(3, value.getId());
+	    
+	    if (value.getPfp() == null) {
+			statement.setNull(3, Types.BLOB);
+		} else {
+			statement.setBlob(3, value.getPfp());
+		}
+	    
+	    if (value.getStatus() == null) {
+			statement.setNull(4, Types.VARCHAR);
+		} else {
+			statement.setString(4, value.getStatus());
+		}
+	    
+	    statement.setInt(5, value.getId());
 
 	    int result = statement.executeUpdate();
 

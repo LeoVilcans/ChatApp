@@ -151,6 +151,15 @@ public class MainMenuGUI extends JFrame{
 		JButton profileEditButton = new JButton("edit");
 		profileEditButton.setBounds(7, 419, 55, 24);
 		userPanel.add(profileEditButton);
+		profileEditButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EditProfileGUI profileGUI = new EditProfileGUI();
+				profileGUI.setVisible(true);
+				MainMenuGUI.this.dispose();
+			}
+		});
 		
 		JButton btnLogOut = new JButton("log out");
 		btnLogOut.setBounds(71, 419, 100, 24);
@@ -165,7 +174,6 @@ public class MainMenuGUI extends JFrame{
 				try {
 					Main.main(null);
 				} catch (SQLException | IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
