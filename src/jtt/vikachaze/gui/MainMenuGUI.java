@@ -162,6 +162,12 @@ public class MainMenuGUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				Main.logout();
 				MainMenuGUI.this.dispose();
+				try {
+					Main.main(null);
+				} catch (SQLException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
