@@ -50,7 +50,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 			int user_id = result.getInt("user_id");
 			
 			Blob attachment = result.getBlob("attachment");
-			if (!result.wasNull()) {
+			if (result.wasNull()) {
 				attachment = null;
 			}
 			
@@ -175,7 +175,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 			Timestamp sent_time = result.getTimestamp("sent_time");
 			
 			Blob attachment = result.getBlob("attachment");
-			if (!result.wasNull()) {
+			if (result.wasNull()) {
 				attachment = null;
 			}
 			
@@ -224,7 +224,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 		User user = userDAO.getByID(user_id);
 		
 		Blob attachment = result.getBlob("attachment");
-		if (!result.wasNull()) {
+		if (result.wasNull()) {
 			attachment = null;
 		}
 		
@@ -236,5 +236,41 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 	    Database.closePreparedStatement(statement);
 	    Database.closeConnection(connection);
 	    return post;
+	}
+
+	@Override
+	public List<Post> getSinceIndex(int lastIndex) throws SQLException {
+		Connection connection = Database.getConnection();
+	    PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY); 
+
+	    statement.setInt(1, lastIndex);
+
+	    ResultSet result = statement.executeQuery();
+	    
+	    List<Post> posts = new ArrayList<Post>();
+	    while (result.next()) {
+		    int id = result.getInt("id");
+			String text = result.getString("text");
+			String title = result.getString("title");
+			Timestamp sent_time = result.getTimestamp("sent_time");
+			int user_id = result.getInt("user_id");
+			User user = userDAO.getByID(user_id);
+			 
+			Blob attachment = result.getBlob("attachment");
+			if (result.wasNull()) {
+				attachment = null;
+			}
+			
+			Post post = new Post(sent_time, user, title, text);
+			post.setId(id);
+			post.setAttachment(attachment);
+			
+			posts.add(post);
+	    }
+	    
+	    Database.closeResultSet(result);
+	    Database.closePreparedStatement(statement);
+	    Database.closeConnection(connection);
+	    return posts;
 	}	
 }

@@ -5,11 +5,17 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
+import jtt.vikachaze.dao.PostDAO;
+import jtt.vikachaze.dao.impl.PostDAOImpl;
 import jtt.vikachaze.dao.impl.RoomDAOImpl;
+import jtt.vikachaze.dto.Message;
+import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.dto.User;
+import jtt.vikachaze.util.MessageFactory;
+import jtt.vikachaze.util.PostFactory;
 import jtt.vikachaze.util.StretchIcon;
-
+ 
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,13 +23,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextField;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -35,7 +46,7 @@ import javax.swing.JList;
 import javax.swing.JTextArea;
 
 public class MainMenuGUI extends JFrame{
-	private JPanel contentPane;
+	private JPanel contentPane, scrollPostPanel;
 	private JTextField searchTextField;
 	private JScrollPane roomScrollPane;
 	private JLabel profileUsernameLabel, pfpLabel;
@@ -43,8 +54,12 @@ public class MainMenuGUI extends JFrame{
 	
 	private JList<String> roomList;
 	private RoomDAOImpl roomDAO = new RoomDAOImpl();
+	private PostDAO postDAO = new PostDAOImpl();
 	
 	private DefaultListModel<String> room = new DefaultListModel<String>();
+	private List<Post> posts = new ArrayList<Post>();
+	
+	private int currentPostHeight = 0;
 	
 	public MainMenuGUI() {
 		setResizable(false);
@@ -119,8 +134,8 @@ public class MainMenuGUI extends JFrame{
 		postScrollPane.setBounds(5, 34, 288, 420);
 		postPanel.add(postScrollPane);
 		
-		JPanel messagePanel_1 = new JPanel((LayoutManager) null);
-		postScrollPane.setViewportView(messagePanel_1);
+		scrollPostPanel = new JPanel(null);
+		postScrollPane.setViewportView(scrollPostPanel);
 		
 		searchTextField = new JTextField();
 		searchTextField.setBounds(5, 8, 262, 20);
@@ -213,6 +228,7 @@ public class MainMenuGUI extends JFrame{
 		});
 		
 		updateProfile();
+		addPostTracker();
 		addRooms();
 	}
 	
@@ -248,5 +264,42 @@ public class MainMenuGUI extends JFrame{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void addPostTracker() {
+		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+		ses.scheduleAtFixedRate(new Runnable() {
+		    @Override
+		    public void run() {   
+		    	int lastIndex = 0;
+		    	if (!posts.isEmpty()) {
+		    		lastIndex = posts.get(posts.size()-1).getId();
+		    	}
+
+		        try {
+					List<Post> newPosts = postDAO.getSinceIndex(lastIndex);
+					
+					for (Post post : newPosts) {
+						posts.add(post);
+						System.out.println(post.getTitle());
+						addPost(post);
+					}
+				} catch (SQLException | IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}, 0, 3, TimeUnit.SECONDS);
+	}
+	
+	private void addPost(Post post) throws SQLException, IOException {
+		JPanel newPostPanel = PostFactory.createPostPanel(post);
+		newPostPanel.setBounds(0, currentPostHeight, newPostPanel.getWidth(), newPostPanel.getHeight());
+		
+		currentPostHeight+=newPostPanel.getHeight();
+		
+		scrollPostPanel.add(newPostPanel);
+		scrollPostPanel.setSize(new Dimension(scrollPostPanel.getPreferredSize().width, currentPostHeight));
+		scrollPostPanel.setPreferredSize(new Dimension(scrollPostPanel.getPreferredSize().width, currentPostHeight));
+
 	}
 }
