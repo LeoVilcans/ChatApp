@@ -157,6 +157,7 @@ public class MainMenuGUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				EditProfileGUI profileGUI = new EditProfileGUI();
 				profileGUI.setVisible(true);
+				MainMenuGUI.this.dispose();
 			}
 		});
 		

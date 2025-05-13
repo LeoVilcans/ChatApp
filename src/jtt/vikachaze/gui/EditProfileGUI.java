@@ -183,18 +183,23 @@ public class EditProfileGUI extends JFrame{
 	        int oldUserID = userDAO.getID(oldUser);
 	        oldUser = userDAO.getByID(oldUserID);
 
-	        User newUser = new User(username, password);
-
+	        User newUser = Main.getLoggedUser();
+	        
 	        if (file != null) {
 	            ImageIO.write(Scalr.resize(ImageIO.read(file), 236), "jpg", baos);
 	            Blob b1 = Database.getConnection().createBlob();
 	            b1.setBytes(1, baos.toByteArray());
 	            newUser.setPfp(b1);
 	        }
-
+	        
+	        newUser.setUsername(username);
+	        //newUser.setPassword(oldPasswo);
 	        newUser.setStatus(status);
 	        newUser.setId(oldUser.getId());
 	        userDAO.update(newUser); 
+	        
+	        Main.logout();
+	        Main.Login(newUser);
 	        
 	        EditProfileGUI.this.dispose();
 	        
