@@ -14,7 +14,6 @@ import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
 import jtt.vikachaze.connection.Database;
-import jtt.vikachaze.dao.UserDAO;
 import jtt.vikachaze.dao.impl.UserDAOImpl;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.Scalr;
@@ -37,14 +36,12 @@ import javax.swing.JButton;
 
 public class EditProfileGUI extends JFrame{
 	private JPanel contentPane;
-	private JLabel pfpLabel;
-	private JTextField usernameTextField;
-	private JTextField statusTextField;
-	private JLabel EditLabel;
+	private JLabel pfpLabel, EditLabel;
+	private JTextField usernameTextField, statusTextField;
+	private JButton editPasswordButton, applyButton;
 	private File file;
 	
 	private UserDAOImpl userDAO = new UserDAOImpl();
-	private JButton EditPasswordButton;
 	
 	public EditProfileGUI() {
 		setResizable(false);
@@ -102,7 +99,6 @@ public class EditProfileGUI extends JFrame{
 		contentPane.add(usernameTextField);
 		usernameTextField.setColumns(10);
 		
-		
 		statusTextField = new JTextField();
 		statusTextField.setToolTipText("status");
 		statusTextField.setBounds(31, 277, 159, 114);
@@ -121,13 +117,14 @@ public class EditProfileGUI extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				MainMenuGUI mainMenuGUI = new MainMenuGUI();
+				mainMenuGUI.setVisible(true);
 				EditProfileGUI.this.dispose();
 			}
 		});
 		
-		JButton applyButton = new JButton("Apply");
-		applyButton.setBounds(31, 403, 72, 26);
-		contentPane.add(applyButton);
+		applyButton = new JButton("Apply");
+		applyButton.setBounds(31, 403, 72, 26);		contentPane.add(applyButton);
 		applyButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -140,9 +137,17 @@ public class EditProfileGUI extends JFrame{
 			}
 		});
 		
-		EditPasswordButton = new JButton("Edit Password");
-		EditPasswordButton.setBounds(31, 239, 159, 26);
-		contentPane.add(EditPasswordButton);
+		editPasswordButton = new JButton("Edit Password");
+		editPasswordButton.setBounds(31, 239, 159, 26);
+		contentPane.add(editPasswordButton);
+		editPasswordButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				EditUserPasswordGUI passwordGUI = new EditUserPasswordGUI();
+				passwordGUI.setVisible(true);
+			}
+		});
 		
 		loadProfileText();
 	}
@@ -170,7 +175,6 @@ public class EditProfileGUI extends JFrame{
 	public void updateProfile() {
 	    String username = usernameTextField.getText();
 	    String status = statusTextField.getText();
-	    String password = Main.getLoggedUser().getPassword();
 	    
 	    String oldUsername = Main.getLoggedUser().getUsername();
 	    String oldPassword = Main.getLoggedUser().getPassword();
@@ -193,7 +197,7 @@ public class EditProfileGUI extends JFrame{
 	        }
 	        
 	        newUser.setUsername(username);
-	        //newUser.setPassword(oldPasswo);
+	        
 	        if (status.isEmpty()) {
 	        	status = null;
 	        }
