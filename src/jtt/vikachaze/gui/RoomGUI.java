@@ -71,6 +71,7 @@ public class RoomGUI extends JFrame {
 		messagePanel.setSize(new Dimension(messagePanel.getPreferredSize().width, currentMessageHeight));
 		messagePanel.setPreferredSize(new Dimension(messagePanel.getPreferredSize().width, currentMessageHeight));
 		}
+		//cav
 	}
 	
 	private void ScrollToBottom() {
