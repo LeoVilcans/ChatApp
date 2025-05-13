@@ -46,7 +46,7 @@ public class MainMenuGUI extends JFrame{
 	
 	private DefaultListModel<String> room = new DefaultListModel<String>();
 	
-	public MainMenuGUI() throws SQLException, IOException {
+	public MainMenuGUI() {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 659, 493);
@@ -216,21 +216,25 @@ public class MainMenuGUI extends JFrame{
 		addRooms();
 	}
 	
-	public void updateProfile() throws SQLException, IOException {
+	public void updateProfile() {
 		User user = Main.getLoggedUser();
 		
-		if (user.getPfp() == null) {
-			pfpLabel.setIcon(new StretchIcon("emptyPfp.jpg", false));
-		} else {
-			pfpLabel.setIcon(new StretchIcon(user.getPfpAsImage(), false));
-		}
-		
-		profileUsernameLabel.setText(user.getUsername());
-		
-		if (user.getStatus() != null) {
-			profileStatusArea.setText('"' + user.getStatus() + '"');
-		} else {
-			profileStatusArea.setText("");
+		try {
+			if (user.getPfp() == null) {
+				pfpLabel.setIcon(new StretchIcon("emptyPfp.jpg", false));
+			} else {
+				pfpLabel.setIcon(new StretchIcon(user.getPfpAsImage(), false));
+			}
+			
+			profileUsernameLabel.setText(user.getUsername());
+			
+			if (user.getStatus() != null) {
+				profileStatusArea.setText('"' + user.getStatus() + '"');
+			} else {
+				profileStatusArea.setText("");
+			}
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
