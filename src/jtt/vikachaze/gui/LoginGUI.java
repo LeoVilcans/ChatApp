@@ -98,6 +98,10 @@ public class LoginGUI extends JFrame {
 				try {
 					User user = userDAO.getByUsername(username);
 					
+					if (user == null) {
+						return;
+					}
+					
 					if (user.getPassword().equals(password)) {
 						Main.Login(user);
 						LoginGUI.this.dispose();

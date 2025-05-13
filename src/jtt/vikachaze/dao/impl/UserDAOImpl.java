@@ -155,6 +155,10 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		
 		ResultSet result = statement.executeQuery();
 		
+		if (!result.isBeforeFirst()) {
+			return null;
+		}
+		
 		result.next();
 		
 		String password = result.getString("password");
