@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-import jtt.vikachaze.Joks;
-
 public class Database {
 	private static String url = "jdbc:mysql://34.51.175.75:3306/vikachaze";
 	private static String user = "anon"; 
@@ -28,8 +26,6 @@ public class Database {
 		
 		conn = DriverManager.getConnection(url, properties); // Nodrošina savienojumu
 		
-		Joks joks = new Joks();
-		joks.joks();
 		return conn;
 	}
 	
