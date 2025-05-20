@@ -22,6 +22,7 @@ import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.util.MessageFactory;
 import jtt.vikachaze.util.Scalr;
+import jtt.vikachaze.util.StretchIcon;
 import jtt.vikachaze.connection.Database;
 
 import javax.swing.JButton;
@@ -41,6 +42,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JLabel;
+import java.awt.Font;
 
 public class RoomGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -145,24 +148,24 @@ public class RoomGUI extends JFrame {
 		
 		inputPanel = new JPanel();
 		//panel_2.setBorder(new LineBorder(new Color(150, 150, 150)));
-		inputPanel.setBounds(0, 462, 652, 151);
+		inputPanel.setBounds(0, 510, 652, 103);
 		contentPane.add(inputPanel);
 		inputPanel.setLayout(null);
 		
 		textArea = new JTextArea();
 		textArea.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
 		textArea.setLineWrap(true);
-		textArea.setBounds(10, 12, 485, 84);
+		textArea.setBounds(10, 11, 485, 84);
 		inputPanel.add(textArea);
 		
 		sendButton = new JButton("Sūtīt");
-		sendButton.setBackground(new Color(201, 239, 248));
-		sendButton.setBounds(507, 12, 137, 84);
+		//sendButton.setBackground(new Color(201, 239, 248));
+		sendButton.setBounds(505, 11, 137, 40);
 		inputPanel.add(sendButton);
 		
 		attachmentButton = new JButton("Add attachment");
-		attachmentButton.setBackground(new Color(201, 239, 248));
-		attachmentButton.setBounds(10, 104, 632, 36);
+		//attachmentButton.setBackground(new Color(201, 239, 248));
+		attachmentButton.setBounds(505, 59, 135, 36);
 		inputPanel.add(attachmentButton);
 		
 		attachmentButton.addActionListener(new ActionListener() {
@@ -187,7 +190,7 @@ public class RoomGUI extends JFrame {
 		});
 
 		scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 0, 634, 463);
+        scrollPane.setBounds(0, 46, 652, 463);
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -195,6 +198,27 @@ public class RoomGUI extends JFrame {
 
         messagePanel = new JPanel(null);
         scrollPane.setViewportView(messagePanel);
+        
+        JPanel roomInfoPanel = new JPanel();
+        roomInfoPanel.setBounds(0, 0, 652, 46);
+        contentPane.add(roomInfoPanel);
+        roomInfoPanel.setLayout(null);
+        
+        JLabel roomIconLabel = new JLabel("");
+        roomIconLabel.setBounds(0, 0, 46, 46);
+        roomInfoPanel.add(roomIconLabel);
+        roomIconLabel.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
+        
+        if (currentRoom.getIcon() != null) {
+            roomIconLabel.setIcon(new StretchIcon(currentRoom.getIconAsImage(),false));
+        } else {
+        	 roomIconLabel.setIcon(new StretchIcon("emptyRoomIcon.jpg",false));
+        }
+        
+        JLabel roomTitleLabel = new JLabel(currentRoom.getTitle());
+        roomTitleLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        roomTitleLabel.setBounds(56, 0, 566, 46);
+        roomInfoPanel.add(roomTitleLabel);
         
 		sendButton.addActionListener(new ActionListener() {
 			@Override
