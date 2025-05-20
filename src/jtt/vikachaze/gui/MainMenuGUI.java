@@ -15,7 +15,7 @@ import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.MessageFactory;
 import jtt.vikachaze.util.PostFactory;
 import jtt.vikachaze.util.StretchIcon;
- 
+
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -138,13 +138,14 @@ public class MainMenuGUI extends JFrame{
 		postScrollPane.setViewportView(scrollPostPanel);
 		
 		searchTextField = new JTextField();
-		searchTextField.setBounds(5, 8, 262, 20);
+		searchTextField.setBounds(5, 8, 241, 20);
 		postPanel.add(searchTextField);
 		searchTextField.setColumns(10);
 		
 		JButton searchButton = new JButton();
-		searchButton.setBounds(264, 8, 29, 19);
+		searchButton.setBounds(247, 8, 46, 19);
 		postPanel.add(searchButton);
+		
 		
 		JPanel userPanel = new JPanel();
 		userPanel.setLayout(null);
@@ -281,7 +282,6 @@ public class MainMenuGUI extends JFrame{
 					
 					for (Post post : newPosts) {
 						posts.add(post);
-						System.out.println(post.getTitle());
 						addPost(post);
 					}
 				} catch (SQLException | IOException e) {
