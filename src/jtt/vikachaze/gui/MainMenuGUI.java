@@ -64,7 +64,7 @@ public class MainMenuGUI extends JFrame{
 	public MainMenuGUI() {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 659, 493);
+		setBounds(100, 100, 734, 493);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -125,31 +125,31 @@ public class MainMenuGUI extends JFrame{
 		
 		JPanel postPanel = new JPanel();
 		postPanel.setLayout(null);
-		postPanel.setBounds(163, 0, 299, 454);
+		postPanel.setBounds(163, 0, 374, 454);
 		contentPane.add(postPanel);
 		
 		JScrollPane postScrollPane = new JScrollPane();
 		postScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		postScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		postScrollPane.setBounds(5, 34, 288, 420);
+		postScrollPane.setBounds(5, 34, 357, 420);
 		postPanel.add(postScrollPane);
 		
 		scrollPostPanel = new JPanel(null);
 		postScrollPane.setViewportView(scrollPostPanel);
 		
 		searchTextField = new JTextField();
-		searchTextField.setBounds(5, 8, 241, 20);
+		searchTextField.setBounds(5, 8, 308, 20);
 		postPanel.add(searchTextField);
 		searchTextField.setColumns(10);
 		
 		JButton searchButton = new JButton();
-		searchButton.setBounds(247, 8, 46, 19);
+		searchButton.setBounds(316, 8, 46, 19);
 		postPanel.add(searchButton);
 		
 		
 		JPanel userPanel = new JPanel();
 		userPanel.setLayout(null);
-		userPanel.setBounds(461, 0, 182, 454);
+		userPanel.setBounds(536, 0, 182, 454);
 		contentPane.add(userPanel);
 		
 		pfpLabel = new JLabel("");
