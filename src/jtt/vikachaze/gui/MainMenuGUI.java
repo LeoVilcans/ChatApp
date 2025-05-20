@@ -132,6 +132,7 @@ public class MainMenuGUI extends JFrame{
 		postScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		postScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		postScrollPane.setBounds(5, 34, 357, 420);
+		postScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		postPanel.add(postScrollPane);
 		
 		scrollPostPanel = new JPanel(null);
@@ -288,7 +289,7 @@ public class MainMenuGUI extends JFrame{
 					e.printStackTrace();
 				}
 		    }
-		}, 0, 3, TimeUnit.SECONDS);
+		}, 0, 1, TimeUnit.SECONDS);
 	}
 	
 	private void addPost(Post post) throws SQLException, IOException {

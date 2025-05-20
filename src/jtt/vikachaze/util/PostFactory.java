@@ -1,13 +1,10 @@
 package jtt.vikachaze.util;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -15,17 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.UIManager;
-
-import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Post;
 
 public class PostFactory {
 	public static JPanel createPostPanel(Post post) throws SQLException, IOException {
 		JPanel postPanel = new JPanel();
 		postPanel.setSize(350, 340);
-		postPanel.setPreferredSize(new Dimension(288, 250));
 		postPanel.setLayout(null);
 		postPanel.setBorder(BorderFactory.createDashedBorder(new Color(150,150,150)));
 		
@@ -49,18 +41,22 @@ public class PostFactory {
 		postPanel.add(titleLabel);
 		
 		JTextArea postLabel = new JTextArea(post.getText());
-		postLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
-		postLabel.setBounds(95, 50, 200, 100);
+		postLabel.setFont(new Font("Dialog", Font.PLAIN, 14));
+		postLabel.setForeground(new Color(50,50,50));
+		postLabel.setBounds(95, 40, 230, 100);
+		postLabel.setBackground(new Color(238, 238, 238));
 		postLabel.setEditable(false);
 		postLabel.setLineWrap(true);
 		postPanel.add(postLabel);
+		postLabel.setSize(postLabel.getWidth(), postLabel.getPreferredSize().height);
 		
 		JLabel usernameLabel = new JLabel(post.getUser().getUsername());
-		usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		usernameLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 		usernameLabel.setBounds(10, 90, 85, 20);
 		postPanel.add(usernameLabel);
 		
 		JLabel imageLabel = new JLabel();
+		int imageLabelHeight = postLabel.getHeight() + postLabel.getY() + 10;
 		if (post.getAttachment() != null) {
 			BufferedImage bimg = ImageIO.read(post.getAttachment().getBinaryStream());
 			
@@ -70,7 +66,7 @@ public class PostFactory {
 			Double height = 136.0;
 			Double width = ((height/bimg.getHeight())*bimg.getWidth())+10;
 			//int width = messageContentPanel.getSize().width;
-			imageLabel.setBounds(90, 150+10, width.intValue(), height.intValue());
+			imageLabel.setBounds(90, imageLabelHeight, width.intValue(), height.intValue());
 		}
 		postPanel.add(imageLabel);
 		
@@ -81,8 +77,16 @@ public class PostFactory {
 		
 		JLabel timeLabel = new JLabel(timeString + "  -  " + dateString);
 		timeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		timeLabel.setBounds(10, 150, 288-95, 350);
+		
+		if (post.getAttachment() != null) {
+			int timeLabelHeight = imageLabel.getHeight() + imageLabel.getY() + 5;
+			timeLabel.setBounds(10, timeLabelHeight, 288, 14);
+		} else {
+			timeLabel.setBounds(10, postLabel.getHeight() + postLabel.getY() + 50, 288, 14);
+		}
 		postPanel.add(timeLabel);
+		
+		postPanel.setSize(postPanel.getWidth(), timeLabel.getY() +timeLabel.getHeight() + 10);
 		
 		return postPanel;
 	}

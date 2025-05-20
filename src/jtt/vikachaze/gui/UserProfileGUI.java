@@ -59,7 +59,7 @@ public class UserProfileGUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		usernameLabel = new JLabel("Username: " + user.getUsername());
-		usernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+		usernameLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 		usernameLabel.setForeground(new Color(0, 0, 0));
 		usernameLabel.setBounds(148, 11, 276, 26);
 		contentPane.add(usernameLabel);
