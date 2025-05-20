@@ -72,6 +72,8 @@ public class UserProfileGUI extends JFrame {
 		contentPane.add(pfpButton);
 		
 		statusLabel = new JTextArea();
+		statusLabel.setWrapStyleWord(true);
+		statusLabel.setLineWrap(true);
 		statusLabel.setEditable(false);
 		statusLabel.setForeground(new Color(107, 107, 107));
 		statusLabel.setBackground(new Color(238, 238, 238));
