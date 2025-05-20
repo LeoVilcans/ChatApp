@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -11,11 +15,14 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
+import javax.swing.JFrame;
 
+import jtt.vikachaze.gui.UserProfileGUI;
 import jtt.vikachaze.dto.Message;
 
 public class MessageFactory {
@@ -25,14 +32,14 @@ public class MessageFactory {
 		messagePanel.setPreferredSize(new Dimension(656, 153));
 		messagePanel.setLayout(null);
 		
-		JLabel pfpLabel = new JLabel("");
-		pfpLabel.setBounds(12, 10, 87, 87);
-		pfpLabel.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
+		JButton pfpButton = new JButton("");
+		pfpButton.setBounds(12, 10, 87, 87);
+		pfpButton.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
 		
 		if (message.getUser().getPfp() != null) {
-			pfpLabel.setIcon(new StretchIcon(message.getUser().getPfpAsImage(), false));
+			pfpButton.setIcon(new StretchIcon(message.getUser().getPfpAsImage(), false));
 		} else {
-			pfpLabel.setIcon(new StretchIcon("emptyPfp.jpg", false));
+			pfpButton.setIcon(new StretchIcon("emptyPfp.jpg", false));
 		}
 		
 		JPanel messageContentPanel = new JPanel();
@@ -81,7 +88,7 @@ public class MessageFactory {
 		messageContentPanel.setSize(messageContentPanel.getSize().width, timeLabel.getBounds().y + timeLabel.getBounds().height + 10);
 		messagePanel.setSize(634, messageContentPanel.getSize().height + 20);
 		
-		messagePanel.add(pfpLabel);
+		messagePanel.add(pfpButton);
 		messagePanel.add(messageContentPanel);
 		messageContentPanel.add(usernameLabel);
 		messageContentPanel.add(textPane);
@@ -90,6 +97,23 @@ public class MessageFactory {
 		
 		//Random r = new Random();
 		//messagePanel.setBackground(new Color(r.nextFloat(), r.nextFloat(), r.nextFloat()));
+		
+		pfpButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame = new UserProfileGUI(message.getUser());
+			    frame.setVisible(true);
+			}
+		});
+		
+		usernameLabel.addMouseListener(new MouseAdapter()  
+		{  
+		    public void mouseClicked(MouseEvent e)  
+		    {  
+		       JFrame frame = new UserProfileGUI(message.getUser());
+		       frame.setVisible(true);
+		    }  
+		}); 
 		
 		return messagePanel;
 	}
