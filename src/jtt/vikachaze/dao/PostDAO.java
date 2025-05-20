@@ -15,4 +15,5 @@ public interface PostDAO extends GenericDAO<Post>{
 	List<Post> getPostByUser(User user) throws SQLException;
 	List<Post> getPostByText(String text) throws SQLException;
 	List<Post> getSinceIndex(int lastIndex) throws SQLException; 
+	List<Post> getSinceIndexForUser(User user, int lastIndex) throws SQLException; 
 }

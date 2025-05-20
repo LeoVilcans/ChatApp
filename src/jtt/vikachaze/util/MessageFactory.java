@@ -106,15 +106,6 @@ public class MessageFactory {
 			}
 		});
 		
-		usernameLabel.addMouseListener(new MouseAdapter()  
-		{  
-		    public void mouseClicked(MouseEvent e)  
-		    {  
-		       JFrame frame = new UserProfileGUI(message.getUser());
-		       frame.setVisible(true);
-		    }  
-		}); 
-		
 		return messagePanel;
 	}
 	

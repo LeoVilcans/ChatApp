@@ -273,4 +273,39 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 	    Database.closeConnection(connection);
 	    return posts;
 	}	
+	
+	@Override
+	public List<Post> getSinceIndexForUser(User user, int lastIndex) throws SQLException {
+		Connection connection = Database.getConnection();
+	    PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_FOR_USER_QUERY); 
+
+	    statement.setInt(1, user.getId());
+	    statement.setInt(2, lastIndex);
+
+	    ResultSet result = statement.executeQuery();
+	    
+	    List<Post> posts = new ArrayList<Post>();
+	    while (result.next()) {
+		    int id = result.getInt("id");
+			String text = result.getString("text");
+			String title = result.getString("title");
+			Timestamp sent_time = result.getTimestamp("sent_time");
+			 
+			Blob attachment = result.getBlob("attachment");
+			if (result.wasNull()) {
+				attachment = null;
+			}
+			
+			Post post = new Post(sent_time, user, title, text);
+			post.setId(id);
+			post.setAttachment(attachment);
+			
+			posts.add(post);
+	    }
+	    
+	    Database.closeResultSet(result);
+	    Database.closePreparedStatement(statement);
+	    Database.closeConnection(connection);
+	    return posts;
+	}	
 }
