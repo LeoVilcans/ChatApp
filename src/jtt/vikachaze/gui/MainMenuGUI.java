@@ -38,6 +38,8 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -202,7 +204,7 @@ public class MainMenuGUI extends JFrame{
 		profileStatusArea.setLineWrap(true);
 		profileStatusArea.setForeground(new Color(107, 107, 107));
 		profileStatusArea.setBackground(new Color(238, 238, 238));
-		profileStatusArea.setBounds(12, 201, 158, 119);
+		profileStatusArea.setBounds(12, 201, 158, 101);
 		userPanel.add(profileStatusArea);
 		
 		JButton AddPostButton = new JButton("add post");
@@ -212,6 +214,22 @@ public class MainMenuGUI extends JFrame{
 		JButton AddRoomButton = new JButton("Add room");
 		AddRoomButton.setBounds(7, 349, 164, 23);
 		userPanel.add(AddRoomButton);
+		
+		JButton SettingsButton = new JButton("");
+		SettingsButton.setBounds(7, 314, 55, 23);
+		userPanel.add(SettingsButton);
+		SettingsButton.setIcon(new StretchIcon("settingsIcon.png",true));
+		SettingsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SettingsGUI form = new SettingsGUI();
+				form.setVisible(true);
+			}
+		});
+		
+		
+		
 		AddRoomButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -220,6 +238,7 @@ public class MainMenuGUI extends JFrame{
 				form.setVisible(true);
 			}
 		});
+		
 		AddPostButton.addActionListener(new ActionListener() {
 			
 			@Override
