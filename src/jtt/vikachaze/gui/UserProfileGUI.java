@@ -6,11 +6,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 import jtt.vikachaze.Main;
 import jtt.vikachaze.dto.Post;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.PostFactory;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
 import jtt.vikachaze.dao.PostDAO;
@@ -47,9 +50,11 @@ public class UserProfileGUI extends JFrame {
 	private PostDAO postDAO = new PostDAOImpl();
 	
 	private User user;
+	private Theme currentTheme;
 	
 	public UserProfileGUI(User user) {
 		this.user = user;
+		this.currentTheme = Settings.getTheme();
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 489);
@@ -57,10 +62,11 @@ public class UserProfileGUI extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
+		contentPane.setBackground(currentTheme.getBackgroundColor());
 		
 		usernameLabel = new JLabel("Username: " + user.getUsername());
 		usernameLabel.setFont(new Font("Dialog", Font.BOLD, 14));
-		usernameLabel.setForeground(new Color(0, 0, 0));
+		usernameLabel.setForeground(currentTheme.getPrimaryTextColor());
 		usernameLabel.setBounds(148, 11, 276, 26);
 		contentPane.add(usernameLabel);
 		
@@ -68,15 +74,15 @@ public class UserProfileGUI extends JFrame {
 		
 		pfpButton = new JButton("");
 		pfpButton.setBounds(10, 7, 128, 128);
-		pfpButton.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
+		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getImageBorderColor()));
 		contentPane.add(pfpButton);
 		
 		statusLabel = new JTextArea();
 		statusLabel.setWrapStyleWord(true);
 		statusLabel.setLineWrap(true);
 		statusLabel.setEditable(false);
-		statusLabel.setForeground(new Color(107, 107, 107));
-		statusLabel.setBackground(new Color(238, 238, 238));
+		statusLabel.setForeground(currentTheme.getSecondaryTextColor());
+		statusLabel.setBackground(currentTheme.getBackgroundColor());
 		statusLabel.setText("\"anonims puiss\"");
 		statusLabel.setBounds(148, 40, 276, 95);
 		contentPane.add(statusLabel);
@@ -84,15 +90,19 @@ public class UserProfileGUI extends JFrame {
 		JScrollPane scrollPostPane = new JScrollPane();
 		scrollPostPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPostPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPostPane.getVerticalScrollBar().setBackground(currentTheme.getBackgroundColor());
+		scrollPostPane.getVerticalScrollBar().setForeground(currentTheme.getButtonColor());
+		scrollPostPane.setBackground(currentTheme.getPrimaryColor());
 		scrollPostPane.setBounds(10, 168, 412, 270);
 		scrollPostPane.getVerticalScrollBar().setUnitIncrement(15);
 		contentPane.add(scrollPostPane);
 		
 		scrollPostPanel = new JPanel(null);
+		scrollPostPanel.setBackground(currentTheme.getPrimaryColor());
 		scrollPostPane.setViewportView(scrollPostPanel);
 		
 		JLabel postsLabel = new JLabel("Posts:");
-		postsLabel.setForeground(new Color(0, 0, 0));
+		postsLabel.setForeground(currentTheme.getPrimaryTextColor());
 		postsLabel.setBounds(10, 147, 414, 16);
 		contentPane.add(postsLabel);
 		
