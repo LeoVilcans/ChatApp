@@ -308,4 +308,55 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		
 		return comments;
 	}
+
+	@Override
+	public List<Comment> getSinceIndex(int lastIndex) throws SQLException {
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY);
+		
+		statement.setInt(1, lastIndex);
+		
+		ResultSet result = statement.executeQuery();
+		
+		List<Comment> comments = new ArrayList<Comment>();
+		
+		HashMap<Integer, User> commentUser = new HashMap<Integer, User>();
+		HashMap<Integer, Post> commentPost = new HashMap<Integer, Post>();
+		
+		while (result.next()) {
+			int id = result.getInt("id");
+			Timestamp sent_time = result.getTimestamp("sent_time");
+			int user_id = result.getInt("user_id");
+			int post_id = result.getInt("post_id");
+			String text = result.getString("text");
+			
+			User user;
+			if (commentUser.containsKey(user_id)) {
+				user = commentUser.get(user_id);
+			} else {
+				user = userDAO.getByID(user_id);
+				commentUser.put(user.getId(), user);
+			}
+			
+			Post post;
+			if (commentPost.containsKey(post_id)) {
+				post = commentPost.get(post_id);
+			} else {
+				post = postDAO.getByID(post_id);
+				commentPost.put(post.getId(), post);
+			}
+			
+			Comment comment = new Comment(sent_time, user, post, text);
+			comment.setId(id);
+			
+			comments.add(comment);
+		}
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return comments;
+	}
 }

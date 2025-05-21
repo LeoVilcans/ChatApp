@@ -55,6 +55,7 @@ public class PostFactory {
 		postLabel.setBackground(new Color(238, 238, 238));
 		postLabel.setEditable(false);
 		postLabel.setLineWrap(true);
+		postLabel.setWrapStyleWord(true);
 		postPanel.add(postLabel);
 		postLabel.setSize(postLabel.getWidth(), postLabel.getPreferredSize().height);
 		
