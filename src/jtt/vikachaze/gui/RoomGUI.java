@@ -20,8 +20,10 @@ import jtt.vikachaze.dao.MessageDAO;
 import jtt.vikachaze.dao.impl.MessageDAOImpl;
 import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Room;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.MessageFactory;
 import jtt.vikachaze.util.Scalr;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 import jtt.vikachaze.connection.Database;
 
@@ -133,6 +135,8 @@ public class RoomGUI extends JFrame {
 	}
 	
 	public RoomGUI(Room currentRoom) throws SQLException, IOException {
+		Theme currentTheme = Settings.getTheme();
+		
 		messageDAO = new MessageDAOImpl();
 		this.currentRoom = currentRoom;
 		
@@ -142,6 +146,7 @@ public class RoomGUI extends JFrame {
 		setBounds(100, 100, 668, 652);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(currentTheme.getBackgroundColor());
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);

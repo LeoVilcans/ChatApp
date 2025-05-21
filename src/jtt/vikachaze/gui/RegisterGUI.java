@@ -126,7 +126,6 @@ public class RegisterGUI extends JFrame {
 		String username = usernameField.getText();
 		char[] password = passwordField.getPassword();
 		String str = String.valueOf(password);
-		str = str+"Zeltins";
 		
 		User user = new User(username,str);
 		

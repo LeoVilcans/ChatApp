@@ -24,17 +24,21 @@ import javax.swing.JFrame;
 
 import jtt.vikachaze.gui.UserProfileGUI;
 import jtt.vikachaze.dto.Message;
+import jtt.vikachaze.dto.Theme;
 
 public class MessageFactory {
 	public static JPanel createMessagePanel(Message message) throws SQLException, IOException {
+		Theme currentTheme = Settings.getTheme();
+		
 		JPanel messagePanel = new JPanel();
 		messagePanel.setSize(656, 153);
 		messagePanel.setPreferredSize(new Dimension(656, 153));
 		messagePanel.setLayout(null);
+		messagePanel.setBackground(currentTheme.getPrimaryColor());
 		
 		JButton pfpButton = new JButton("");
 		pfpButton.setBounds(12, 10, 87, 87);
-		pfpButton.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
+		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getImageBorderColor()));
 		
 		if (message.getUser().getPfp() != null) {
 			pfpButton.setIcon(new StretchIcon(message.getUser().getPfpAsImage(), false));
@@ -45,17 +49,19 @@ public class MessageFactory {
 		JPanel messageContentPanel = new JPanel();
 		messageContentPanel.setBounds(108, 10, 536, 133);
 		messageContentPanel.setLayout(null);
-		messageContentPanel.setBorder(BorderFactory.createDashedBorder(new Color(150,150,150), 5, 5));
-		messageContentPanel.setBackground(UIManager.getColor("Button.background"));
+		messageContentPanel.setBorder(BorderFactory.createDashedBorder(currentTheme.getImageBorderColor(), 5, 5));
+		messageContentPanel.setBackground(currentTheme.getPrimaryColor());
 		
 		JLabel usernameLabel = new JLabel(message.getUser().getUsername());
+		usernameLabel.setForeground(currentTheme.getPrimaryTextColor());
 		usernameLabel.setBounds(12, 10, 485, 17);
 		
 		JTextPane textPane = new JTextPane();
 		textPane.setContentType("text/html");
 		textPane.setEditable(false);
 		textPane.setText(message.getText());
-		textPane.setBackground(new Color(238, 238, 238));
+		textPane.setBackground(currentTheme.getPrimaryColor());
+		textPane.setForeground(currentTheme.getPrimaryTextColor());
 		textPane.setBounds(22, 37, 475, 68);
 		
 		String rawTimeString = message.getSent_time().toString();
@@ -65,6 +71,7 @@ public class MessageFactory {
 		
 		JLabel timeLabel = new JLabel(timeString + "  -  " + dateString);
 		timeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		timeLabel.setForeground(currentTheme.getPrimaryTextColor());
 		timeLabel.setBounds(12, 106, 512, 17);
 		
 		textPane.setSize(textPane.getWidth(), textPane.getPreferredSize().height);
