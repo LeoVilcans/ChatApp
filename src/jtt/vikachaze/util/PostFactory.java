@@ -2,6 +2,8 @@ package jtt.vikachaze.util;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -18,6 +20,7 @@ import javax.swing.JTextArea;
 import jtt.vikachaze.dao.impl.UserDAOImpl;
 import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.User;
+import jtt.vikachaze.gui.PostGUI;
 
 public class PostFactory {
 	public static JPanel createPostPanel(Post post) throws SQLException, IOException {
@@ -93,36 +96,20 @@ public class PostFactory {
 		
 		postPanel.setSize(postPanel.getWidth(), timeLabel.getY() +timeLabel.getHeight() + 10);
 		
-		postPanel.addMouseListener(new MouseListener() {
-			
+		JButton openPostButton = new JButton();
+		openPostButton.setBounds(0, 0, postPanel.getWidth(), postPanel.getHeight());
+		openPostButton.setOpaque(false);
+		openPostButton.setContentAreaFilled(false);
+		openPostButton.setBorderPainted(false);
+		
+		openPostButton.addActionListener(new ActionListener() {
 			@Override
-			public void mouseReleased(MouseEvent e) {}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String username = usernameLabel.getText();
-				
-				User tempUser = new User(username);
-				
-				try {
-					int userID = new UserDAOImpl().getID(tempUser);
-					
-					
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-				
+			public void actionPerformed(ActionEvent e) {
+				PostGUI postGUI = new PostGUI(post);
+				postGUI.setVisible(true);
 			}
 		});
+		postPanel.add(openPostButton);
 		
 		return postPanel;
 	}
