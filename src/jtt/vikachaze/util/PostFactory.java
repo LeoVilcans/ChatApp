@@ -2,6 +2,8 @@ package jtt.vikachaze.util;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,7 +14,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+
+import jtt.vikachaze.dao.impl.UserDAOImpl;
 import jtt.vikachaze.dto.Post;
+import jtt.vikachaze.dto.User;
 
 public class PostFactory {
 	public static JPanel createPostPanel(Post post) throws SQLException, IOException {
@@ -87,6 +92,37 @@ public class PostFactory {
 		postPanel.add(timeLabel);
 		
 		postPanel.setSize(postPanel.getWidth(), timeLabel.getY() +timeLabel.getHeight() + 10);
+		
+		postPanel.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String username = usernameLabel.getText();
+				
+				User tempUser = new User(username);
+				
+				try {
+					int userID = new UserDAOImpl().getID(tempUser);
+					
+					
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		
 		return postPanel;
 	}
