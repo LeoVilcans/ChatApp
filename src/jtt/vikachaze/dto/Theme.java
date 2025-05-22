@@ -3,22 +3,18 @@ package jtt.vikachaze.dto;
 import java.awt.Color;
 
 public class Theme {
-	private Color backgroundColor = new Color(237,237,237);
-	private Color primaryColor  = new Color(255,255,255);
-	private Color buttonColor = new Color(230,230,255);
-	private Color primaryTextColor = new Color(0,0,0);
-	private Color secondaryTextColor = new Color(120,120,120);
-	private Color imageBorderColor = new Color(120,120,120);
+	private Color backgroundColor = new Color(238,238,238);
+	private Color primaryColor  = new Color(116,116,116);
+	private Color buttonColor = new Color(196,215,233);
+	private Color textColor = new Color(51,51,51);
 	
 	public Theme() {}
 	
-	public Theme(Color backgroundColor, Color primaryColor, Color buttonColor, Color primaryTextColor, Color secondaryTextColor, Color imageBorderColor) {
+	public Theme(Color backgroundColor, Color primaryColor, Color buttonColor, Color textColor) {
 		this.backgroundColor = backgroundColor;
 		this.primaryColor = primaryColor;
 		this.buttonColor = buttonColor;
-		this.primaryTextColor = primaryTextColor;
-		this.secondaryTextColor = secondaryTextColor;
-		this.imageBorderColor = imageBorderColor;
+		this.textColor = textColor;
 	}
 	
 	public Color getBackgroundColor() {
@@ -31,18 +27,9 @@ public class Theme {
 
 	public Color getButtonColor() {
 		return buttonColor;
-	}
+	}	
 
-	public Color getPrimaryTextColor() {
-		return primaryTextColor;
+	public Color getTextColor() {
+		return textColor;
 	}
-
-	public Color getSecondaryTextColor() {
-		return secondaryTextColor;
-	}
-
-	public Color getImageBorderColor() {
-		return imageBorderColor;
-	}
-	
 }

@@ -154,6 +154,7 @@ public class RoomGUI extends JFrame {
 		inputPanel = new JPanel();
 		//panel_2.setBorder(new LineBorder(new Color(150, 150, 150)));
 		inputPanel.setBounds(0, 510, 652, 103);
+		inputPanel.setBackground(currentTheme.getBackgroundColor());
 		contentPane.add(inputPanel);
 		inputPanel.setLayout(null);
 		
@@ -164,12 +165,14 @@ public class RoomGUI extends JFrame {
 		inputPanel.add(textArea);
 		
 		sendButton = new JButton("Sūtīt");
-		//sendButton.setBackground(new Color(201, 239, 248));
+		sendButton.setBackground(currentTheme.getButtonColor());
+		sendButton.setForeground(currentTheme.getTextColor());
 		sendButton.setBounds(505, 11, 137, 40);
 		inputPanel.add(sendButton);
 		
 		attachmentButton = new JButton("Add attachment");
-		//attachmentButton.setBackground(new Color(201, 239, 248));
+		attachmentButton.setBackground(currentTheme.getButtonColor());
+		attachmentButton.setForeground(currentTheme.getTextColor());
 		attachmentButton.setBounds(505, 59, 135, 36);
 		inputPanel.add(attachmentButton);
 		
@@ -199,9 +202,11 @@ public class RoomGUI extends JFrame {
         scrollPane.getVerticalScrollBar().setUnitIncrement(15);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBackground(currentTheme.getBackgroundColor());
         contentPane.add(scrollPane);
 
         messagePanel = new JPanel(null);
+        messagePanel.setBackground(currentTheme.getBackgroundColor());
         scrollPane.setViewportView(messagePanel);
         
         JPanel roomInfoPanel = new JPanel();
@@ -212,6 +217,7 @@ public class RoomGUI extends JFrame {
         JLabel roomIconLabel = new JLabel("");
         roomIconLabel.setBounds(0, 0, 46, 46);
         roomInfoPanel.add(roomIconLabel);
+        roomInfoPanel.setBackground(currentTheme.getBackgroundColor());
         roomIconLabel.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
         
         if (currentRoom.getIcon() != null) {
@@ -223,6 +229,7 @@ public class RoomGUI extends JFrame {
         JLabel roomTitleLabel = new JLabel(currentRoom.getTitle());
         roomTitleLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
         roomTitleLabel.setBounds(56, 0, 566, 46);
+        roomTitleLabel.setForeground(currentTheme.getTextColor());
         roomInfoPanel.add(roomTitleLabel);
         
 		sendButton.addActionListener(new ActionListener() {

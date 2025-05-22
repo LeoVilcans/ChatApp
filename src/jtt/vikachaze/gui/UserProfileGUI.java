@@ -66,7 +66,7 @@ public class UserProfileGUI extends JFrame {
 		
 		usernameLabel = new JLabel("Username: " + user.getUsername());
 		usernameLabel.setFont(new Font("Dialog", Font.BOLD, 14));
-		usernameLabel.setForeground(currentTheme.getPrimaryTextColor());
+		usernameLabel.setForeground(currentTheme.getTextColor());
 		usernameLabel.setBounds(148, 11, 276, 26);
 		contentPane.add(usernameLabel);
 		
@@ -74,14 +74,14 @@ public class UserProfileGUI extends JFrame {
 		
 		pfpButton = new JButton("");
 		pfpButton.setBounds(10, 7, 128, 128);
-		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getImageBorderColor()));
+		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		contentPane.add(pfpButton);
 		
 		statusLabel = new JTextArea();
 		statusLabel.setWrapStyleWord(true);
 		statusLabel.setLineWrap(true);
 		statusLabel.setEditable(false);
-		statusLabel.setForeground(currentTheme.getSecondaryTextColor());
+		statusLabel.setForeground(currentTheme.getPrimaryColor());
 		statusLabel.setBackground(currentTheme.getBackgroundColor());
 		statusLabel.setText("\"anonims puiss\"");
 		statusLabel.setBounds(148, 40, 276, 95);
@@ -92,17 +92,17 @@ public class UserProfileGUI extends JFrame {
 		scrollPostPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPostPane.getVerticalScrollBar().setBackground(currentTheme.getBackgroundColor());
 		scrollPostPane.getVerticalScrollBar().setForeground(currentTheme.getButtonColor());
-		scrollPostPane.setBackground(currentTheme.getPrimaryColor());
+		scrollPostPane.setBackground(currentTheme.getBackgroundColor());
 		scrollPostPane.setBounds(10, 168, 412, 270);
 		scrollPostPane.getVerticalScrollBar().setUnitIncrement(15);
 		contentPane.add(scrollPostPane);
 		
 		scrollPostPanel = new JPanel(null);
-		scrollPostPanel.setBackground(currentTheme.getPrimaryColor());
+		scrollPostPanel.setBackground(currentTheme.getBackgroundColor());
 		scrollPostPane.setViewportView(scrollPostPanel);
 		
 		JLabel postsLabel = new JLabel("Posts:");
-		postsLabel.setForeground(currentTheme.getPrimaryTextColor());
+		postsLabel.setForeground(currentTheme.getBackgroundColor());
 		postsLabel.setBounds(10, 147, 414, 16);
 		contentPane.add(postsLabel);
 		

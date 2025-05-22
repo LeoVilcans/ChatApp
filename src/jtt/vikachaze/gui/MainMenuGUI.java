@@ -8,15 +8,14 @@ import jtt.vikachaze.Main;
 import jtt.vikachaze.dao.PostDAO;
 import jtt.vikachaze.dao.impl.PostDAOImpl;
 import jtt.vikachaze.dao.impl.RoomDAOImpl;
-import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.Room;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.dto.User;
-import jtt.vikachaze.util.MessageFactory;
 import jtt.vikachaze.util.PostFactory;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -38,8 +37,6 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -64,11 +61,14 @@ public class MainMenuGUI extends JFrame{
 	private int currentPostHeight = 0;
 	
 	public MainMenuGUI() {
+		Theme currentTheme = Settings.getTheme();
+		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 493);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(currentTheme.getBackgroundColor());
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -76,6 +76,7 @@ public class MainMenuGUI extends JFrame{
 		JPanel roomPanel = new JPanel();
 		roomPanel.setLayout(null);
 		roomPanel.setBounds(0, 0, 163, 454);
+		roomPanel.setBackground(currentTheme.getBackgroundColor());
 		contentPane.add(roomPanel);
 		
 		roomScrollPane = new JScrollPane();
@@ -83,8 +84,11 @@ public class MainMenuGUI extends JFrame{
 		roomPanel.add(roomScrollPane);
 		roomScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		roomScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		roomScrollPane.setBackground(currentTheme.getPrimaryColor());
 		
 		roomList = new JList<String>(room);
+		roomList.setBackground(currentTheme.getBackgroundColor());
+		roomList.setForeground(currentTheme.getTextColor());
 		roomScrollPane.setViewportView(roomList);
 		roomList.addMouseListener(new MouseListener() {
 			
@@ -123,9 +127,11 @@ public class MainMenuGUI extends JFrame{
 		roomListLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		roomListLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		roomListLabel.setBounds(10, 11, 143, 17);
+		roomListLabel.setForeground(currentTheme.getTextColor());
 		roomPanel.add(roomListLabel);
 		
 		JPanel postPanel = new JPanel();
+		postPanel.setBackground(currentTheme.getBackgroundColor());
 		postPanel.setLayout(null);
 		postPanel.setBounds(163, 0, 374, 454);
 		contentPane.add(postPanel);
@@ -134,10 +140,12 @@ public class MainMenuGUI extends JFrame{
 		postScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		postScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		postScrollPane.setBounds(5, 34, 357, 420);
+		postScrollPane.setBackground(currentTheme.getBackgroundColor());
 		postScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		postPanel.add(postScrollPane);
 		
 		scrollPostPanel = new JPanel(null);
+		scrollPostPanel.setBackground(currentTheme.getBackgroundColor());
 		postScrollPane.setViewportView(scrollPostPanel);
 		
 		searchTextField = new JTextField();
@@ -146,11 +154,14 @@ public class MainMenuGUI extends JFrame{
 		searchTextField.setColumns(10);
 		
 		JButton searchButton = new JButton();
+		searchButton.setBackground(currentTheme.getButtonColor());
+		searchButton.setForeground(currentTheme.getTextColor());
 		searchButton.setBounds(316, 8, 46, 19);
 		postPanel.add(searchButton);
 		
 		
 		JPanel userPanel = new JPanel();
+		userPanel.setBackground(currentTheme.getBackgroundColor());
 		userPanel.setLayout(null);
 		userPanel.setBounds(536, 0, 182, 454);
 		contentPane.add(userPanel);
@@ -159,15 +170,19 @@ public class MainMenuGUI extends JFrame{
 		pfpLabel.setBackground(new Color(128, 128, 128));
 		pfpLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		pfpLabel.setBounds(12, 12, 159, 159);
-		pfpLabel.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
+		pfpLabel.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		userPanel.add(pfpLabel);
 		
 		profileUsernameLabel = new JLabel("<<Username>>");
 		profileUsernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 		profileUsernameLabel.setBounds(12, 177, 159, 21);
+		profileUsernameLabel.setBackground(currentTheme.getBackgroundColor());
+		profileUsernameLabel.setForeground(currentTheme.getTextColor());
 		userPanel.add(profileUsernameLabel);
 		
 		JButton profileEditButton = new JButton("edit");
+		profileEditButton.setBackground(currentTheme.getButtonColor());
+		profileEditButton.setForeground(currentTheme.getTextColor());
 		profileEditButton.setBounds(7, 419, 55, 24);
 		userPanel.add(profileEditButton);
 		profileEditButton.addActionListener(new ActionListener() {
@@ -181,6 +196,8 @@ public class MainMenuGUI extends JFrame{
 		});
 		
 		JButton btnLogOut = new JButton("log out");
+		btnLogOut.setBackground(currentTheme.getButtonColor());
+		btnLogOut.setForeground(currentTheme.getTextColor());
 		btnLogOut.setBounds(71, 419, 100, 24);
 		userPanel.add(btnLogOut);
 		
@@ -202,21 +219,27 @@ public class MainMenuGUI extends JFrame{
 		profileStatusArea.setEditable(false);
 		profileStatusArea.setFont(new Font("Dialog", Font.ITALIC, 12));
 		profileStatusArea.setLineWrap(true);
-		profileStatusArea.setForeground(new Color(107, 107, 107));
-		profileStatusArea.setBackground(new Color(238, 238, 238));
+		profileStatusArea.setForeground(currentTheme.getPrimaryColor());
+		profileStatusArea.setBackground(currentTheme.getBackgroundColor());
 		profileStatusArea.setBounds(12, 201, 158, 101);
 		userPanel.add(profileStatusArea);
 		
 		JButton AddPostButton = new JButton("add post");
+		AddPostButton.setBackground(currentTheme.getButtonColor());
+		AddPostButton.setForeground(currentTheme.getTextColor());
 		AddPostButton.setBounds(7, 384, 164, 24);
 		userPanel.add(AddPostButton);
 		
 		JButton AddRoomButton = new JButton("Add room");
+		AddRoomButton.setBackground(currentTheme.getButtonColor());
+		AddRoomButton.setForeground(currentTheme.getTextColor());
 		AddRoomButton.setBounds(7, 349, 164, 23);
 		userPanel.add(AddRoomButton);
 		
 		JButton SettingsButton = new JButton("");
 		SettingsButton.setBounds(7, 314, 55, 23);
+		SettingsButton.setBackground(currentTheme.getButtonColor());
+		SettingsButton.setForeground(currentTheme.getTextColor());
 		userPanel.add(SettingsButton);
 		SettingsButton.setIcon(new StretchIcon("settingsIcon.png",true));
 		SettingsButton.addActionListener(new ActionListener() {
@@ -227,8 +250,6 @@ public class MainMenuGUI extends JFrame{
 				form.setVisible(true);
 			}
 		});
-		
-		
 		
 		AddRoomButton.addActionListener(new ActionListener() {
 			

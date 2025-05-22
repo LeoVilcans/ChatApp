@@ -34,11 +34,11 @@ public class MessageFactory {
 		messagePanel.setSize(656, 153);
 		messagePanel.setPreferredSize(new Dimension(656, 153));
 		messagePanel.setLayout(null);
-		messagePanel.setBackground(currentTheme.getPrimaryColor());
+		messagePanel.setBackground(currentTheme.getBackgroundColor());
 		
 		JButton pfpButton = new JButton("");
 		pfpButton.setBounds(12, 10, 87, 87);
-		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getImageBorderColor()));
+		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		
 		if (message.getUser().getPfp() != null) {
 			pfpButton.setIcon(new StretchIcon(message.getUser().getPfpAsImage(), false));
@@ -49,19 +49,19 @@ public class MessageFactory {
 		JPanel messageContentPanel = new JPanel();
 		messageContentPanel.setBounds(108, 10, 536, 133);
 		messageContentPanel.setLayout(null);
-		messageContentPanel.setBorder(BorderFactory.createDashedBorder(currentTheme.getImageBorderColor(), 5, 5));
-		messageContentPanel.setBackground(currentTheme.getPrimaryColor());
+		messageContentPanel.setBorder(BorderFactory.createDashedBorder(currentTheme.getPrimaryColor(), 5, 5));
+		messageContentPanel.setBackground(currentTheme.getBackgroundColor());
 		
 		JLabel usernameLabel = new JLabel(message.getUser().getUsername());
-		usernameLabel.setForeground(currentTheme.getPrimaryTextColor());
+		usernameLabel.setForeground(currentTheme.getTextColor());
 		usernameLabel.setBounds(12, 10, 485, 17);
 		
 		JTextPane textPane = new JTextPane();
 		textPane.setContentType("text/html");
 		textPane.setEditable(false);
 		textPane.setText(message.getText());
-		textPane.setBackground(currentTheme.getPrimaryColor());
-		textPane.setForeground(currentTheme.getPrimaryTextColor());
+		textPane.setBackground(currentTheme.getBackgroundColor());
+		textPane.setForeground(currentTheme.getTextColor());
 		textPane.setBounds(22, 37, 475, 68);
 		
 		String rawTimeString = message.getSent_time().toString();
@@ -71,7 +71,7 @@ public class MessageFactory {
 		
 		JLabel timeLabel = new JLabel(timeString + "  -  " + dateString);
 		timeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		timeLabel.setForeground(currentTheme.getPrimaryTextColor());
+		timeLabel.setForeground(currentTheme.getTextColor());
 		timeLabel.setBounds(12, 106, 512, 17);
 		
 		textPane.setSize(textPane.getWidth(), textPane.getPreferredSize().height);

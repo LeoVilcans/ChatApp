@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,24 +15,23 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-import jtt.vikachaze.dao.impl.UserDAOImpl;
 import jtt.vikachaze.dto.Post;
-import jtt.vikachaze.dto.User;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.gui.PostGUI;
 
 public class PostFactory {
+	private static Theme currentTheme = Settings.getTheme();
+	
 	public static JPanel createPostPanel(Post post) throws SQLException, IOException {
 		JPanel postPanel = new JPanel();
 		postPanel.setSize(350, 340);
 		postPanel.setLayout(null);
-		postPanel.setBorder(BorderFactory.createDashedBorder(new Color(150,150,150)));
-		
-		//Random r = new Random(); 
-		//postPanel.setBackground(new Color(r.nextFloat(), r.nextFloat(), r.nextFloat()));
+		postPanel.setBorder(BorderFactory.createDashedBorder(currentTheme.getPrimaryColor()));
+		postPanel.setBackground(currentTheme.getBackgroundColor());
 		
 		JButton pfpLabel = new JButton("");
 		pfpLabel.setBounds(10, 10, 75, 75);
-		pfpLabel.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
+		pfpLabel.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		postPanel.add(pfpLabel);
 		
 		if (post.getUser().getPfp() != null) {
@@ -45,14 +42,15 @@ public class PostFactory {
 		
 		JLabel titleLabel = new JLabel(post.getTitle());
 		titleLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		titleLabel.setForeground(currentTheme.getTextColor());
 		titleLabel.setBounds(95, 10, 288-95, 25);
 		postPanel.add(titleLabel);
 		
 		JTextArea postLabel = new JTextArea(post.getText());
 		postLabel.setFont(new Font("Dialog", Font.PLAIN, 14));
-		postLabel.setForeground(new Color(50,50,50));
+		postLabel.setForeground(currentTheme.getTextColor());
 		postLabel.setBounds(95, 40, 230, 100);
-		postLabel.setBackground(new Color(238, 238, 238));
+		postLabel.setBackground(currentTheme.getBackgroundColor());
 		postLabel.setEditable(false);
 		postLabel.setLineWrap(true);
 		postLabel.setWrapStyleWord(true);
@@ -62,9 +60,11 @@ public class PostFactory {
 		JLabel usernameLabel = new JLabel(post.getUser().getUsername());
 		usernameLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 		usernameLabel.setBounds(10, 90, 85, 20);
+		usernameLabel.setForeground(currentTheme.getTextColor());
 		postPanel.add(usernameLabel);
 		
 		JLabel imageLabel = new JLabel();
+		imageLabel.setBackground(currentTheme.getBackgroundColor());
 		int imageLabelHeight = postLabel.getHeight() + postLabel.getY() + 10;
 		if (post.getAttachment() != null) {
 			BufferedImage bimg = ImageIO.read(post.getAttachment().getBinaryStream());
@@ -85,6 +85,7 @@ public class PostFactory {
 		String timeString = seperatedTimes[1].split(":")[0] + ":" + seperatedTimes[1].split(":")[1];
 		
 		JLabel timeLabel = new JLabel(timeString + "  -  " + dateString);
+		timeLabel.setForeground(currentTheme.getPrimaryColor());
 		timeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		
 		if (post.getAttachment() != null) {

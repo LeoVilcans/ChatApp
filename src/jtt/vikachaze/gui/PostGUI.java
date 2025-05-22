@@ -23,17 +23,14 @@ import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
 import jtt.vikachaze.dao.impl.CommentDAOImpl;
-import jtt.vikachaze.dao.impl.UserDAOImpl;
 import jtt.vikachaze.dto.Comment;
-import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Post;
-import jtt.vikachaze.dto.User;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.CommentFactory;
-import jtt.vikachaze.util.MessageFactory;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
 import javax.swing.JScrollPane;
-import javax.swing.JList;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -84,6 +81,7 @@ public class PostGUI extends JFrame{
 	
 	public PostGUI(Post post) {
 		commentDAO = new CommentDAOImpl();
+		Theme currentTheme = Settings.getTheme();
 		
 		this.post = post;
 		
@@ -94,35 +92,40 @@ public class PostGUI extends JFrame{
 		profilePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		profilePanel.setLayout(null);
 		setContentPane(profilePanel);
+		profilePanel.setBackground(currentTheme.getBackgroundColor());
 		
 		pfpButton = new JButton("");
 		pfpButton.setBounds(6, 4, 80, 80);
-		pfpButton.setBorder(BorderFactory.createLineBorder(new Color(150,150,150)));
+		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		profilePanel.add(pfpButton);
 		
 		usernameLabel = new JLabel("<Username>");
 		usernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-		usernameLabel.setForeground(new Color(0, 0, 0));
+		usernameLabel.setForeground(currentTheme.getTextColor());
 		usernameLabel.setBounds(91, 5, 258, 26);
 		profilePanel.add(usernameLabel);
 		
 		postTitleLabel = new JLabel("<Title>");
 		postTitleLabel.setFont(new Font("Dialog", Font.BOLD, 20));
+		postTitleLabel.setForeground(currentTheme.getTextColor());
 		postTitleLabel.setBounds(94, 38, 255, 33);
 		profilePanel.add(postTitleLabel);
 		
 		postPanel = new JPanel(null);
 		postPanel.setBounds(0, 92, 368, 489);
+		postPanel.setBackground(currentTheme.getBackgroundColor());
 		profilePanel.add(postPanel);
 	
 		postPicture = new JLabel("");
 		postPicture.setBounds(12, 12, 342, 265);
+		postPicture.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		postPanel.add(postPicture);
 	
 		postScrollPane = new JScrollPane();
 		postScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		postScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		postScrollPane.setBounds(12, 289, 344, 188);
+		postScrollPane.setBackground(currentTheme.getBackgroundColor());
 		postPanel.add(postScrollPane);
 		
 		textArea = new JTextArea();
@@ -134,6 +137,7 @@ public class PostGUI extends JFrame{
 	
 		PostcommentsPanel = new JPanel(null);
 		PostcommentsPanel.setBounds(367, 0, 197, 581);
+		PostcommentsPanel.setBackground(currentTheme.getBackgroundColor());
 		profilePanel.add(PostcommentsPanel);
 		
 		commentScrollPane = new JScrollPane();
@@ -143,6 +147,7 @@ public class PostGUI extends JFrame{
 		PostcommentsPanel.add(commentScrollPane);
 		
 		commentPanel = new JPanel();
+		commentPanel.setBackground(currentTheme.getBackgroundColor());
 		commentScrollPane.setViewportView(commentPanel);
 		
 		commentTextField = new JTextField();
@@ -152,6 +157,8 @@ public class PostGUI extends JFrame{
 		
 		commentButton = new JButton("niggers");
 		commentButton.setBounds(155, 548, 38, 27);
+		commentButton.setBackground(currentTheme.getButtonColor());
+		commentButton.setForeground(currentTheme.getTextColor());
 		PostcommentsPanel.add(commentButton);
 		commentButton.addActionListener(new ActionListener() {
 			

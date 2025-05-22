@@ -12,7 +12,7 @@ public class Settings {
 	    LIGHT
 	}
 	
-	private static ThemeChoice currentThemeChoice = ThemeChoice.DARK;
+	private static ThemeChoice currentThemeChoice = ThemeChoice.CLASSIC;
 	private static Theme currentTheme;
 	
 	public static void setTheme(ThemeChoice newChoice) {
@@ -24,8 +24,8 @@ public class Settings {
 			case CLASSIC:
 				return new Theme();
 			case DARK:
-				//backgroundColor, primaryColor, buttonColor, primaryTextColor, secondaryTextColor, imageBorderColor
-				return new Theme(new Color(66,66,66), new Color(128,128,128), new Color(128,128,128), new Color(230,230,230), new Color(160,160,160), new Color(200,200,200));
+				//backgroundColor, primaryColor, buttonColor, textColor
+				return new Theme(new Color(66,66,66), new Color(128,128,128), new Color(128,128,128), new Color(230,230,230));
 			case LIGHT:
 				return new Theme();
 			default:
