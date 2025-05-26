@@ -27,6 +27,7 @@ import jtt.vikachaze.dto.Comment;
 import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.CommentFactory;
+import jtt.vikachaze.util.PostFactory;
 import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
@@ -49,35 +50,6 @@ public class PostGUI extends JFrame{
 	
 	private int currentMessageHeight = 0;
 	private List<Comment> comments;
-	
-	private void AddComment(Comment comment) throws SQLException, IOException {
-		JPanel newMessagePanel = CommentFactory.createCommentPanel(comment);
-		newMessagePanel.setBounds(0, currentMessageHeight, newMessagePanel.getWidth(), newMessagePanel.getHeight());
-		
-		currentMessageHeight+=newMessagePanel.getHeight();
-		
-		commentPanel.add(newMessagePanel);
-		commentPanel.setSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
-		commentPanel.setPreferredSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
-
-	}
-	
-	private void AddAllComments() {
-		commentPanel.removeAll();
-		currentMessageHeight = 0;
-		try {
-			comments = commentDAO.getByPost(post);
-			
-			for (Comment comment : comments) {
-				AddComment(comment);
-			}
-//			ScrollToBottom();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public PostGUI(Post post) {
 		commentDAO = new CommentDAOImpl();
@@ -168,43 +140,11 @@ public class PostGUI extends JFrame{
 			}
 		});
 		
-		updatePost();
-		AddAllComments();
-		
-		// Pievieno čata atjaunošanas, jeb refresh funkcionalitāti. Tiek izpildīts ar 1hz frekvenci.
-				ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-				ses.scheduleAtFixedRate(new Runnable() {
-				    @Override
-				    public void run() {   
-				    	if (!Main.isLoggedIn()) {
-				    		PostGUI.this.dispose();
-				    	}
-				    	
-				    	int lastIndex = 0;
-				    	if (!comments.isEmpty()) {
-				    		lastIndex = comments.get(comments.size()-1).getId();
-				    	}
-
-				        try {
-							List<Comment> newComments = commentDAO.getSinceIndex(lastIndex);
-							
-							for (Comment comment : newComments) {
-								comments.add(comment);
-								AddComment(comment);
-							}
-							
-							if (!newComments.isEmpty()) {
-//								ScrollToBottom();
-							}
-							
-						} catch (SQLException | IOException e) {
-							e.printStackTrace();
-						}
-				    }
-				}, 0, 1, TimeUnit.SECONDS);
+		loadPost();
+		addCommentTracker();
 	}
 	
-	public void updatePost() {
+	public void loadPost() {
 		try {
 			if (post.getUser().getPfp() == null) {
 				pfpButton.setIcon(new StretchIcon("emptyPfp.jpg", false));
@@ -228,12 +168,46 @@ public class PostGUI extends JFrame{
 		try {
 			Comment comment = new Comment(Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser(), post, text);
 			
-			commentDAO.insert(comment);
+			int id = commentDAO.insert(comment);
+			comment.setId(id);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	private void addCommentTracker() {
+		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+		ses.scheduleAtFixedRate(new Runnable() {
+		    @Override
+		    public void run() {   
+		    	int lastIndex = 0;
+		    	if (!comments.isEmpty()) {
+		    		lastIndex = comments.get(comments.size()-1).getId();
+		    	}
+
+		        try {
+					List<Comment> newComments = commentDAO.getSinceIndex(lastIndex);
+					
+					for (Comment comment : newComments) {
+						comments.add(comment);
+						addPost(comment);
+					}
+				} catch (SQLException | IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}, 0, 1, TimeUnit.SECONDS);
+	}
 	
+	private void addPost(Comment comment) throws SQLException, IOException {
+		JPanel newPostPanel = CommentFactory.createCommentPanel(comment);
+		newPostPanel.setBounds(0, currentMessageHeight, newPostPanel.getWidth(), newPostPanel.getHeight());
+		
+		currentMessageHeight+=newPostPanel.getHeight();
+		
+		commentPanel.add(newPostPanel);
+		commentPanel.setSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
+		commentPanel.setPreferredSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
+	}
 }
