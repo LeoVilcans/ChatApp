@@ -243,8 +243,8 @@ public class PostGUI extends JFrame{
 		PostLikes postLike = new PostLikes(Main.getLoggedUser(), post);			
 		
 		if(likeCheck.isSelected()) {
-		int id = postLikeDAO.insert(postLike);
-		postLike.setId(id);
+			int id = postLikeDAO.insert(postLike);
+			postLike.setId(id);
 		}else {
 			postLikeDAO.delete(postLike);
 		}
