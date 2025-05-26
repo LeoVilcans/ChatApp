@@ -37,7 +37,7 @@ public class LoginGUI extends JFrame {
 	
 	public LoginGUI() {
 		Theme currentTheme = Settings.getTheme();
-		
+		 
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 283, 296);

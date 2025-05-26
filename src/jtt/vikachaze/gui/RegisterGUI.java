@@ -45,7 +45,7 @@ public class RegisterGUI extends JFrame {
 
 	public RegisterGUI() {
 		Theme currentTheme = Settings.getTheme();
-		
+		 
 		setTitle("Register");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 283, 379);

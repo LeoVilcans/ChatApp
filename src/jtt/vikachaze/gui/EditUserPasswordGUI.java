@@ -35,7 +35,7 @@ public class EditUserPasswordGUI extends JFrame{
 	
 	public EditUserPasswordGUI() {
 		Theme currentTheme = Settings.getTheme();
-
+ 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 250, 240);
