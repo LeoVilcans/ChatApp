@@ -1,7 +1,5 @@
 package jtt.vikachaze.gui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -33,7 +31,10 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 public class RegisterGUI extends JFrame {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
@@ -84,15 +85,10 @@ public class RegisterGUI extends JFrame {
 				try {
 					register();
 					
-					
-					
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
-
-			
 		});
 		
 		JLabel lblProfilePicture = new JLabel("Profile picture:");
@@ -114,13 +110,11 @@ public class RegisterGUI extends JFrame {
 					if(response == JFileChooser.APPROVE_OPTION) {
 						currentAttachment = new File(fileChooser.getSelectedFile().getAbsolutePath());
 						JOptionPane.showMessageDialog(RegisterGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
-						
-						}
+					}
 				}
 			}
 			
 		});
-		
 	}
 	public void register() throws SQLException {
 		String username = usernameField.getText();

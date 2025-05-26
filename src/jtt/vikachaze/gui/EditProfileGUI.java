@@ -35,6 +35,10 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 public class EditProfileGUI extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel pfpLabel, EditLabel;
 	private JTextField usernameTextField, statusTextField;

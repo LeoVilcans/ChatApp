@@ -1,6 +1,5 @@
 package jtt.vikachaze.gui;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.ImagingOpException;
@@ -31,32 +30,16 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 public class AddPostGUI extends JFrame {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField TitleField;
 	private JTextField TextField;
 	private PostDAO postDAO = new PostDAOImpl();
 	private File currentAttachment = null;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AddPostGUI frame = new AddPostGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public AddPostGUI() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 280, 360);
@@ -110,14 +93,12 @@ public class AddPostGUI extends JFrame {
 					if(response == JFileChooser.APPROVE_OPTION) {
 						currentAttachment = new File(fileChooser.getSelectedFile().getAbsolutePath());
 						JOptionPane.showMessageDialog(AddPostGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
-						
-						}
+					}
 				}
 			}
-		});
-		
-		
+		});	
 	}
+	
 	public void addPost() {
 		String title = TitleField.getText();
 		String posttext = TextField.getText();
@@ -136,7 +117,6 @@ public class AddPostGUI extends JFrame {
 			
 			int id  = postDAO.insert(post);
 			post.setId(id);
-			
 			
 			AddPostGUI.this.dispose();
 		} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {

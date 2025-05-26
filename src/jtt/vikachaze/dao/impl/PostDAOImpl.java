@@ -12,15 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import jtt.vikachaze.connection.Database;
-import jtt.vikachaze.dao.MessageDAO;
 import jtt.vikachaze.dao.PostDAO;
-import jtt.vikachaze.dao.RoomDAO;
 import jtt.vikachaze.dao.UserDAO;
-import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Post;
-import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.dto.User;
-import jtt.vikachaze.queries.MessageQueries;
 import jtt.vikachaze.queries.PostQueries;
 
 public class PostDAOImpl implements PostDAO, PostQueries{

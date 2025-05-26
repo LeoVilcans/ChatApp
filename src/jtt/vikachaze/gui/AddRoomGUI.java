@@ -8,14 +8,12 @@ import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dto.Room;
-import jtt.vikachaze.util.Scalr;
 import jtt.vikachaze.dao.*;
 import jtt.vikachaze.dao.impl.*;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -23,21 +21,19 @@ import java.awt.event.ActionListener;
 import java.awt.image.ImagingOpException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class AddRoomGUI extends JFrame {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField RoomNameField;
-	private File currentAttachment = null;
 	private RoomDAO roomDAO = new RoomDAOImpl();
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -51,9 +47,6 @@ public class AddRoomGUI extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public AddRoomGUI() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 280, 200);
@@ -84,10 +77,9 @@ public class AddRoomGUI extends JFrame {
 					int response = fileChooser.showOpenDialog(null);
 					
 					if(response == JFileChooser.APPROVE_OPTION) {
-						currentAttachment = new File(fileChooser.getSelectedFile().getAbsolutePath());
+						new File(fileChooser.getSelectedFile().getAbsolutePath());
 						JOptionPane.showMessageDialog(AddRoomGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
-						
-						}
+					}
 				}
 			}
 		});
@@ -109,23 +101,16 @@ public class AddRoomGUI extends JFrame {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			
-			
 			Blob b1 = Database.getConnection().createBlob();
 			b1.setBytes(1,  baos.toByteArray());
 			room.setIcon(b1);
 			
-			
 			int id  = roomDAO.insert(room);
 			room.setId(id);
-			
-			
 			
 			AddRoomGUI.this.dispose();
 		} catch (IllegalArgumentException | ImagingOpException | SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
-	
 }

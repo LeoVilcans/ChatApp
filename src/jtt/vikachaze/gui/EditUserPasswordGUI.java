@@ -20,6 +20,10 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 
 public class EditUserPasswordGUI extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPasswordField oldPassowrdTextField, newPasswordTextField;
 	private JButton confirmButton, cancelButton;
@@ -112,6 +116,5 @@ public class EditUserPasswordGUI extends JFrame{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 	}
 }
