@@ -37,6 +37,7 @@ import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -61,6 +62,7 @@ public class MainMenuGUI extends JFrame{
 	private int currentPostHeight = 0;
 	
 	public MainMenuGUI() {
+		setIconImage(new ImageIcon("vikachazeLogo.jpg").getImage());
 		Theme currentTheme = Settings.getTheme();
 		
 		setResizable(false);
