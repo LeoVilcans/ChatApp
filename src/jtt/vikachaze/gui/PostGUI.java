@@ -23,8 +23,10 @@ import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
 import jtt.vikachaze.dao.impl.CommentDAOImpl;
+import jtt.vikachaze.dao.impl.PostLikeDAOImpl;
 import jtt.vikachaze.dto.Comment;
 import jtt.vikachaze.dto.Post;
+import jtt.vikachaze.dto.PostLikes;
 import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.CommentFactory;
 import jtt.vikachaze.util.PostFactory;
@@ -35,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JCheckBox;
 
 public class PostGUI extends JFrame{
 	private JPanel profilePanel, postPanel, PostcommentsPanel,commentPanel;
@@ -45,14 +48,18 @@ public class PostGUI extends JFrame{
 	private Post post;
 	private JTextArea textArea;
 	private JTextField commentTextField;
+	private JCheckBox likeCheck;
 	
 	private CommentDAOImpl commentDAO;
+	private PostLikeDAOImpl postLikeDAO;
 	
 	private int currentMessageHeight = 0;
 	private List<Comment> comments;
+	private List<PostLikes> postLike;
 	
 	public PostGUI(Post post) {
 		commentDAO = new CommentDAOImpl();
+		postLikeDAO = new PostLikeDAOImpl();
 		Theme currentTheme = Settings.getTheme();
 		
 		this.post = post;
@@ -127,11 +134,32 @@ public class PostGUI extends JFrame{
 		PostcommentsPanel.add(commentTextField);
 		commentTextField.setColumns(10);
 		
-		commentButton = new JButton("niggers");
+		commentButton = new JButton("");
 		commentButton.setBounds(155, 548, 38, 27);
 		commentButton.setBackground(currentTheme.getButtonColor());
 		commentButton.setForeground(currentTheme.getTextColor());
 		PostcommentsPanel.add(commentButton);
+		
+		likeCheck = new JCheckBox("");
+		likeCheck.setBounds(299, 38, 50, 46);
+		profilePanel.add(likeCheck);
+		//likeCheck.setIcon(new StretchIcon("vikachazeLogo.png", false));
+		likeCheck.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					likePost();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+				
+			}
+		});
+		
 		commentButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -210,4 +238,16 @@ public class PostGUI extends JFrame{
 		commentPanel.setSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
 		commentPanel.setPreferredSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
 	}
+	private void likePost() throws SQLException {
+		
+		PostLikes postLike = new PostLikes(Main.getLoggedUser(), post);			
+		
+		if(likeCheck.isSelected()) {
+			int id = postLikeDAO.insert(postLike);
+			postLike.setId(id);
+		}else {
+			postLikeDAO.delete(postLike);
+		}
+	}
+
 }

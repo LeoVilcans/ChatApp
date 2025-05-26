@@ -53,7 +53,8 @@ public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
 		Connection connection = Database.getConnection();
 	    PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
 	    
-	    statement.setInt(1, value.getId());
+	    statement.setInt(1, value.getUserID().getId());
+	    statement.setInt(2, value.getPostID().getId());
 
 	    int result = statement.executeUpdate();
 

@@ -62,7 +62,7 @@ public class MainMenuGUI extends JFrame{
 	private int currentPostHeight = 0;
 	
 	public MainMenuGUI() {
-		setIconImage(new ImageIcon("vikachazeLogo.jpg").getImage());
+		setIconImage(new ImageIcon("vikachazeLogo.png").getImage());
 		Theme currentTheme = Settings.getTheme();
 		
 		setResizable(false);
