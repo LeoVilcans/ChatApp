@@ -6,7 +6,9 @@ import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
 import jtt.vikachaze.dao.impl.UserDAOImpl;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.dto.User;
+import jtt.vikachaze.util.Settings;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -15,6 +17,7 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
@@ -31,22 +34,28 @@ public class EditUserPasswordGUI extends JFrame{
 	private UserDAOImpl userDAO = new UserDAOImpl();
 	
 	public EditUserPasswordGUI() {
+		Theme currentTheme = Settings.getTheme();
+
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 250, 240);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
+		contentPane.setBackground(currentTheme.getBackgroundColor());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel EditLabel = new JLabel("Edit Password");
 		EditLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		EditLabel.setBounds(10, 11, 214, 20);
+		EditLabel.setBackground(currentTheme.getBackgroundColor());
+		EditLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(EditLabel);
 		
 		JLabel oldPasswordLabel = new JLabel("Old password:");
 		oldPasswordLabel.setBounds(10, 45, 109, 16);
+		oldPasswordLabel.setBackground(currentTheme.getBackgroundColor());
+		oldPasswordLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(oldPasswordLabel);
 		
 		oldPassowrdTextField = new JPasswordField();
@@ -56,6 +65,8 @@ public class EditUserPasswordGUI extends JFrame{
 		
 		JLabel newPasswordLabel = new JLabel("New password:");
 		newPasswordLabel.setBounds(10, 103, 109, 16);
+		newPasswordLabel.setBackground(currentTheme.getBackgroundColor());
+		newPasswordLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(newPasswordLabel);
 		
 		newPasswordTextField = new JPasswordField();
@@ -65,6 +76,8 @@ public class EditUserPasswordGUI extends JFrame{
 		
 		cancelButton = new JButton("cancel");
 		cancelButton.setBounds(143, 161, 81, 26);
+		cancelButton.setBackground(currentTheme.getButtonColor());
+		cancelButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(cancelButton);
 		cancelButton.addActionListener(new ActionListener() {
 			
@@ -76,6 +89,8 @@ public class EditUserPasswordGUI extends JFrame{
 		
 		confirmButton = new JButton("confirm");
 		confirmButton.setBounds(52, 161, 81, 26);
+		confirmButton.setBackground(currentTheme.getButtonColor());
+		confirmButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(confirmButton);
 		confirmButton.addActionListener(new ActionListener() {
 			

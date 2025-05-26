@@ -15,8 +15,10 @@ import javax.swing.border.EmptyBorder;
 import jtt.vikachaze.Main;
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dao.impl.UserDAOImpl;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.Scalr;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
 import java.awt.Font;
@@ -42,18 +44,20 @@ public class EditProfileGUI extends JFrame{
 	private JPanel contentPane;
 	private JLabel pfpLabel, EditLabel;
 	private JTextField usernameTextField, statusTextField;
-	private JButton editPasswordButton, applyButton;
+	private JButton editPasswordButton, applyButton, cancelButton;
 	private File file;
 	
 	private UserDAOImpl userDAO = new UserDAOImpl();
 	
 	public EditProfileGUI() {
+		Theme currentTheme = Settings.getTheme();
+		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 240, 480);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
+		contentPane.setBackground(currentTheme.getBackgroundColor());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -112,10 +116,14 @@ public class EditProfileGUI extends JFrame{
 		EditLabel = new JLabel("Edit Profile");
 		EditLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		EditLabel.setBounds(12, 11, 200, 20);
+		EditLabel.setBackground(currentTheme.getBackgroundColor());
+		EditLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(EditLabel);
 		
-		JButton cancelButton = new JButton("Cancel");
+		cancelButton = new JButton("Cancel");
 		cancelButton.setBounds(115, 403, 75, 26);
+		cancelButton.setBackground(currentTheme.getButtonColor());
+		cancelButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(cancelButton);
 		cancelButton.addActionListener(new ActionListener() {
 			
@@ -128,7 +136,10 @@ public class EditProfileGUI extends JFrame{
 		});
 		
 		applyButton = new JButton("Apply");
-		applyButton.setBounds(31, 403, 72, 26);		contentPane.add(applyButton);
+		applyButton.setBounds(31, 403, 72, 26);
+		applyButton.setBackground(currentTheme.getButtonColor());
+		applyButton.setForeground(currentTheme.getTextColor());
+		contentPane.add(applyButton);
 		applyButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -143,6 +154,8 @@ public class EditProfileGUI extends JFrame{
 		
 		editPasswordButton = new JButton("Edit Password");
 		editPasswordButton.setBounds(31, 239, 159, 26);
+		editPasswordButton.setBackground(currentTheme.getButtonColor());
+		editPasswordButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(editPasswordButton);
 		editPasswordButton.addActionListener(new ActionListener() {
 			

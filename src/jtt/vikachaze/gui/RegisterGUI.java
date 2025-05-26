@@ -7,8 +7,10 @@ import javax.swing.border.EmptyBorder;
 import jtt.vikachaze.Main;
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dao.UserDAO;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.Scalr;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.dao.impl.UserDAOImpl;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -42,12 +44,14 @@ public class RegisterGUI extends JFrame {
 	private File currentAttachment = null;
 
 	public RegisterGUI() {
+		Theme currentTheme = Settings.getTheme();
+		
 		setTitle("Register");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 283, 379);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
+		contentPane.setBackground(currentTheme.getBackgroundColor());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -55,10 +59,14 @@ public class RegisterGUI extends JFrame {
 		lblRegister.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRegister.setFont(new Font("Tahoma", Font.PLAIN, 23));
 		lblRegister.setBounds(10, 11, 247, 45);
+		lblRegister.setBackground(currentTheme.getBackgroundColor());
+		lblRegister.setForeground(currentTheme.getTextColor());
 		contentPane.add(lblRegister);
 		
 		JLabel usernameLabel = new JLabel("Username:");
 		usernameLabel.setBounds(10, 72, 80, 14);
+		usernameLabel.setBackground(currentTheme.getBackgroundColor());
+		usernameLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(usernameLabel);
 		
 		usernameField = new JTextField();
@@ -68,6 +76,8 @@ public class RegisterGUI extends JFrame {
 		
 		JLabel passwordLabel = new JLabel("Password:");
 		passwordLabel.setBounds(10, 131, 80, 14);
+		passwordLabel.setBackground(currentTheme.getBackgroundColor());
+		passwordLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(passwordLabel);
 		
 		passwordField = new JPasswordField();
@@ -76,6 +86,8 @@ public class RegisterGUI extends JFrame {
 		
 		JButton registerButton = new JButton("Register");
 		registerButton.setBounds(10, 282, 247, 45);
+		registerButton.setBackground(currentTheme.getButtonColor());
+		registerButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(registerButton);
 		
 		registerButton.addActionListener(new ActionListener() {
@@ -97,6 +109,8 @@ public class RegisterGUI extends JFrame {
 		
 		JButton AddProfilePictureButton = new JButton("Add profile picture");
 		AddProfilePictureButton.setBounds(10, 219, 247, 45);
+		AddProfilePictureButton.setBackground(currentTheme.getButtonColor());
+		AddProfilePictureButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(AddProfilePictureButton);
 		
 		AddProfilePictureButton.addActionListener(new ActionListener() {
