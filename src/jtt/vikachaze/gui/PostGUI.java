@@ -49,6 +49,7 @@ public class PostGUI extends JFrame{
 	private JTextArea textArea;
 	private JTextField commentTextField;
 	private JCheckBox likeCheck;
+	private PostLikes postLikes;
 	
 	private CommentDAOImpl commentDAO;
 	private PostLikeDAOImpl postLikeDAO;
@@ -143,7 +144,23 @@ public class PostGUI extends JFrame{
 		likeCheck = new JCheckBox("");
 		likeCheck.setBounds(299, 38, 50, 46);
 		profilePanel.add(likeCheck);
-		//likeCheck.setIcon(new StretchIcon("vikachazeLogo.png", false));
+		
+		JLabel likeCounterLabel = new JLabel("");
+		likeCounterLabel.setBounds(286, 70, 46, 14);
+		profilePanel.add(likeCounterLabel);
+		try {
+			List<PostLikes> tempPostLikes = postLikeDAO.getByPostID(post);
+			
+			int tempLikeCount = tempPostLikes.size();
+			String likeCount = Integer.toString(tempLikeCount);
+			likeCounterLabel.setText(likeCount);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		likeCheck.setIcon(new StretchIcon("vikachazeLogo.png", false));
+
 		likeCheck.addActionListener(new ActionListener() {
 			
 			@Override
@@ -245,9 +262,10 @@ public class PostGUI extends JFrame{
 		if(likeCheck.isSelected()) {
 			int id = postLikeDAO.insert(postLike);
 			postLike.setId(id);
+			likeCheck.setBackground(new Color(255,0,0));
 		}else {
 			postLikeDAO.delete(postLike);
+			likeCheck.setBackground(new Color(0,0,255));
 		}
 	}
-
 }
