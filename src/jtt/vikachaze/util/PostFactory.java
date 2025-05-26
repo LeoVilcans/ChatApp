@@ -20,9 +20,9 @@ import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.gui.PostGUI;
 
 public class PostFactory {
-	private static Theme currentTheme = Settings.getTheme();
-	
 	public static JPanel createPostPanel(Post post) throws SQLException, IOException {
+		Theme currentTheme = Settings.getTheme();
+		
 		JPanel postPanel = new JPanel();
 		postPanel.setSize(350, 340);
 		postPanel.setLayout(null);

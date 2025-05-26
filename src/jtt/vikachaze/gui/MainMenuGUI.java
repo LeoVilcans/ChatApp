@@ -248,6 +248,7 @@ public class MainMenuGUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				SettingsGUI form = new SettingsGUI();
 				form.setVisible(true);
+				MainMenuGUI.this.dispose();
 			}
 		});
 		
@@ -265,7 +266,7 @@ public class MainMenuGUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				AddPostGUI form  = new AddPostGUI();
-						form.setVisible(true);
+				form.setVisible(true);
 			}
 		});
 		
