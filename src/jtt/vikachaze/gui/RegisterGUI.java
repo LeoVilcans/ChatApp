@@ -139,11 +139,14 @@ public class RegisterGUI extends JFrame {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			String format = currentAttachment.toPath().getFileName().toString().split("\\.")[1];
-			ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), format, baos);
-			Blob b1 = Database.getConnection().createBlob();
-			b1.setBytes(1,  baos.toByteArray());
-			user.setPfp(b1);
+			if (currentAttachment != null) {
+				String format = currentAttachment.toPath().getFileName().toString().split("\\.")[1];
+				ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), format, baos);
+				Blob b1 = Database.getConnection().createBlob();
+				b1.setBytes(1,  baos.toByteArray());
+				user.setPfp(b1);
+			}
+
 			
 			int id  = userDAO.insert(user);
 			user.setId(id);
