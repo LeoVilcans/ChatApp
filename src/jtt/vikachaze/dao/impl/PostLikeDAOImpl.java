@@ -157,9 +157,9 @@ Connection connection = Database.getConnection();
 
 	@Override
 	public List<PostLikes> getByPostID(Post postID) throws SQLException {
-Connection connection = Database.getConnection();
+		Connection connection = Database.getConnection();
 		
-		PreparedStatement statement = connection.prepareStatement(GET_BY_USER_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		PreparedStatement statement = connection.prepareStatement(GET_BY_POST_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, postID.getId());
 		
 		ResultSet result = statement.executeQuery();
