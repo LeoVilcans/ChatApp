@@ -168,12 +168,8 @@ public class PostGUI extends JFrame{
 				try {
 					likePost();
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				
-				
-				
 			}
 		});
 		
@@ -199,7 +195,13 @@ public class PostGUI extends JFrame{
 			
 			usernameLabel.setText(post.getUser().getUsername());
 			postTitleLabel.setText(post.getTitle());
-			postPicture.setIcon(new StretchIcon(post.getAttachmentAsImage()));
+			
+			if (post.getAttachment() == null) {
+				postPicture.setIcon(new StretchIcon("emptyRoomIcon.jpg", false));
+			} else {
+				postPicture.setIcon(new StretchIcon(post.getAttachmentAsImage(), false));
+			}
+			
 			textArea.setText(post.getText());
 			
 			PostLikes postLike = postLikeDAO.getOnPostByUser(post, Main.getLoggedUser());
