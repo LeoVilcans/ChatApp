@@ -159,7 +159,7 @@ public class PostGUI extends JFrame{
 			e.printStackTrace();
 		}
 		
-		likeCheck.setIcon(new StretchIcon("vikachazeLogo.png", false));
+		likeCheck.setIcon(new StretchIcon("emptyPostLikeIcon.png", false));
 
 		likeCheck.addActionListener(new ActionListener() {
 			
@@ -266,9 +266,11 @@ public class PostGUI extends JFrame{
 	
 	private void refrestLikeCheck() {
 		if(likeCheck.isSelected()) {
-			likeCheck.setBackground(new Color(255,0,0));
+			likeCheck.setIcon(new StretchIcon("postLikeIcon.png",false));
+			//likeCheck.setBackground(new Color(255,0,0));
 		}else {
-			likeCheck.setBackground(new Color(0,0,255));
+			likeCheck.setIcon(new StretchIcon("emptyPostLikeIcon.png",false));
+			//likeCheck.setBackground(new Color(0,0,255));
 		}
 	}
 	
