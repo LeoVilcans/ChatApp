@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
@@ -47,7 +48,7 @@ public class RegisterGUI extends JFrame {
 		Theme currentTheme = Settings.getTheme();
 		 
 		setTitle("Register");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 283, 379);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -139,6 +140,20 @@ public class RegisterGUI extends JFrame {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
+			List<User> users = userDAO.getAllData();
+			
+			for (User u : users) {
+				if (u.getUsername().equals(username)) {
+					JOptionPane.showMessageDialog(RegisterGUI.this, "Tāds Lietotājs jau eksistē! Mēģinat citu Lietotājvārdu", getTitle(), JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+			}
+			
+			if (str.isEmpty()) {
+				JOptionPane.showMessageDialog(RegisterGUI.this, "Nav paroles, Mēģinat velreiz", getTitle(), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
 			if (currentAttachment != null) {
 				String format = currentAttachment.toPath().getFileName().toString().split("\\.")[1];
 				ImageIO.write(Scalr.resize(ImageIO.read(currentAttachment), 236), format, baos);
@@ -146,7 +161,6 @@ public class RegisterGUI extends JFrame {
 				b1.setBytes(1,  baos.toByteArray());
 				user.setPfp(b1);
 			}
-
 			
 			int id  = userDAO.insert(user);
 			user.setId(id);
