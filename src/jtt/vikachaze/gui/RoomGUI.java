@@ -164,17 +164,19 @@ public class RoomGUI extends JFrame {
 		textArea.setBounds(10, 11, 485, 84);
 		inputPanel.add(textArea);
 		
-		sendButton = new JButton("Sūtīt");
+		sendButton = new JButton("");
 		sendButton.setBackground(currentTheme.getButtonColor());
 		sendButton.setForeground(currentTheme.getTextColor());
 		sendButton.setBounds(505, 11, 137, 40);
 		inputPanel.add(sendButton);
+		sendButton.setIcon(new StretchIcon("send-icon.jpg", true));
 		
-		attachmentButton = new JButton("Add attachment");
+		attachmentButton = new JButton("");
 		attachmentButton.setBackground(currentTheme.getButtonColor());
 		attachmentButton.setForeground(currentTheme.getTextColor());
 		attachmentButton.setBounds(505, 59, 135, 36);
 		inputPanel.add(attachmentButton);
+		attachmentButton.setIcon(new StretchIcon("attachment.jpg", true));
 		
 		attachmentButton.addActionListener(new ActionListener() {
 			@Override
