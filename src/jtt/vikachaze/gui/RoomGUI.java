@@ -62,9 +62,6 @@ public class RoomGUI extends JFrame {
 	
 	private File currentAttachment = null;
 	
-	private static String ATTACHMENT_BUTTON_ADD_TEXT = "Add attachment";
-	private static String ATTACHMENT_BUTTON_REMOVE_TEXT = "Remove attachment";
-	
 	private void AddMessage(Message message) throws SQLException, IOException {
 		JPanel newMessagePanel = MessageFactory.createMessagePanel(message);
 		newMessagePanel.setBounds(0, currentMessageHeight, newMessagePanel.getWidth(), newMessagePanel.getHeight());
@@ -127,7 +124,6 @@ public class RoomGUI extends JFrame {
 			textArea.setText("");
 			
 			currentAttachment = null;
-			attachmentButton.setText(ATTACHMENT_BUTTON_ADD_TEXT);
 			messageDAO.insert(m);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -187,13 +183,11 @@ public class RoomGUI extends JFrame {
 					
 					if(response == JFileChooser.APPROVE_OPTION) {
 						currentAttachment = new File(fileChooser.getSelectedFile().getAbsolutePath());
-						attachmentButton.setText(ATTACHMENT_BUTTON_REMOVE_TEXT);
 						JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 				else {
 					currentAttachment = null;
-					attachmentButton.setText(ATTACHMENT_BUTTON_ADD_TEXT);
 					JOptionPane.showMessageDialog(RoomGUI.this, "Bilde tika noņemta.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
