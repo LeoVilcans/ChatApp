@@ -239,8 +239,8 @@ Connection connection = Database.getConnection();
 		Connection connection = Database.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_POST_AND_USER, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		statement.setInt(1, user.getId());
-		statement.setInt(2, post.getId());
+		statement.setInt(1, post.getId());
+		statement.setInt(2, user.getId());
 		
 		ResultSet result = statement.executeQuery();
 		
