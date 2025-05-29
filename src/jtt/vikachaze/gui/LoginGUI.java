@@ -36,6 +36,8 @@ public class LoginGUI extends JFrame {
 	private UserDAO userDAO;
 	
 	public LoginGUI() {
+		userDAO = new UserDAOImpl();
+		
 		Theme currentTheme = Settings.getTheme();
 		 
 		setTitle("Login");
@@ -82,6 +84,13 @@ public class LoginGUI extends JFrame {
 		loginButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(loginButton);
 		
+		loginButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				login();
+			}
+		});
+		
 		JButton btnRegister = new JButton("No account? Register here.");
 		btnRegister.setBounds(10, 234, 247, 23);
 		btnRegister.setBackground(currentTheme.getButtonColor());
@@ -96,38 +105,36 @@ public class LoginGUI extends JFrame {
 				LoginGUI.this.dispose();
 			}
 		});
+	}
+	
+	public void login() {
+		char[] rawPassword = passwordField.getPassword();
 		
-		userDAO = new UserDAOImpl();
+		String password = "";
+		for (char symbol : rawPassword) {
+			password += symbol;
+		}
 		
-		loginButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				char[] rawPassword = passwordField.getPassword();
-				
-				String password = "";
-				for (char symbol : rawPassword) {
-					password += symbol;
-				}
-				
-				String username = usernameTextField.getText();
-				
-				try {
-					User user = userDAO.getByUsername(username);
-					
-					if (user == null) {
-						JOptionPane.showMessageDialog(LoginGUI.this, "Tāda lietotāja nav! Mēģiniet velreiz", getTitle(), JOptionPane.ERROR_MESSAGE);
-						
-						return;
-					}
-					
-					if (user.getPassword().equals(password)) {
-						Main.Login(user);
-						LoginGUI.this.dispose();
-					}
-				} catch (SQLException | IOException e1) {
-					e1.printStackTrace();
-				}
+		String username = usernameTextField.getText();
+		
+		try {
+			User user = userDAO.getByUsername(username);
+			
+			if (user == null) {
+				JOptionPane.showMessageDialog(LoginGUI.this, "Nav pareizs Lietotājvārds vai Parole! Mēģiniet velreiz", getTitle(), JOptionPane.ERROR_MESSAGE);
+				return;
 			}
-		});
+			
+			if (user.getPassword().equals(password)) {
+				Main.Login(user);
+				LoginGUI.this.dispose();
+			} else {
+				JOptionPane.showMessageDialog(LoginGUI.this, "Nav pareizs Lietotājvārds vai Parole! Mēģiniet velreiz", getTitle(), JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+		} catch (SQLException | IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 }
