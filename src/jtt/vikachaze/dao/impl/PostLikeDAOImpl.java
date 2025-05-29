@@ -196,7 +196,7 @@ Connection connection = Database.getConnection();
 
 	@Override
 	public List<PostLikes> getByUserID(User userID) throws SQLException {
-Connection connection = Database.getConnection();
+		Connection connection = Database.getConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USER_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, userID.getId());
@@ -232,6 +232,28 @@ Connection connection = Database.getConnection();
 		Database.closeConnection(connection);
 		
 		return postLikes;
+	}
+
+	@Override
+	public PostLikes getOnPostByUser(Post post, User user) throws SQLException {
+		Connection connection = Database.getConnection();
+		
+		PreparedStatement statement = connection.prepareStatement(GET_BY_POST_AND_USER, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		statement.setInt(1, user.getId());
+		statement.setInt(2, post.getId());
+		
+		ResultSet result = statement.executeQuery();
+		
+		PostLikes postLike = null;
+		if (result.next()) {
+			postLike = new PostLikes(user, post);
+		}
+		
+		Database.closeResultSet(result);
+		Database.closePreparedStatement(statement);
+		Database.closeConnection(connection);
+		
+		return postLike;
 	}
 
 }

@@ -15,5 +15,7 @@ public interface PostLikesQueries {
     
     public static final String GET_BY_POST_QUERY = "SELECT * FROM " + TABLE + " WHERE post_id = ?";
     
+    public static final String GET_BY_POST_AND_USER = "SELECT * FROM " + TABLE + " WHERE post_id = ? AND user_id = ?";
+    
     public static final String GET_ALL_QUERY = "SELECT * FROM " + TABLE;
 }

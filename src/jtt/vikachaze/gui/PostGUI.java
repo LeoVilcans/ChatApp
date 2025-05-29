@@ -41,7 +41,7 @@ import javax.swing.JCheckBox;
 
 public class PostGUI extends JFrame{
 	private JPanel profilePanel, postPanel, PostcommentsPanel,commentPanel;
-	private JLabel usernameLabel, postTitleLabel, postPicture;
+	private JLabel usernameLabel, postTitleLabel, postPicture, likeCounterLabel;
 	private JButton pfpButton;
 	private JScrollPane postScrollPane, commentScrollPane;
 	private JButton commentButton;
@@ -145,7 +145,7 @@ public class PostGUI extends JFrame{
 		likeCheck.setBounds(299, 38, 50, 46);
 		profilePanel.add(likeCheck);
 		
-		JLabel likeCounterLabel = new JLabel("");
+		likeCounterLabel = new JLabel("");
 		likeCounterLabel.setBounds(286, 70, 46, 14);
 		profilePanel.add(likeCounterLabel);
 		try {
@@ -202,6 +202,12 @@ public class PostGUI extends JFrame{
 			postPicture.setIcon(new StretchIcon(post.getAttachmentAsImage()));
 			textArea.setText(post.getText());
 			
+			PostLikes postLike = postLikeDAO.getOnPostByUser(post, Main.getLoggedUser());
+			if (postLike != null) {
+				likeCheck.setSelected(true);
+				refrestLikeCheck();
+			}
+			
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 		}
@@ -255,6 +261,15 @@ public class PostGUI extends JFrame{
 		commentPanel.setSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
 		commentPanel.setPreferredSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
 	}
+	
+	private void refrestLikeCheck() {
+		if(likeCheck.isSelected()) {
+			likeCheck.setBackground(new Color(255,0,0));
+		}else {
+			likeCheck.setBackground(new Color(0,0,255));
+		}
+	}
+	
 	private void likePost() throws SQLException {
 		
 		PostLikes postLike = new PostLikes(Main.getLoggedUser(), post);			
@@ -262,10 +277,12 @@ public class PostGUI extends JFrame{
 		if(likeCheck.isSelected()) {
 			int id = postLikeDAO.insert(postLike);
 			postLike.setId(id);
-			likeCheck.setBackground(new Color(255,0,0));
+			likeCounterLabel.setText(Integer.toString(Integer.parseInt(likeCounterLabel.getText())+1));
 		}else {
 			postLikeDAO.delete(postLike);
-			likeCheck.setBackground(new Color(0,0,255));
+			likeCounterLabel.setText(Integer.toString(Integer.parseInt(likeCounterLabel.getText())-1));
 		}
+		
+		refrestLikeCheck();
 	}
 }
