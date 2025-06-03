@@ -32,4 +32,8 @@ public class Settings {
 				return new Theme();
 		}
 	}
+	
+	public static ThemeChoice getThemeChoice() {
+		return currentThemeChoice;
+	}
 }

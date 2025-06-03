@@ -10,6 +10,7 @@ import jtt.vikachaze.dto.User;
 import jtt.vikachaze.gui.LoginGUI;
 import jtt.vikachaze.gui.MainMenuGUI;
 import jtt.vikachaze.util.FileManager;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.dao.impl.UserDAOImpl;
 import jtt.vikachaze.dao.UserDAO;
 
@@ -30,6 +31,7 @@ public class Main {
 		
 		FileManager.writeToFile("login.data", user.getUsername());
 		FileManager.writeToFile("login.data", user.getPassword());
+		FileManager.writeToFile("login.data", Settings.getThemeChoice().toString());
 		
 		JFrame mainMenu;
 		mainMenu = new MainMenuGUI();
@@ -46,6 +48,8 @@ public class Main {
 			User newUser = userDAO.getByUsername(data.get(0));
 			
 			if (newUser.getPassword().equals(data.get(1))) {
+				Settings.setTheme(Settings.ThemeChoice.valueOf(data.get(2)));
+				
 				Login(newUser);
 				return true;
 			}

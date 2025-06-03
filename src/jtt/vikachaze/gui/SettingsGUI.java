@@ -2,12 +2,16 @@ package jtt.vikachaze.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import jtt.vikachaze.Main;
 import jtt.vikachaze.dto.Theme;
+import jtt.vikachaze.dto.User;
 import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.Settings.ThemeChoice;
 
@@ -92,8 +96,16 @@ public class SettingsGUI extends JFrame {
 		backButton.addActionListener(new ActionListener() {	
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainMenuGUI form = new MainMenuGUI();
-				form.setVisible(true);
+				//MainMenuGUI form = new MainMenuGUI();
+				//form.setVisible(true);
+				try {
+					User user = Main.getLoggedUser();
+					Main.logout();
+					Main.Login(user);
+				} catch (SQLException | IOException e1) {
+					e1.printStackTrace();
+				}
+				
 				SettingsGUI.this.dispose();
 			}
 		});
