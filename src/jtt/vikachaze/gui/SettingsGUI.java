@@ -22,8 +22,8 @@ import javax.swing.SwingConstants;
 public class SettingsGUI extends JFrame {
 
 	private JPanel contentPane;
-	private JButton classicButton, darkButton, lightButton, latvianButton, russianButton, englishButton, backButton;
-	private JLabel themeLabel, languageLabel;
+	private JButton classicButton, darkButton, lightButton, backButton;
+	private JLabel themeLabel;
 	
 	public SettingsGUI() {		
 		setTitle("Settings");
@@ -34,14 +34,14 @@ public class SettingsGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		themeLabel = new JLabel("Theme");
-		themeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		themeLabel = new JLabel("Theme:");
+		themeLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		themeLabel.setBounds(10, 11, 98, 14);
 		contentPane.add(themeLabel);
 		
 		
 		classicButton = new JButton("Classic");
-		classicButton.setBounds(10, 33, 98, 26);
+		classicButton.setBounds(10, 33, 264, 26);
 		contentPane.add(classicButton);
 		classicButton.addActionListener(new ActionListener() {
 			@Override
@@ -52,7 +52,7 @@ public class SettingsGUI extends JFrame {
 		});
 		
 		darkButton = new JButton("Dark");
-		darkButton.setBounds(10, 70, 98, 26);
+		darkButton.setBounds(10, 70, 264, 26);
 		contentPane.add(darkButton);
 		darkButton.addActionListener(new ActionListener() {
 			@Override
@@ -63,7 +63,7 @@ public class SettingsGUI extends JFrame {
 		});
 		
 		lightButton = new JButton("Light");
-		lightButton.setBounds(10, 107, 98, 26);
+		lightButton.setBounds(10, 107, 264, 26);
 		contentPane.add(lightButton);
 		lightButton.addActionListener(new ActionListener() {
 			@Override
@@ -73,25 +73,8 @@ public class SettingsGUI extends JFrame {
 			}
 		});
 		
-		languageLabel = new JLabel("Language");
-		languageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		languageLabel.setBounds(163, 10, 98, 14);
-		contentPane.add(languageLabel);
-		
-		englishButton = new JButton("English");
-		englishButton.setBounds(163, 33, 98, 26);
-		contentPane.add(englishButton);
-		
-		latvianButton = new JButton("Latvian");
-		latvianButton.setBounds(163, 70, 98, 26);
-		contentPane.add(latvianButton);
-		
-		russianButton = new JButton("Russian");
-		russianButton.setBounds(163, 107, 98, 26);
-		contentPane.add(russianButton);
-		
-		backButton = new JButton("Go Back");
-		backButton.setBounds(87, 153, 98, 26);
+		backButton = new JButton("Save and Go Back");
+		backButton.setBounds(73, 154, 138, 26);
 		contentPane.add(backButton);
 		backButton.addActionListener(new ActionListener() {	
 			@Override
@@ -123,21 +106,14 @@ public class SettingsGUI extends JFrame {
 		classicButton.setBackground(currentTheme.getButtonColor());
 		darkButton.setBackground(currentTheme.getButtonColor());
 		lightButton.setBackground(currentTheme.getButtonColor());
-		latvianButton.setBackground(currentTheme.getButtonColor());
-		russianButton.setBackground(currentTheme.getButtonColor());
-		englishButton.setBackground(currentTheme.getButtonColor());
 		backButton.setBackground(currentTheme.getButtonColor());
 		
 		// getTextColor()
 		classicButton.setForeground(currentTheme.getTextColor());
 		darkButton.setForeground(currentTheme.getTextColor());
 		lightButton.setForeground(currentTheme.getTextColor());
-		latvianButton.setForeground(currentTheme.getTextColor());
-		russianButton.setForeground(currentTheme.getTextColor());
-		englishButton.setForeground(currentTheme.getTextColor());
 		backButton.setForeground(currentTheme.getTextColor());
 		
 		themeLabel.setForeground(currentTheme.getTextColor());
-		languageLabel.setForeground(currentTheme.getTextColor());
 	}
 }
