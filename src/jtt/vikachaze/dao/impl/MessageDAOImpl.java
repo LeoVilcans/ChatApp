@@ -388,7 +388,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 		} else {
 			return Database.getConnection();
 		}
-	}
+	} 
 	
 	private void closeConnection(Connection con) throws SQLException {
 		if (batchConnection == null) {

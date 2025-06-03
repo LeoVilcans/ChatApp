@@ -206,7 +206,7 @@ Connection connection = findConnection();
 	
 	private Connection findConnection() throws SQLException {
 		if (batchConnection != null) {
-			return batchConnection;
+			return batchConnection; 
 		} else {
 			return Database.getConnection();
 		}

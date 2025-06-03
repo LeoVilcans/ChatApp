@@ -395,7 +395,7 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	}
 	
 	private void closeConnection(Connection con) throws SQLException {
-		if (batchConnection == null) {
+		if (batchConnection == null) { 
 			Database.closeConnection(con);
 		}
 	}

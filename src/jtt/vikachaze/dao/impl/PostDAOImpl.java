@@ -58,7 +58,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 				user = userDAO.getByID(user_id);
 				postUsers.put(user.getId(), user);
 			}
-			
+			 
 			Post post = new Post(sent_time, user, title, text);
 			post.setId(id);
 			post.setAttachment(attachment);

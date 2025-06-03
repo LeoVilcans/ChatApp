@@ -12,5 +12,5 @@ public interface GenericDAO<T> {
 	List<T> getAllData() throws SQLException;
 	
 	void startBatchMode() throws SQLException;
-	void stopBatchMode() throws SQLException;
+	void stopBatchMode() throws SQLException; 
 }

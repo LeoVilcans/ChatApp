@@ -148,7 +148,7 @@ Connection connection = findConnection();
 			PostLikes postLike = new PostLikes(user,post);
 			postLike.setId(id);
 			postLikes.add(postLike);
-		}
+		} 
 		userDAO.stopBatchMode();
 		postDAO.stopBatchMode();
 		

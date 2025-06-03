@@ -36,7 +36,7 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	    	if (newUserUsername.equals(checkUsername)) {
 	    		return 0;
 	    	}
-	    }
+	    } 
 	    
 	    statement.setString(1, value.getUsername());
 	    statement.setString(2, value.getPassword());
