@@ -1,18 +1,11 @@
 package jtt.vikachaze.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -22,14 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
-import jtt.vikachaze.dao.impl.CommentDAOImpl;
 import jtt.vikachaze.dao.impl.PostLikeDAOImpl;
-import jtt.vikachaze.dto.Comment;
 import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.PostLikes;
 import jtt.vikachaze.dto.Theme;
-import jtt.vikachaze.util.CommentFactory;
-import jtt.vikachaze.util.PostFactory;
 import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
@@ -51,15 +40,9 @@ public class PostGUI extends JFrame{
 	private JCheckBox likeCheck;
 	private PostLikes postLikes;
 	
-	private CommentDAOImpl commentDAO;
 	private PostLikeDAOImpl postLikeDAO;
 	
-	private int currentMessageHeight = 0;
-	private List<Comment> comments;
-	private List<PostLikes> postLike;
-	
 	public PostGUI(Post post) {
-		commentDAO = new CommentDAOImpl();
 		postLikeDAO = new PostLikeDAOImpl();
 		Theme currentTheme = Settings.getTheme();
 		
@@ -172,17 +155,7 @@ public class PostGUI extends JFrame{
 				}
 			}
 		});
-		
-		commentButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				commentPost();
-			}
-		});
-		
 		loadPost();
-		addCommentTracker();
 	}
 	
 	public void loadPost() {
@@ -213,55 +186,6 @@ public class PostGUI extends JFrame{
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public void commentPost() {
-		String text = commentTextField.getText();
-		
-		try {
-			Comment comment = new Comment(Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser(), post, text);
-			
-			int id = commentDAO.insert(comment);
-			comment.setId(id);
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void addCommentTracker() {
-		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-		ses.scheduleAtFixedRate(new Runnable() {
-		    @Override
-		    public void run() {   
-		    	int lastIndex = 0;
-		    	if (!comments.isEmpty()) {
-		    		lastIndex = comments.get(comments.size()-1).getId();
-		    	}
-
-		        try {
-					List<Comment> newComments = commentDAO.getSinceIndex(lastIndex);
-					
-					for (Comment comment : newComments) {
-						comments.add(comment);
-						addPost(comment);
-					}
-				} catch (SQLException | IOException e) {
-					e.printStackTrace();
-				}
-		    }
-		}, 0, 1, TimeUnit.SECONDS);
-	}
-	
-	private void addPost(Comment comment) throws SQLException, IOException {
-		JPanel newPostPanel = CommentFactory.createCommentPanel(comment);
-		newPostPanel.setBounds(0, currentMessageHeight, newPostPanel.getWidth(), newPostPanel.getHeight());
-		
-		currentMessageHeight+=newPostPanel.getHeight();
-		
-		commentPanel.add(newPostPanel);
-		commentPanel.setSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
-		commentPanel.setPreferredSize(new Dimension(commentPanel.getPreferredSize().width, currentMessageHeight));
 	}
 	
 	private void refrestLikeCheck() {
