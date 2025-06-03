@@ -152,6 +152,7 @@ public class PostGUI extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				try {
 					insertComment();
+					commentTextField.setText("");
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}

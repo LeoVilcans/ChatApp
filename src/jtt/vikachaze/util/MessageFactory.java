@@ -23,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.JFrame;
 
 import jtt.vikachaze.gui.UserProfileGUI;
+import jtt.vikachaze.util.Settings.ThemeChoice;
 import jtt.vikachaze.dto.Message;
 import jtt.vikachaze.dto.Theme;
 
@@ -59,10 +60,16 @@ public class MessageFactory {
 		JTextPane textPane = new JTextPane();
 		textPane.setContentType("text/html");
 		textPane.setEditable(false);
-		textPane.setText(message.getText());
+		if(Settings.getThemeChoice() == ThemeChoice.DARK) {
+		String htmlContent = "<html><body style='color: white;'>" + message.getText() + "</body></html>";
+		textPane.setText(htmlContent);
+		}else {
+			textPane.setText(message.getText());
+		}
 		textPane.setBackground(currentTheme.getBackgroundColor());
-		textPane.setForeground(currentTheme.getTextColor());
+		textPane.setForeground(currentTheme.getTextColor()); 
 		textPane.setBounds(22, 37, 475, 68);
+
 		
 		String rawTimeString = message.getSent_time().toString();
 		String[] seperatedTimes = rawTimeString.split(" ");
