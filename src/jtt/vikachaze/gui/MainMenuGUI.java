@@ -156,7 +156,7 @@ public class MainMenuGUI extends JFrame{
 		searchButton.addActionListener(new ActionListener() {	
 			@Override
 			public void actionPerformed(ActionEvent e) {	
-				ses.close();
+				ses.shutdown();
 				scrollPostPanel.removeAll();
 				posts.clear();
 				currentPostHeight = 0;
