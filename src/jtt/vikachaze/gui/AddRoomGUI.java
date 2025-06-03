@@ -1,14 +1,14 @@
 package jtt.vikachaze.gui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dto.Room;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.Scalr;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.dao.*;
 import jtt.vikachaze.dao.impl.*;
 
@@ -27,18 +27,21 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
 
 public class AddRoomGUI extends JFrame {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField RoomNameField;
-	private RoomDAO roomDAO = new RoomDAOImpl();
+	private JLabel titleLabel;
+	private JTextField roomNameTextField;
+	private JButton addIconButton, addRoomButton;
+	
+	private RoomDAO roomDAO;
 	private File currentFile = null;
 
 	public AddRoomGUI() {
+		roomDAO = new RoomDAOImpl();
+		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 280, 200);
 		contentPane = new JPanel();
@@ -47,23 +50,24 @@ public class AddRoomGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		RoomNameField = new JTextField();
-		RoomNameField.setBounds(58, 38, 136, 20);
-		contentPane.add(RoomNameField);
-		RoomNameField.setColumns(10);
+		roomNameTextField = new JTextField();
+		roomNameTextField.setBounds(58, 38, 151, 20);
+		contentPane.add(roomNameTextField);
+		roomNameTextField.setColumns(10);
 		
-		JLabel lblNewLabel = new JLabel("Room name");
-		lblNewLabel.setBounds(91, 12, 68, 16);
-		contentPane.add(lblNewLabel);
+		titleLabel = new JLabel("Room name");
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setBounds(10, 12, 244, 16);
+		contentPane.add(titleLabel);
 		 
-		JButton IconButton = new JButton("Add icon");
-		IconButton.setBounds(58, 72, 136, 26);
-		contentPane.add(IconButton);
-		IconButton.addActionListener(new ActionListener() {
+		addIconButton = new JButton("Add icon");
+		addIconButton.setBounds(58, 72, 151, 26);
+		contentPane.add(addIconButton);
+		addIconButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(e.getSource()==IconButton) {
+				if(e.getSource()==addIconButton) {
 					JFileChooser fileChooser = new JFileChooser();
 					int response = fileChooser.showOpenDialog(null);
 					
@@ -75,19 +79,21 @@ public class AddRoomGUI extends JFrame {
 			}
 		});
 		
-		JButton AddRoomButton = new JButton("Add room");
-		AddRoomButton.addActionListener(new ActionListener() {
+		addRoomButton = new JButton("Add room");
+		addRoomButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addRoom();
 			}
 		});
 		
-		AddRoomButton.setBounds(58, 110, 136, 26);
-		contentPane.add(AddRoomButton);
+		addRoomButton.setBounds(58, 110, 151, 26);
+		contentPane.add(addRoomButton);
+		
+		updateTheme();
 	}
 
 	public void addRoom() {
-		String roomName = RoomNameField.getText();
+		String roomName = roomNameTextField.getText();
 		Room room = new Room(roomName);
 		
 		try {
@@ -106,5 +112,24 @@ public class AddRoomGUI extends JFrame {
 		} catch (IllegalArgumentException | ImagingOpException | SQLException | IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		
+		titleLabel.setBackground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		addIconButton.setBackground(currentTheme.getButtonColor());
+		addRoomButton.setBackground(currentTheme.getButtonColor());
+		
+		// getTextColor()
+		titleLabel.setForeground(currentTheme.getTextColor());
+		
+		addIconButton.setForeground(currentTheme.getTextColor());
+		addRoomButton.setForeground(currentTheme.getTextColor());
 	}
 }
