@@ -81,9 +81,7 @@ public class PostGUI extends JFrame{
 				UserProfileGUI form = new UserProfileGUI(post.getUser());
 				form.setVisible(true);
 			}
-			
 		});
-		
 		
 		usernameLabel = new JLabel("<Username>");
 		usernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -227,7 +225,6 @@ public class PostGUI extends JFrame{
 			e.printStackTrace();
 		}
 	}
-
 	
 	private void refrestLikeCheck() {
 		if(likeCheck.isSelected()) {
