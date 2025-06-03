@@ -34,40 +34,34 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 public class RegisterGUI extends JFrame {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JLabel registerLabel, usernameLabel, passwordLabel;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
-	private UserDAO userDAO = new UserDAOImpl();
+	private JButton registerButton, AddProfilePictureButton;
+	private UserDAO userDAO;
 	private File currentAttachment = null;
 
 	public RegisterGUI() {
-		Theme currentTheme = Settings.getTheme();
+		userDAO = new UserDAOImpl();
 		 
 		setTitle("Register");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 283, 379);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setBackground(currentTheme.getBackgroundColor());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblRegister = new JLabel("REGISTER");
-		lblRegister.setHorizontalAlignment(SwingConstants.CENTER);
-		lblRegister.setFont(new Font("Tahoma", Font.PLAIN, 23));
-		lblRegister.setBounds(10, 11, 247, 45);
-		lblRegister.setBackground(currentTheme.getBackgroundColor());
-		lblRegister.setForeground(currentTheme.getTextColor());
-		contentPane.add(lblRegister);
+		registerLabel = new JLabel("REGISTER");
+		registerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		registerLabel.setFont(new Font("Tahoma", Font.PLAIN, 23));
+		registerLabel.setBounds(10, 11, 247, 45);
+		contentPane.add(registerLabel);
 		
-		JLabel usernameLabel = new JLabel("Username:");
+		usernameLabel = new JLabel("Username:");
 		usernameLabel.setBounds(10, 72, 80, 14);
-		usernameLabel.setBackground(currentTheme.getBackgroundColor());
-		usernameLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(usernameLabel);
 		
 		usernameField = new JTextField();
@@ -75,20 +69,16 @@ public class RegisterGUI extends JFrame {
 		usernameField.setBounds(10, 87, 247, 33);
 		contentPane.add(usernameField);
 		
-		JLabel passwordLabel = new JLabel("Password:");
+		passwordLabel = new JLabel("Password:");
 		passwordLabel.setBounds(10, 131, 80, 14);
-		passwordLabel.setBackground(currentTheme.getBackgroundColor());
-		passwordLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(passwordLabel);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(10, 146, 247, 33);
 		contentPane.add(passwordField);
 		
-		JButton registerButton = new JButton("Register");
+		registerButton = new JButton("Register");
 		registerButton.setBounds(10, 282, 247, 45);
-		registerButton.setBackground(currentTheme.getButtonColor());
-		registerButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(registerButton);
 		
 		registerButton.addActionListener(new ActionListener() {
@@ -108,10 +98,8 @@ public class RegisterGUI extends JFrame {
 		lblProfilePicture.setBounds(10, 192, 96, 14);
 		contentPane.add(lblProfilePicture);
 		
-		JButton AddProfilePictureButton = new JButton("Add profile picture");
+		AddProfilePictureButton = new JButton("Add profile picture");
 		AddProfilePictureButton.setBounds(10, 219, 247, 45);
-		AddProfilePictureButton.setBackground(currentTheme.getButtonColor());
-		AddProfilePictureButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(AddProfilePictureButton);
 		
 		AddProfilePictureButton.addActionListener(new ActionListener() {
@@ -130,6 +118,8 @@ public class RegisterGUI extends JFrame {
 			}
 			
 		});
+		
+		updateTheme();
 	}
 	public void register() throws SQLException {
 		String username = usernameField.getText();
@@ -171,5 +161,28 @@ public class RegisterGUI extends JFrame {
 		} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		
+		registerLabel.setBackground(currentTheme.getBackgroundColor());
+		usernameLabel.setBackground(currentTheme.getBackgroundColor());
+		passwordLabel.setBackground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		registerButton.setBackground(currentTheme.getButtonColor());
+		AddProfilePictureButton.setBackground(currentTheme.getButtonColor());
+		
+		// getTextColor()
+		registerLabel.setForeground(currentTheme.getTextColor());
+		usernameLabel.setForeground(currentTheme.getTextColor());
+		passwordLabel.setForeground(currentTheme.getTextColor());
+		
+		registerButton.setForeground(currentTheme.getTextColor());
+		AddProfilePictureButton.setForeground(currentTheme.getTextColor());
 	}
 }

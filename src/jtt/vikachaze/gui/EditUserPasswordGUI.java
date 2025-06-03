@@ -17,45 +17,37 @@ import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 
 public class EditUserPasswordGUI extends JFrame{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JLabel EditLabel, oldPasswordLabel, newPasswordLabel;
 	private JPasswordField oldPassowrdTextField, newPasswordTextField;
 	private JButton confirmButton, cancelButton;
 	
-	private UserDAOImpl userDAO = new UserDAOImpl();
+	private UserDAOImpl userDAO;
 	
 	public EditUserPasswordGUI() {
-		Theme currentTheme = Settings.getTheme();
- 
+		userDAO = new UserDAOImpl();
+		 
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 250, 240);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setBackground(currentTheme.getBackgroundColor());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel EditLabel = new JLabel("Edit Password");
+		EditLabel = new JLabel("Edit Password");
 		EditLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		EditLabel.setBounds(10, 11, 214, 20);
-		EditLabel.setBackground(currentTheme.getBackgroundColor());
-		EditLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(EditLabel);
 		
-		JLabel oldPasswordLabel = new JLabel("Old password:");
+		oldPasswordLabel = new JLabel("Old password:");
 		oldPasswordLabel.setBounds(10, 45, 109, 16);
-		oldPasswordLabel.setBackground(currentTheme.getBackgroundColor());
-		oldPasswordLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(oldPasswordLabel);
 		
 		oldPassowrdTextField = new JPasswordField();
@@ -63,10 +55,8 @@ public class EditUserPasswordGUI extends JFrame{
 		contentPane.add(oldPassowrdTextField);
 		oldPassowrdTextField.setColumns(10);
 		
-		JLabel newPasswordLabel = new JLabel("New password:");
+		newPasswordLabel = new JLabel("New password:");
 		newPasswordLabel.setBounds(10, 103, 109, 16);
-		newPasswordLabel.setBackground(currentTheme.getBackgroundColor());
-		newPasswordLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(newPasswordLabel);
 		
 		newPasswordTextField = new JPasswordField();
@@ -76,8 +66,6 @@ public class EditUserPasswordGUI extends JFrame{
 		
 		cancelButton = new JButton("cancel");
 		cancelButton.setBounds(143, 161, 81, 26);
-		cancelButton.setBackground(currentTheme.getButtonColor());
-		cancelButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(cancelButton);
 		cancelButton.addActionListener(new ActionListener() {
 			
@@ -89,8 +77,6 @@ public class EditUserPasswordGUI extends JFrame{
 		
 		confirmButton = new JButton("confirm");
 		confirmButton.setBounds(52, 161, 81, 26);
-		confirmButton.setBackground(currentTheme.getButtonColor());
-		confirmButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(confirmButton);
 		confirmButton.addActionListener(new ActionListener() {
 			
@@ -99,6 +85,8 @@ public class EditUserPasswordGUI extends JFrame{
 				updatePassword();
 			}
 		});
+		
+		updateTheme();
 	}
 	
 	public void updatePassword() {
@@ -131,5 +119,29 @@ public class EditUserPasswordGUI extends JFrame{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		
+		EditLabel.setBackground(currentTheme.getBackgroundColor());
+		oldPasswordLabel.setBackground(currentTheme.getBackgroundColor());
+		newPasswordLabel.setBackground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		cancelButton.setBackground(currentTheme.getButtonColor());
+		confirmButton.setBackground(currentTheme.getButtonColor());
+		
+		// getTextColor()
+		EditLabel.setForeground(currentTheme.getTextColor());
+		oldPasswordLabel.setForeground(currentTheme.getTextColor());
+		newPasswordLabel.setForeground(currentTheme.getTextColor());
+		
+		cancelButton.setForeground(currentTheme.getTextColor());
+		confirmButton.setForeground(currentTheme.getTextColor());
 	}
 }

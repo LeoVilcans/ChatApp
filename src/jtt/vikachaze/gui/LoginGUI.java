@@ -25,27 +25,23 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 
 public class LoginGUI extends JFrame {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JLabel titleLabel, usernameLabel, passwordLabel;
 	private JPasswordField passwordField;
 	private JTextField usernameTextField;
+	private JButton loginButton, btnRegister;
 
 	private UserDAO userDAO;
 	
 	public LoginGUI() {
 		userDAO = new UserDAOImpl();
-		
-		Theme currentTheme = Settings.getTheme();
 		 
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 283, 296);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setBackground(currentTheme.getBackgroundColor());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -53,12 +49,10 @@ public class LoginGUI extends JFrame {
 		passwordField.setBounds(10, 146, 247, 33);
 		contentPane.add(passwordField);
 		
-		JLabel titleLabel = new JLabel("LOGIN");
+		titleLabel = new JLabel("LOGIN");
 		titleLabel.setFont(new Font("Tahoma", Font.PLAIN, 23));
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		titleLabel.setBounds(10, 11, 247, 45);
-		titleLabel.setBackground(currentTheme.getBackgroundColor());
-		titleLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(titleLabel);
 		
 		usernameTextField = new JTextField();
@@ -66,22 +60,16 @@ public class LoginGUI extends JFrame {
 		contentPane.add(usernameTextField);
 		usernameTextField.setColumns(10);
 		
-		JLabel usernameLabel = new JLabel("Username:");
+		usernameLabel = new JLabel("Username:");
 		usernameLabel.setBounds(10, 72, 80, 14);
-		usernameLabel.setBackground(currentTheme.getBackgroundColor());
-		usernameLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(usernameLabel);
 		
-		JLabel passwordLabel = new JLabel("Password:");
+		passwordLabel = new JLabel("Password:");
 		passwordLabel.setBounds(10, 131, 80, 14);
-		passwordLabel.setBackground(currentTheme.getBackgroundColor());
-		passwordLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(passwordLabel);
 		
-		JButton loginButton = new JButton("Login");
+		loginButton = new JButton("Login");
 		loginButton.setBounds(10, 190, 247, 45);
-		loginButton.setBackground(currentTheme.getButtonColor());
-		loginButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(loginButton);
 		
 		loginButton.addActionListener(new ActionListener() {
@@ -91,10 +79,8 @@ public class LoginGUI extends JFrame {
 			}
 		});
 		
-		JButton btnRegister = new JButton("No account? Register here.");
+		btnRegister  = new JButton("No account? Register here.");
 		btnRegister.setBounds(10, 234, 247, 23);
-		btnRegister.setBackground(currentTheme.getButtonColor());
-		btnRegister.setForeground(currentTheme.getTextColor());
 		contentPane.add(btnRegister);
 		
 		btnRegister.addActionListener(new ActionListener() {
@@ -105,6 +91,8 @@ public class LoginGUI extends JFrame {
 				LoginGUI.this.dispose();
 			}
 		});
+		
+		updateTheme();
 	}
 	
 	public void login() {
@@ -136,5 +124,27 @@ public class LoginGUI extends JFrame {
 		} catch (SQLException | IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	public void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		titleLabel.setBackground(currentTheme.getBackgroundColor());
+		usernameLabel.setBackground(currentTheme.getBackgroundColor());
+		passwordLabel.setBackground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		loginButton.setBackground(currentTheme.getButtonColor());
+		btnRegister.setBackground(currentTheme.getButtonColor());
+		
+		// getTextColor()
+		titleLabel.setForeground(currentTheme.getTextColor());
+		usernameLabel.setForeground(currentTheme.getTextColor());
+		passwordLabel.setForeground(currentTheme.getTextColor());
+		
+		loginButton.setForeground(currentTheme.getTextColor());
+		btnRegister.setForeground(currentTheme.getTextColor());
 	}
 }

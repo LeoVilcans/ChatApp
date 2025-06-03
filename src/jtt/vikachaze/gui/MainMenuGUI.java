@@ -46,11 +46,13 @@ import javax.swing.JList;
 import javax.swing.JTextArea;
 
 public class MainMenuGUI extends JFrame{
-	private JPanel contentPane, scrollPostPanel;
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane, scrollPostPanel, roomPanel, postPanel, userPanel;
 	private JTextField searchTextField;
-	private JScrollPane roomScrollPane;
-	private JLabel profileUsernameLabel, pfpLabel;
+	private JScrollPane roomScrollPane, postScrollPane;
+	private JLabel profileUsernameLabel, pfpLabel, roomListLabel;
 	private JTextArea profileStatusArea;
+	private JButton searchButton, profileEditButton, btnLogOut, AddPostButton, AddRoomButton, SettingsButton;
 	
 	private JList<String> roomList;
 	private RoomDAOImpl roomDAO = new RoomDAOImpl();
@@ -63,22 +65,19 @@ public class MainMenuGUI extends JFrame{
 	
 	public MainMenuGUI() {
 		setIconImage(new ImageIcon("vikachazeLogo.png").getImage());
-		Theme currentTheme = Settings.getTheme();
 		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 734, 493);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setBackground(currentTheme.getBackgroundColor());
-
+		
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel roomPanel = new JPanel();
+		roomPanel = new JPanel();
 		roomPanel.setLayout(null);
 		roomPanel.setBounds(0, 0, 163, 454);
-		roomPanel.setBackground(currentTheme.getBackgroundColor());
 		contentPane.add(roomPanel);
 		
 		roomScrollPane = new JScrollPane();
@@ -86,11 +85,8 @@ public class MainMenuGUI extends JFrame{
 		roomPanel.add(roomScrollPane);
 		roomScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		roomScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		roomScrollPane.setBackground(currentTheme.getPrimaryColor());
 		
 		roomList = new JList<String>(room);
-		roomList.setBackground(currentTheme.getBackgroundColor());
-		roomList.setForeground(currentTheme.getTextColor());
 		roomScrollPane.setViewportView(roomList);
 		roomList.addMouseListener(new MouseListener() {
 			
@@ -125,29 +121,25 @@ public class MainMenuGUI extends JFrame{
 			}
 		});
 		
-		JLabel roomListLabel = new JLabel("Rooms");
+		roomListLabel = new JLabel("Rooms");
 		roomListLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		roomListLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		roomListLabel.setBounds(10, 11, 143, 17);
-		roomListLabel.setForeground(currentTheme.getTextColor());
 		roomPanel.add(roomListLabel);
 		
-		JPanel postPanel = new JPanel();
-		postPanel.setBackground(currentTheme.getBackgroundColor());
+		postPanel = new JPanel();
 		postPanel.setLayout(null);
 		postPanel.setBounds(163, 0, 374, 454);
 		contentPane.add(postPanel);
 		
-		JScrollPane postScrollPane = new JScrollPane();
+		postScrollPane = new JScrollPane();
 		postScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		postScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		postScrollPane.setBounds(5, 34, 357, 420);
-		postScrollPane.setBackground(currentTheme.getBackgroundColor());
 		postScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		postPanel.add(postScrollPane);
 		
 		scrollPostPanel = new JPanel(null);
-		scrollPostPanel.setBackground(currentTheme.getBackgroundColor());
 		postScrollPane.setViewportView(scrollPostPanel);
 		
 		searchTextField = new JTextField();
@@ -155,15 +147,11 @@ public class MainMenuGUI extends JFrame{
 		postPanel.add(searchTextField);
 		searchTextField.setColumns(10);
 		
-		JButton searchButton = new JButton();
-		searchButton.setBackground(currentTheme.getButtonColor());
-		searchButton.setForeground(currentTheme.getTextColor());
+		searchButton = new JButton();
 		searchButton.setBounds(316, 8, 46, 19);
 		postPanel.add(searchButton);
 		
-		
-		JPanel userPanel = new JPanel();
-		userPanel.setBackground(currentTheme.getBackgroundColor());
+		userPanel = new JPanel();
 		userPanel.setLayout(null);
 		userPanel.setBounds(536, 0, 182, 454);
 		contentPane.add(userPanel);
@@ -172,19 +160,14 @@ public class MainMenuGUI extends JFrame{
 		pfpLabel.setBackground(new Color(128, 128, 128));
 		pfpLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		pfpLabel.setBounds(12, 12, 159, 159);
-		pfpLabel.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		userPanel.add(pfpLabel);
 		
 		profileUsernameLabel = new JLabel("<<Username>>");
 		profileUsernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 		profileUsernameLabel.setBounds(12, 177, 159, 21);
-		profileUsernameLabel.setBackground(currentTheme.getBackgroundColor());
-		profileUsernameLabel.setForeground(currentTheme.getTextColor());
 		userPanel.add(profileUsernameLabel);
 		
-		JButton profileEditButton = new JButton("edit");
-		profileEditButton.setBackground(currentTheme.getButtonColor());
-		profileEditButton.setForeground(currentTheme.getTextColor());
+		profileEditButton = new JButton("edit");
 		profileEditButton.setBounds(7, 419, 55, 24);
 		userPanel.add(profileEditButton);
 		profileEditButton.addActionListener(new ActionListener() {
@@ -197,9 +180,7 @@ public class MainMenuGUI extends JFrame{
 			}
 		});
 		
-		JButton btnLogOut = new JButton("log out");
-		btnLogOut.setBackground(currentTheme.getButtonColor());
-		btnLogOut.setForeground(currentTheme.getTextColor());
+		btnLogOut = new JButton("log out");
 		btnLogOut.setBounds(71, 419, 100, 24);
 		userPanel.add(btnLogOut);
 		
@@ -221,27 +202,19 @@ public class MainMenuGUI extends JFrame{
 		profileStatusArea.setEditable(false);
 		profileStatusArea.setFont(new Font("Dialog", Font.ITALIC, 12));
 		profileStatusArea.setLineWrap(true);
-		profileStatusArea.setForeground(currentTheme.getPrimaryColor());
-		profileStatusArea.setBackground(currentTheme.getBackgroundColor());
 		profileStatusArea.setBounds(12, 201, 158, 101);
 		userPanel.add(profileStatusArea);
 		
-		JButton AddPostButton = new JButton("add post");
-		AddPostButton.setBackground(currentTheme.getButtonColor());
-		AddPostButton.setForeground(currentTheme.getTextColor());
+		AddPostButton = new JButton("add post");
 		AddPostButton.setBounds(7, 384, 164, 24);
 		userPanel.add(AddPostButton);
 		
-		JButton AddRoomButton = new JButton("Add room");
-		AddRoomButton.setBackground(currentTheme.getButtonColor());
-		AddRoomButton.setForeground(currentTheme.getTextColor());
+		AddRoomButton = new JButton("Add room");
 		AddRoomButton.setBounds(7, 349, 164, 23);
 		userPanel.add(AddRoomButton);
 		
-		JButton SettingsButton = new JButton("");
+		SettingsButton = new JButton("");
 		SettingsButton.setBounds(7, 314, 55, 23);
-		SettingsButton.setBackground(currentTheme.getButtonColor());
-		SettingsButton.setForeground(currentTheme.getTextColor());
 		userPanel.add(SettingsButton);
 		SettingsButton.setIcon(new StretchIcon("settingsIcon.png",true));
 		SettingsButton.addActionListener(new ActionListener() {
@@ -272,6 +245,7 @@ public class MainMenuGUI extends JFrame{
 			}
 		});
 		
+		updateTheme();
 		updateProfile();
 		addPostTracker();
 		addRooms();
@@ -345,5 +319,51 @@ public class MainMenuGUI extends JFrame{
 		scrollPostPanel.setSize(new Dimension(scrollPostPanel.getPreferredSize().width, currentPostHeight));
 		scrollPostPanel.setPreferredSize(new Dimension(scrollPostPanel.getPreferredSize().width, currentPostHeight));
 
+	}
+	
+	public void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		
+		roomPanel.setBackground(currentTheme.getBackgroundColor());
+		postPanel.setBackground(currentTheme.getBackgroundColor());
+		userPanel.setBackground(currentTheme.getBackgroundColor());
+		
+		postScrollPane.setBackground(currentTheme.getBackgroundColor());
+		scrollPostPanel.setBackground(currentTheme.getBackgroundColor());
+
+		roomList.setBackground(currentTheme.getBackgroundColor());
+		
+		profileUsernameLabel.setBackground(currentTheme.getBackgroundColor());
+		profileStatusArea.setBackground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		searchButton.setBackground(currentTheme.getButtonColor());
+		profileEditButton.setBackground(currentTheme.getButtonColor());
+		btnLogOut.setBackground(currentTheme.getButtonColor());
+		AddPostButton.setBackground(currentTheme.getButtonColor());
+		AddRoomButton.setBackground(currentTheme.getButtonColor());
+		SettingsButton.setBackground(currentTheme.getButtonColor());
+		
+		// getTextColor()
+		roomList.setForeground(currentTheme.getTextColor());
+		roomListLabel.setForeground(currentTheme.getTextColor());
+		
+		profileUsernameLabel.setForeground(currentTheme.getTextColor());
+		profileStatusArea.setForeground(currentTheme.getPrimaryColor());
+		
+		searchButton.setForeground(currentTheme.getTextColor());
+		profileEditButton.setForeground(currentTheme.getTextColor());
+		btnLogOut.setForeground(currentTheme.getTextColor());
+		AddPostButton.setForeground(currentTheme.getTextColor());
+		AddRoomButton.setForeground(currentTheme.getTextColor());
+		SettingsButton.setForeground(currentTheme.getTextColor());
+		
+		// getPrimaryColor()
+		roomScrollPane.setBackground(currentTheme.getPrimaryColor());
+		pfpLabel.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
+		
 	}
 }

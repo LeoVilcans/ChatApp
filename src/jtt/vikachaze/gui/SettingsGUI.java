@@ -1,6 +1,5 @@
 package jtt.vikachaze.gui;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,80 +13,83 @@ import jtt.vikachaze.util.Settings.ThemeChoice;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 
 public class SettingsGUI extends JFrame {
 
 	private JPanel contentPane;
-	private JButton ClassicButton, DarkButton, LightButton, LatvianButton, RussianButton, EnglishButton, BackButton;
-	private JLabel lblNewLabel, lblLanguage;
+	private JButton classicButton, darkButton, lightButton, latvianButton, russianButton, englishButton, backButton;
+	private JLabel themeLabel, languageLabel;
 	
-	public SettingsGUI() {
+	public SettingsGUI() {		
 		setTitle("Settings");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 286, 229);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		lblNewLabel = new JLabel("Theme");
-		lblNewLabel.setBounds(36, 11, 46, 14);
-		contentPane.add(lblNewLabel);
+		themeLabel = new JLabel("Theme");
+		themeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		themeLabel.setBounds(10, 11, 98, 14);
+		contentPane.add(themeLabel);
 		
-		ClassicButton = new JButton("Classic");
-		ClassicButton.setBounds(10, 33, 98, 26);
-		contentPane.add(ClassicButton);
-		ClassicButton.addActionListener(new ActionListener() {
+		
+		classicButton = new JButton("Classic");
+		classicButton.setBounds(10, 33, 98, 26);
+		contentPane.add(classicButton);
+		classicButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Settings.setTheme(ThemeChoice.CLASSIC);
-				UpdateTheme();
+				updateTheme();
 			}
 		});
 		
-		DarkButton = new JButton("Dark");
-		DarkButton.setBounds(10, 70, 98, 26);
-		contentPane.add(DarkButton);
-		DarkButton.addActionListener(new ActionListener() {
+		darkButton = new JButton("Dark");
+		darkButton.setBounds(10, 70, 98, 26);
+		contentPane.add(darkButton);
+		darkButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Settings.setTheme(ThemeChoice.DARK);
-				UpdateTheme();
+				updateTheme();
 			}
 		});
 		
-		LightButton = new JButton("Light");
-		LightButton.setBounds(10, 107, 98, 26);
-		contentPane.add(LightButton);
-		LightButton.addActionListener(new ActionListener() {
+		lightButton = new JButton("Light");
+		lightButton.setBounds(10, 107, 98, 26);
+		contentPane.add(lightButton);
+		lightButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Settings.setTheme(ThemeChoice.LIGHT);
-				UpdateTheme();
+				updateTheme();
 			}
 		});
 		
-		lblLanguage = new JLabel("Language");
-		lblLanguage.setBounds(182, 10, 56, 14);
-		contentPane.add(lblLanguage);
+		languageLabel = new JLabel("Language");
+		languageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		languageLabel.setBounds(163, 10, 98, 14);
+		contentPane.add(languageLabel);
 		
-		EnglishButton = new JButton("English");
-		EnglishButton.setBounds(163, 33, 98, 26);
-		contentPane.add(EnglishButton);
+		englishButton = new JButton("English");
+		englishButton.setBounds(163, 33, 98, 26);
+		contentPane.add(englishButton);
 		
-		LatvianButton = new JButton("Latvian");
-		LatvianButton.setBounds(163, 70, 98, 26);
-		contentPane.add(LatvianButton);
+		latvianButton = new JButton("Latvian");
+		latvianButton.setBounds(163, 70, 98, 26);
+		contentPane.add(latvianButton);
 		
-		RussianButton = new JButton("Russian");
-		RussianButton.setBounds(163, 107, 98, 26);
-		contentPane.add(RussianButton);
+		russianButton = new JButton("Russian");
+		russianButton.setBounds(163, 107, 98, 26);
+		contentPane.add(russianButton);
 		
-		BackButton = new JButton("Go Back");
-		BackButton.setBounds(87, 153, 98, 26);
-		contentPane.add(BackButton);
-		BackButton.addActionListener(new ActionListener() {	
+		backButton = new JButton("Go Back");
+		backButton.setBounds(87, 153, 98, 26);
+		contentPane.add(backButton);
+		backButton.addActionListener(new ActionListener() {	
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainMenuGUI form = new MainMenuGUI();
@@ -95,30 +97,35 @@ public class SettingsGUI extends JFrame {
 				SettingsGUI.this.dispose();
 			}
 		});
+		
+		updateTheme();
 	}
 	
-	public void UpdateTheme() {
+	public void updateTheme() {
 		Theme currentTheme = Settings.getTheme();
 		
+		// getBackgroundColor()
 		contentPane.setBackground(currentTheme.getBackgroundColor());
 		
-		ClassicButton.setBackground(currentTheme.getButtonColor());
-		DarkButton.setBackground(currentTheme.getButtonColor());
-		LightButton.setBackground(currentTheme.getButtonColor());
-		LatvianButton.setBackground(currentTheme.getButtonColor());
-		RussianButton.setBackground(currentTheme.getButtonColor());
-		EnglishButton.setBackground(currentTheme.getButtonColor());
-		BackButton.setBackground(currentTheme.getButtonColor());
+		// getbuttonColor()
+		classicButton.setBackground(currentTheme.getButtonColor());
+		darkButton.setBackground(currentTheme.getButtonColor());
+		lightButton.setBackground(currentTheme.getButtonColor());
+		latvianButton.setBackground(currentTheme.getButtonColor());
+		russianButton.setBackground(currentTheme.getButtonColor());
+		englishButton.setBackground(currentTheme.getButtonColor());
+		backButton.setBackground(currentTheme.getButtonColor());
 		
-		ClassicButton.setForeground(currentTheme.getTextColor());
-		DarkButton.setForeground(currentTheme.getTextColor());
-		LightButton.setForeground(currentTheme.getTextColor());
-		LatvianButton.setForeground(currentTheme.getTextColor());
-		RussianButton.setForeground(currentTheme.getTextColor());
-		EnglishButton.setForeground(currentTheme.getTextColor());
-		BackButton.setForeground(currentTheme.getTextColor());
+		// getTextColor()
+		classicButton.setForeground(currentTheme.getTextColor());
+		darkButton.setForeground(currentTheme.getTextColor());
+		lightButton.setForeground(currentTheme.getTextColor());
+		latvianButton.setForeground(currentTheme.getTextColor());
+		russianButton.setForeground(currentTheme.getTextColor());
+		englishButton.setForeground(currentTheme.getTextColor());
+		backButton.setForeground(currentTheme.getTextColor());
 		
-		lblNewLabel.setForeground(currentTheme.getTextColor());
-		lblLanguage.setForeground(currentTheme.getTextColor());
+		themeLabel.setForeground(currentTheme.getTextColor());
+		languageLabel.setForeground(currentTheme.getTextColor());
 	}
 }

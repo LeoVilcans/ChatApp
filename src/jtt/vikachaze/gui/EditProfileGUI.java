@@ -37,9 +37,6 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 public class EditProfileGUI extends JFrame{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel pfpLabel, EditLabel;
@@ -47,17 +44,16 @@ public class EditProfileGUI extends JFrame{
 	private JButton editPasswordButton, applyButton, cancelButton;
 	private File file;
 	
-	private UserDAOImpl userDAO = new UserDAOImpl();
+	private UserDAOImpl userDAO;
 	
 	public EditProfileGUI() {
-		Theme currentTheme = Settings.getTheme();
-		 
+		userDAO = new UserDAOImpl();
+		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 240, 480);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setBackground(currentTheme.getBackgroundColor());
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
@@ -116,14 +112,10 @@ public class EditProfileGUI extends JFrame{
 		EditLabel = new JLabel("Edit Profile");
 		EditLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		EditLabel.setBounds(12, 11, 200, 20);
-		EditLabel.setBackground(currentTheme.getBackgroundColor());
-		EditLabel.setForeground(currentTheme.getTextColor());
 		contentPane.add(EditLabel);
 		
 		cancelButton = new JButton("Cancel");
 		cancelButton.setBounds(115, 403, 75, 26);
-		cancelButton.setBackground(currentTheme.getButtonColor());
-		cancelButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(cancelButton);
 		cancelButton.addActionListener(new ActionListener() {
 			
@@ -137,8 +129,6 @@ public class EditProfileGUI extends JFrame{
 		
 		applyButton = new JButton("Apply");
 		applyButton.setBounds(31, 403, 72, 26);
-		applyButton.setBackground(currentTheme.getButtonColor());
-		applyButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(applyButton);
 		applyButton.addActionListener(new ActionListener() {
 			
@@ -154,8 +144,6 @@ public class EditProfileGUI extends JFrame{
 		
 		editPasswordButton = new JButton("Edit Password");
 		editPasswordButton.setBounds(31, 239, 159, 26);
-		editPasswordButton.setBackground(currentTheme.getButtonColor());
-		editPasswordButton.setForeground(currentTheme.getTextColor());
 		contentPane.add(editPasswordButton);
 		editPasswordButton.addActionListener(new ActionListener() {
 			
@@ -166,6 +154,7 @@ public class EditProfileGUI extends JFrame{
 			}
 		});
 		
+		updateTheme();
 		loadProfileText();
 	}
 	
@@ -231,6 +220,28 @@ public class EditProfileGUI extends JFrame{
 	    } catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
 	        e.printStackTrace();
 	    }
+	    
+	    updateTheme();
 	}
-
+	
+	public void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		
+		EditLabel.setBackground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		cancelButton.setBackground(currentTheme.getButtonColor());
+		applyButton.setBackground(currentTheme.getButtonColor());
+		editPasswordButton.setBackground(currentTheme.getButtonColor());
+		
+		// getTextColor()
+		EditLabel.setForeground(currentTheme.getTextColor());
+		
+		cancelButton.setForeground(currentTheme.getTextColor());
+		applyButton.setForeground(currentTheme.getTextColor());
+		editPasswordButton.setForeground(currentTheme.getTextColor());
+	}
 }

@@ -1,14 +1,10 @@
 package jtt.vikachaze.gui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 
-import jtt.vikachaze.Main;
 import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.dto.User;
@@ -22,7 +18,6 @@ import jtt.vikachaze.dao.impl.PostDAOImpl;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.IOException;
@@ -33,28 +28,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 public class UserProfileGUI extends JFrame {
-
-	private JPanel contentPane;
-	private JLabel usernameLabel;
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane, scrollPostPanel;
+	private JLabel usernameLabel, postsLabel;
 	private JButton pfpButton;
 	private JTextArea statusLabel;
-	private JPanel scrollPostPanel;
+	private JScrollPane scrollPostPane;
 	
 	private int currentPostHeight = 0;
 	private List<Post> posts = new ArrayList<Post>();
-	private PostDAO postDAO = new PostDAOImpl();
+	private PostDAO postDAO;
 	
 	private User user;
-	private Theme currentTheme;
 	
 	public UserProfileGUI(User user) {
+		postDAO = new PostDAOImpl();
 		this.user = user;
-		this.currentTheme = Settings.getTheme();
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 489);
@@ -62,11 +55,9 @@ public class UserProfileGUI extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(null);
-		contentPane.setBackground(currentTheme.getBackgroundColor());
 		
 		usernameLabel = new JLabel("Username: " + user.getUsername());
 		usernameLabel.setFont(new Font("Dialog", Font.BOLD, 14));
-		usernameLabel.setForeground(currentTheme.getTextColor());
 		usernameLabel.setBounds(148, 11, 276, 26);
 		contentPane.add(usernameLabel);
 		
@@ -74,38 +65,31 @@ public class UserProfileGUI extends JFrame {
 		
 		pfpButton = new JButton("");
 		pfpButton.setBounds(10, 7, 128, 128);
-		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		contentPane.add(pfpButton);
 		
 		statusLabel = new JTextArea();
 		statusLabel.setWrapStyleWord(true);
 		statusLabel.setLineWrap(true);
 		statusLabel.setEditable(false);
-		statusLabel.setForeground(currentTheme.getPrimaryColor());
-		statusLabel.setBackground(currentTheme.getBackgroundColor());
 		statusLabel.setText("\"anonims puiss\"");
 		statusLabel.setBounds(148, 40, 276, 95);
 		contentPane.add(statusLabel);
 		
-		JScrollPane scrollPostPane = new JScrollPane();
+		scrollPostPane = new JScrollPane();
 		scrollPostPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPostPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPostPane.getVerticalScrollBar().setBackground(currentTheme.getBackgroundColor());
-		scrollPostPane.getVerticalScrollBar().setForeground(currentTheme.getButtonColor());
-		scrollPostPane.setBackground(currentTheme.getBackgroundColor());
 		scrollPostPane.setBounds(10, 168, 412, 270);
 		scrollPostPane.getVerticalScrollBar().setUnitIncrement(15);
 		contentPane.add(scrollPostPane);
 		
 		scrollPostPanel = new JPanel(null);
-		scrollPostPanel.setBackground(currentTheme.getBackgroundColor());
 		scrollPostPane.setViewportView(scrollPostPanel);
 		
-		JLabel postsLabel = new JLabel("Posts:");
-		postsLabel.setForeground(currentTheme.getBackgroundColor());
+		postsLabel = new JLabel("Posts:");
 		postsLabel.setBounds(10, 147, 414, 16);
 		contentPane.add(postsLabel);
 		
+		updateTheme();
 		updateProfile();
 		addPostTracker();
 	}
@@ -163,6 +147,29 @@ public class UserProfileGUI extends JFrame {
 		scrollPostPanel.add(newPostPanel);
 		scrollPostPanel.setSize(new Dimension(scrollPostPanel.getPreferredSize().width, currentPostHeight));
 		scrollPostPanel.setPreferredSize(new Dimension(scrollPostPanel.getPreferredSize().width, currentPostHeight));
-
+	}
+	
+	public void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		
+		usernameLabel.setBackground(currentTheme.getBackgroundColor());
+		statusLabel.setBackground(currentTheme.getBackgroundColor());
+		scrollPostPane.getVerticalScrollBar().setBackground(currentTheme.getBackgroundColor());
+		scrollPostPane.setBackground(currentTheme.getBackgroundColor());
+		scrollPostPanel.setBackground(currentTheme.getBackgroundColor());
+		postsLabel.setForeground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		scrollPostPane.getVerticalScrollBar().setForeground(currentTheme.getButtonColor());
+				
+		// getTextColor()
+		usernameLabel.setForeground(currentTheme.getTextColor());
+		
+		// getPrimaryColor()
+		statusLabel.setForeground(currentTheme.getPrimaryColor());
+		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 	}
 }

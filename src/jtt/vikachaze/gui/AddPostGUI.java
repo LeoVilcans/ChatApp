@@ -18,7 +18,9 @@ import javax.swing.border.EmptyBorder;
 import jtt.vikachaze.Main;
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dto.Post;
+import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.Scalr;
+import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.dao.*;
 import jtt.vikachaze.dao.impl.*;
 
@@ -28,19 +30,21 @@ import javax.swing.JTextField;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.SwingConstants;
 
 public class AddPostGUI extends JFrame {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField TitleField;
-	private JTextField TextField;
-	private PostDAO postDAO = new PostDAOImpl();
+	private JLabel titleLabel, textLabel;
+	private JTextField titleTextField, textTextField;
+	private JButton postButton, addAttachmentButton;
+	
+	private PostDAO postDAO;
 	private File currentAttachment = null;
 
 	public AddPostGUI() {
+		postDAO = new PostDAOImpl();
+		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 280, 360);
 		contentPane = new JPanel();
@@ -49,28 +53,30 @@ public class AddPostGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Title");
-		lblNewLabel.setBounds(121, 11, 46, 14);
-		contentPane.add(lblNewLabel);
+		titleLabel = new JLabel("Title");
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setBounds(10, 11, 249, 14);
+		contentPane.add(titleLabel);
 		
-		TitleField = new JTextField();
-		TitleField.setBounds(10, 36, 250, 20);
-		contentPane.add(TitleField);
-		TitleField.setColumns(10);
+		titleTextField = new JTextField();
+		titleTextField.setBounds(10, 36, 244, 20);
+		contentPane.add(titleTextField);
+		titleTextField.setColumns(10);
 		
-		JLabel lblText = new JLabel("Text:");
-		lblText.setBounds(121, 81, 46, 14);
-		contentPane.add(lblText);
+		textLabel = new JLabel("Text:");
+		textLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		textLabel.setBounds(10, 81, 249, 14);
+		contentPane.add(textLabel);
 		
-		TextField = new JTextField();
-		TextField.setColumns(10);
-		TextField.setBounds(10, 107, 250, 160);
-		contentPane.add(TextField);
+		textTextField = new JTextField();
+		textTextField.setColumns(10);
+		textTextField.setBounds(10, 107, 244, 160);
+		contentPane.add(textTextField);
 		
-		JButton PostButton = new JButton("Post");
-		PostButton.setBounds(149, 281, 98, 26);
-		contentPane.add(PostButton);
-		PostButton.addActionListener(new ActionListener() {
+		postButton = new JButton("Post");
+		postButton.setBounds(150, 281, 104, 26);
+		contentPane.add(postButton);
+		postButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -79,14 +85,14 @@ public class AddPostGUI extends JFrame {
 			}
 		});
 		
-		JButton AddAttachmentButton = new JButton("Add attachment");
-		AddAttachmentButton.setBounds(10, 281, 130, 26);
-		contentPane.add(AddAttachmentButton);
-		AddAttachmentButton.addActionListener(new ActionListener() {
+		addAttachmentButton = new JButton("Add attachment");
+		addAttachmentButton.setBounds(10, 281, 130, 26);
+		contentPane.add(addAttachmentButton);
+		addAttachmentButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(e.getSource()==AddAttachmentButton) {
+				if(e.getSource()==addAttachmentButton) {
 					JFileChooser fileChooser = new JFileChooser();
 					int response = fileChooser.showOpenDialog(null);
 					
@@ -97,11 +103,13 @@ public class AddPostGUI extends JFrame {
 				}
 			}
 		});	
+		
+		updateTheme();
 	}
 	
 	public void addPost() {
-		String title = TitleField.getText();
-		String posttext = TextField.getText();
+		String title = titleTextField.getText();
+		String posttext = textTextField.getText();
 		
 		Post post = new Post(Timestamp.valueOf(LocalDateTime.now()), Main.getLoggedUser(),title,posttext);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -122,5 +130,26 @@ public class AddPostGUI extends JFrame {
 		} catch (IllegalArgumentException | ImagingOpException | IOException | SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void updateTheme() {
+		Theme currentTheme = Settings.getTheme();
+		
+		// getBackgroundColor()
+		contentPane.setBackground(currentTheme.getBackgroundColor());
+		
+		titleLabel.setBackground(currentTheme.getBackgroundColor());
+		textLabel.setBackground(currentTheme.getBackgroundColor());
+		
+		// getButtonColor()
+		postButton.setBackground(currentTheme.getButtonColor());
+		addAttachmentButton.setBackground(currentTheme.getButtonColor());
+		
+		// getTextColor()
+		titleLabel.setForeground(currentTheme.getTextColor());
+		textLabel.setForeground(currentTheme.getTextColor());
+		
+		postButton.setForeground(currentTheme.getTextColor());
+		addAttachmentButton.setForeground(currentTheme.getTextColor());
 	}
 }

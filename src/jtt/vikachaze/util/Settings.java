@@ -27,7 +27,7 @@ public class Settings {
 				//backgroundColor, primaryColor, buttonColor, textColor
 				return new Theme(new Color(66,66,66), new Color(128,128,128), new Color(128,128,128), new Color(230,230,230));
 			case LIGHT:
-				return new Theme();
+				return new Theme(new Color(255, 255, 255), new Color(0, 0, 0), new Color(235,235,235), new Color(60,60,60));
 			default:
 				return new Theme();
 		}
