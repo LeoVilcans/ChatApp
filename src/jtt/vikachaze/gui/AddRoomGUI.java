@@ -8,12 +8,14 @@ import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.connection.Database;
 import jtt.vikachaze.dto.Room;
+import jtt.vikachaze.util.Scalr;
 import jtt.vikachaze.dao.*;
 import jtt.vikachaze.dao.impl.*;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
@@ -21,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.ImagingOpException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
@@ -33,19 +36,7 @@ public class AddRoomGUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField RoomNameField;
 	private RoomDAO roomDAO = new RoomDAOImpl();
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AddRoomGUI frame = new AddRoomGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private File currentFile = null;
 
 	public AddRoomGUI() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -77,7 +68,7 @@ public class AddRoomGUI extends JFrame {
 					int response = fileChooser.showOpenDialog(null);
 					
 					if(response == JFileChooser.APPROVE_OPTION) {
-						new File(fileChooser.getSelectedFile().getAbsolutePath());
+						currentFile = new File(fileChooser.getSelectedFile().getAbsolutePath());
 						JOptionPane.showMessageDialog(AddRoomGUI.this, "Bilde tika pievienota.", getTitle(), JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
@@ -99,17 +90,20 @@ public class AddRoomGUI extends JFrame {
 		String roomName = RoomNameField.getText();
 		Room room = new Room(roomName);
 		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {
-			Blob b1 = Database.getConnection().createBlob();
-			b1.setBytes(1,  baos.toByteArray());
-			room.setIcon(b1);
-			
+			if (currentFile != null) {
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				String format = currentFile.toPath().getFileName().toString().split("\\.")[1];
+				ImageIO.write(Scalr.resize(ImageIO.read(currentFile), 236), format, baos);
+				Blob b1 = Database.getConnection().createBlob();
+				b1.setBytes(1,  baos.toByteArray());
+				room.setIcon(b1);
+			}
 			int id  = roomDAO.insert(room);
 			room.setId(id);
 			
 			AddRoomGUI.this.dispose();
-		} catch (IllegalArgumentException | ImagingOpException | SQLException e) {
+		} catch (IllegalArgumentException | ImagingOpException | SQLException | IOException e) {
 			e.printStackTrace();
 		}
 	}
