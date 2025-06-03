@@ -61,6 +61,8 @@ public class MainMenuGUI extends JFrame{
 	private DefaultListModel<String> room = new DefaultListModel<String>();
 	private List<Post> posts = new ArrayList<Post>();
 	
+	private ScheduledExecutorService ses = null;
+	
 	private int currentPostHeight = 0;
 	
 	public MainMenuGUI() {
@@ -150,6 +152,34 @@ public class MainMenuGUI extends JFrame{
 		searchButton = new JButton();
 		searchButton.setBounds(316, 8, 46, 19);
 		postPanel.add(searchButton);
+		
+		searchButton.addActionListener(new ActionListener() {	
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+				ses.close();
+				scrollPostPanel.removeAll();
+				posts.clear();
+				currentPostHeight = 0;
+				
+				if (searchTextField.getText().isEmpty()) {
+					addPostTracker();
+					return;
+				}
+				
+				List<Post> allPosts;
+				try {
+					allPosts = postDAO.getAllData();
+					for (Post post : allPosts) {
+						if (post.getTitle().toLowerCase().contains(searchTextField.getText())) {
+							posts.add(post);
+							addPost(post);
+						}
+					}
+				} catch (SQLException | IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		
 		userPanel = new JPanel();
 		userPanel.setLayout(null);
@@ -286,7 +316,7 @@ public class MainMenuGUI extends JFrame{
 	}
 	
 	private void addPostTracker() {
-		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+		ses = Executors.newSingleThreadScheduledExecutor();
 		ses.scheduleAtFixedRate(new Runnable() {
 		    @Override
 		    public void run() {   
