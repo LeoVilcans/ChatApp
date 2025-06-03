@@ -1,14 +1,11 @@
 package jtt.vikachaze.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -20,18 +17,16 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
-import jtt.vikachaze.dao.PostDAO;
-import jtt.vikachaze.dao.impl.PostDAOImpl;
 import jtt.vikachaze.dao.impl.PostLikeDAOImpl;
 import jtt.vikachaze.dto.Comment;
 import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.PostLikes;
 import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.CommentFactory;
-import jtt.vikachaze.util.PostFactory;
 import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
@@ -53,7 +48,6 @@ public class PostGUI extends JFrame{
 	private JTextArea textArea;
 	private JTextField commentTextField;
 	private JCheckBox likeCheck;
-	private PostLikes postLikes;
 	
 	private List<Comment> comments = new ArrayList<Comment>();
 	private CommentDAO commentDAO = new CommentDAOImpl();
@@ -159,7 +153,6 @@ public class PostGUI extends JFrame{
 				try {
 					insertComment();
 				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -287,6 +280,7 @@ public class PostGUI extends JFrame{
 		commentPanel.add(newCommentPanel);
 		commentPanel.setSize(new Dimension(commentPanel.getPreferredSize().width, currentPostHeight));
 		commentPanel.setPreferredSize(new Dimension(commentPanel.getPreferredSize().width, currentPostHeight));
+		ScrollToBottom();
 
 	}
 	private void insertComment() throws SQLException {
@@ -294,6 +288,12 @@ public class PostGUI extends JFrame{
 		String text = commentTextField.getText();
 		Comment comment = new Comment(null,Main.getLoggedUser(), post, text);
 		commentDAO.insert(comment);
+		ScrollToBottom();
+	}
+	private void ScrollToBottom() {
+		JScrollBar vertical = commentScrollPane.getVerticalScrollBar();	
+		commentScrollPane.validate(); 
+		vertical.setValue( vertical.getMaximum() );
 	}
 	
 }
