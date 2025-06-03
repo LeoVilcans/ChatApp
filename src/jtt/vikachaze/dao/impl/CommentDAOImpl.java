@@ -19,14 +19,9 @@ import jtt.vikachaze.dto.User;
 import jtt.vikachaze.queries.CommentQueries;
 
 public class CommentDAOImpl implements CommentDAO, CommentQueries{
-	private PostDAO postDAO;
-	private UserDAO userDAO;
+	private PostDAO postDAO = new PostDAOImpl();
+	private UserDAO userDAO = new UserDAOImpl();
 	private Connection batchConnection;
-	
-	public void MessageDAOImpl() {
-		postDAO = new PostDAOImpl();
-		userDAO = new UserDAOImpl();
-	}
 	
 	@Override
 	public int insert(Comment comment) throws SQLException {
@@ -323,7 +318,6 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	@Override
 	public List<Comment> getSinceIndex(int lastIndex) throws SQLException {
 		Connection connection = findConnection();
-		
 		PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY);
 		
 		statement.setInt(1, lastIndex);
@@ -331,10 +325,10 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		ResultSet result = statement.executeQuery();
 		
 		List<Comment> comments = new ArrayList<Comment>();
-		
+
 		HashMap<Integer, User> commentUser = new HashMap<Integer, User>();
 		HashMap<Integer, Post> commentPost = new HashMap<Integer, Post>();
-		
+
 		userDAO.startBatchMode();
 		postDAO.startBatchMode();
 		while (result.next()) {

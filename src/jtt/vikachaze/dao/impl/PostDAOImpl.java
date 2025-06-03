@@ -208,12 +208,12 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 	@Override
 	public Post getByID(int id) throws SQLException {
 		Connection connection = findConnection();
-	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY); 
+	    PreparedStatement statement = connection.prepareStatement(GET_BY_ID_QUERY); 
 
 	    statement.setInt(1, id);
 
 	    ResultSet result = statement.executeQuery();
-
+	    result.next();
 	    //int id = result.getInt("id");
 		String text = result.getString("text");
 		String title = result.getString("title");

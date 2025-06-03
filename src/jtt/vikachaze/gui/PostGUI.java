@@ -1,11 +1,19 @@
 package jtt.vikachaze.gui;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,14 +23,21 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import jtt.vikachaze.Main;
+import jtt.vikachaze.dao.PostDAO;
+import jtt.vikachaze.dao.impl.PostDAOImpl;
 import jtt.vikachaze.dao.impl.PostLikeDAOImpl;
+import jtt.vikachaze.dto.Comment;
 import jtt.vikachaze.dto.Post;
 import jtt.vikachaze.dto.PostLikes;
 import jtt.vikachaze.dto.Theme;
+import jtt.vikachaze.util.CommentFactory;
+import jtt.vikachaze.util.PostFactory;
 import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
 
 import javax.swing.JScrollPane;
+import jtt.vikachaze.dao.impl.*;
+import jtt.vikachaze.dao.*;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -40,6 +55,9 @@ public class PostGUI extends JFrame{
 	private JCheckBox likeCheck;
 	private PostLikes postLikes;
 	
+	private List<Comment> comments = new ArrayList<Comment>();
+	private CommentDAO commentDAO = new CommentDAOImpl();
+	private int currentPostHeight = 0;
 	private PostLikeDAOImpl postLikeDAO;
 	
 	public PostGUI(Post post) {
@@ -49,7 +67,7 @@ public class PostGUI extends JFrame{
 		this.post = post;
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 580, 620);
+		setBounds(100, 100, 700, 620);
 		setTitle(post.getTitle());
 		profilePanel = new JPanel(null);
 		profilePanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -61,6 +79,16 @@ public class PostGUI extends JFrame{
 		pfpButton.setBounds(6, 4, 80, 80);
 		pfpButton.setBorder(BorderFactory.createLineBorder(currentTheme.getPrimaryColor()));
 		profilePanel.add(pfpButton);
+		pfpButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				UserProfileGUI form = new UserProfileGUI(post.getUser());
+				form.setVisible(true);
+			}
+			
+		});
+		
 		
 		usernameLabel = new JLabel("<Username>");
 		usernameLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -99,30 +127,43 @@ public class PostGUI extends JFrame{
 		postScrollPane.setViewportView(textArea);
 	
 		PostcommentsPanel = new JPanel(null);
-		PostcommentsPanel.setBounds(367, 0, 197, 581);
+		PostcommentsPanel.setBounds(367, 0, 317, 581);
 		PostcommentsPanel.setBackground(currentTheme.getBackgroundColor());
 		profilePanel.add(PostcommentsPanel);
 		
 		commentScrollPane = new JScrollPane();
 		commentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		commentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		commentScrollPane.setBounds(3, 0, 194, 542);
+		commentScrollPane.setBounds(3, 0, 313, 542);
 		PostcommentsPanel.add(commentScrollPane);
 		
 		commentPanel = new JPanel();
 		commentPanel.setBackground(currentTheme.getBackgroundColor());
 		commentScrollPane.setViewportView(commentPanel);
+		commentPanel.setLayout(null);
 		
 		commentTextField = new JTextField();
-		commentTextField.setBounds(3, 548, 155, 28);
+		commentTextField.setBounds(3, 548, 265, 28);
 		PostcommentsPanel.add(commentTextField);
 		commentTextField.setColumns(10);
 		
 		commentButton = new JButton("");
-		commentButton.setBounds(155, 548, 38, 27);
+		commentButton.setBounds(278, 549, 38, 27);
 		commentButton.setBackground(currentTheme.getButtonColor());
 		commentButton.setForeground(currentTheme.getTextColor());
 		PostcommentsPanel.add(commentButton);
+		commentButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					insertComment();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		
 		likeCheck = new JCheckBox("");
 		likeCheck.setBounds(299, 38, 50, 46);
@@ -156,6 +197,7 @@ public class PostGUI extends JFrame{
 			}
 		});
 		loadPost();
+		addCommentTracker();
 	}
 	
 	public void loadPost() {
@@ -187,6 +229,7 @@ public class PostGUI extends JFrame{
 			e.printStackTrace();
 		}
 	}
+
 	
 	private void refrestLikeCheck() {
 		if(likeCheck.isSelected()) {
@@ -213,4 +256,44 @@ public class PostGUI extends JFrame{
 		
 		refrestLikeCheck();
 	}
+	private void addCommentTracker() {
+		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+		ses.scheduleAtFixedRate(new Runnable() {
+		    @Override
+		    public void run() {   
+		    	int lastIndex = 0;
+		    	if (!comments.isEmpty()) {
+		    		lastIndex = comments.get(comments.size()-1).getId();
+		    	}
+
+		        try {
+					List<Comment> newComments = commentDAO.getSinceIndex(lastIndex);
+					
+					for (Comment comment : newComments) {
+						comments.add(comment);
+						addComment(comment);
+					}
+				} catch (SQLException | IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		}, 0, 1, TimeUnit.SECONDS);
+	}
+	private void addComment(Comment comment) throws SQLException, IOException {
+		JPanel newCommentPanel = CommentFactory.createCommentPanel(comment);
+		newCommentPanel.setBounds(0, currentPostHeight, newCommentPanel.getWidth(), newCommentPanel.getHeight());
+		currentPostHeight+=newCommentPanel.getHeight();
+		
+		commentPanel.add(newCommentPanel);
+		commentPanel.setSize(new Dimension(commentPanel.getPreferredSize().width, currentPostHeight));
+		commentPanel.setPreferredSize(new Dimension(commentPanel.getPreferredSize().width, currentPostHeight));
+
+	}
+	private void insertComment() throws SQLException {
+		
+		String text = commentTextField.getText();
+		Comment comment = new Comment(null,Main.getLoggedUser(), post, text);
+		commentDAO.insert(comment);
+	}
+	
 }
