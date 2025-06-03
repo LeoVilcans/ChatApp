@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import jtt.vikachaze.dto.Comment;
 import jtt.vikachaze.dto.Theme;
@@ -44,10 +45,15 @@ public class CommentFactory {
 			pfpLabel.setIcon(new StretchIcon("emptyPfp.jpg", false));
 		}
 		
-		JLabel titleLabel = new JLabel(comment.getText());
-		titleLabel.setFont(new Font("Dialog", Font.PLAIN, 18));
+		JTextArea titleLabel = new JTextArea(comment.getText());
+		titleLabel.setFont(new Font("Dialog", Font.PLAIN, 14));
 		titleLabel.setForeground(currentTheme.getTextColor());
-		titleLabel.setBounds(95, 30, 288-95, 25);
+		titleLabel.setBounds(95, 40, 230, 100);
+		titleLabel.setBackground(currentTheme.getBackgroundColor());
+		titleLabel.setEditable(false);
+		titleLabel.setLineWrap(true);
+		titleLabel.setWrapStyleWord(true);
+		titleLabel.setBounds(95, 30, 288-95, 60);
 		commentPanel.add(titleLabel);
 		
 		JLabel usernameLabel = new JLabel(comment.getUser().getUsername());
@@ -55,6 +61,9 @@ public class CommentFactory {
 		usernameLabel.setForeground(currentTheme.getTextColor());
 		usernameLabel.setBounds(95, 10, 288-95, 25);
 		commentPanel.add(usernameLabel);
+		titleLabel.setSize(titleLabel.getWidth(), titleLabel.getPreferredSize().height);
+		int height = Math.max(100, Math.min(1000, titleLabel.getY() +titleLabel.getHeight()));
+		commentPanel.setSize(commentPanel.getWidth(),height);
 		
 		return commentPanel;
 		
