@@ -17,10 +17,11 @@ import jtt.vikachaze.dto.Room;
 import jtt.vikachaze.queries.RoomQueries;
 
 public class RoomDAOImpl implements RoomDAO, RoomQueries{
-
+	private Connection batchConnection;
+	
 	@Override
 	public int insert(Room value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
 	    
 	    List<Room> rooms = getAllData();
@@ -43,13 +44,13 @@ public class RoomDAOImpl implements RoomDAO, RoomQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int update(Room value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
 	    
 	    statement.setString(1, value.getTitle());
@@ -60,13 +61,13 @@ public class RoomDAOImpl implements RoomDAO, RoomQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int delete(Room value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
 
 	    statement.setInt(1, value.getId());
@@ -74,13 +75,13 @@ public class RoomDAOImpl implements RoomDAO, RoomQueries{
 	    int result = statement.executeUpdate();
 	    
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int getID(Room value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY);
 
 	    statement.setString(1, value.getTitle());
@@ -94,13 +95,13 @@ public class RoomDAOImpl implements RoomDAO, RoomQueries{
 
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return id;
 	}
 
 	@Override
 	public Room getByID(int id) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, id);
@@ -122,14 +123,14 @@ public class RoomDAOImpl implements RoomDAO, RoomQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return room;
 	}
 
 	@Override
 	public List<Room> getAllData() throws SQLException {
-Connection connection = Database.getConnection();
+Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 	
@@ -154,14 +155,14 @@ Connection connection = Database.getConnection();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return rooms;
 	}
 
 	@Override
 	public List<Room> getByTitle(String title) throws SQLException {
-Connection connection = Database.getConnection();
+Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_TITLE, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setString(1, title);
@@ -187,9 +188,33 @@ Connection connection = Database.getConnection();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return rooms;
 	}
+	
+	@Override
+	public void startBatchMode() throws SQLException {
+		batchConnection = Database.getConnection();
+	}
 
+	@Override
+	public void stopBatchMode() throws SQLException {
+		Database.closeConnection(batchConnection);
+		batchConnection = null;
+	}
+	
+	private Connection findConnection() throws SQLException {
+		if (batchConnection != null) {
+			return batchConnection;
+		} else {
+			return Database.getConnection();
+		}
+	}
+	
+	private void closeConnection(Connection con) throws SQLException {
+		if (batchConnection == null) {
+			Database.closeConnection(con);
+		}
+	}
 }

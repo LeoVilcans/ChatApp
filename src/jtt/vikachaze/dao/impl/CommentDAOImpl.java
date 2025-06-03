@@ -21,6 +21,7 @@ import jtt.vikachaze.queries.CommentQueries;
 public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	private PostDAO postDAO;
 	private UserDAO userDAO;
+	private Connection batchConnection;
 	
 	public void MessageDAOImpl() {
 		postDAO = new PostDAOImpl();
@@ -29,7 +30,7 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	
 	@Override
 	public int insert(Comment comment) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
 	    
 	    //sent_time nevajag, jo tas automatiski tiek pievienots ar INSERT_QUERY kā pašreizējais laiks uz servera.
@@ -42,13 +43,13 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int update(Comment comment) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
 	    
 	    statement.setTimestamp(1, comment.getSent_time());
@@ -60,13 +61,13 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int delete(Comment comment) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
 	    
 	    statement.setInt(1, comment.getId());
@@ -74,13 +75,13 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int getID(Comment comment) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY);
 
 	    statement.setTimestamp(1, comment.getSent_time());
@@ -97,13 +98,13 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return id;
 	}
 
 	@Override
 	public Comment getByID(int id) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, id);
@@ -126,14 +127,14 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return comment;
 	}
 	
 	@Override
 	public List<Comment> getByUser(User user) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USER_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, user.getId());
@@ -166,14 +167,14 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return comments;
 	}
 
 	@Override
 	public List<Comment> getByPost(Post post) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_POST_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, post.getId());
@@ -184,6 +185,7 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		
 		HashMap<Integer, User> commentUser = new HashMap<Integer, User>();
 		
+		userDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			Timestamp sent_time = result.getTimestamp("sent_time");
@@ -203,17 +205,18 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 			
 			comments.add(comment);
 		}
+		userDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return comments;
 	}
 
 	@Override
 	public List<Comment> getByText(String text) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_TEXT_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setString(1, text);
@@ -225,6 +228,8 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		HashMap<Integer, User> commentUser = new HashMap<Integer, User>();
 		HashMap<Integer, Post> commentPost = new HashMap<Integer, Post>();
 		
+		userDAO.startBatchMode();
+		postDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			Timestamp sent_time = result.getTimestamp("sent_time");
@@ -252,17 +257,19 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 			
 			comments.add(comment);
 		}
+		userDAO.stopBatchMode();
+		postDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return comments;
 	}
 	
 	@Override
 	public List<Comment> getAllData() throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		
@@ -273,6 +280,8 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		HashMap<Integer, User> commentUser = new HashMap<Integer, User>();
 		HashMap<Integer, Post> commentPost = new HashMap<Integer, Post>();
 		
+		userDAO.startBatchMode();
+		postDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			Timestamp sent_time = result.getTimestamp("sent_time");
@@ -301,17 +310,19 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 			
 			comments.add(comment);
 		}
+		userDAO.stopBatchMode();
+		postDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return comments;
 	}
 
 	@Override
 	public List<Comment> getSinceIndex(int lastIndex) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY);
 		
@@ -324,6 +335,8 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 		HashMap<Integer, User> commentUser = new HashMap<Integer, User>();
 		HashMap<Integer, Post> commentPost = new HashMap<Integer, Post>();
 		
+		userDAO.startBatchMode();
+		postDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			Timestamp sent_time = result.getTimestamp("sent_time");
@@ -352,11 +365,38 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 			
 			comments.add(comment);
 		}
+		userDAO.stopBatchMode();
+		postDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return comments;
+	}
+	
+	@Override
+	public void startBatchMode() throws SQLException {
+		batchConnection = Database.getConnection();
+	}
+
+	@Override
+	public void stopBatchMode() throws SQLException {
+		Database.closeConnection(batchConnection);
+		batchConnection = null;
+	}
+	
+	private Connection findConnection() throws SQLException {
+		if (batchConnection != null) {
+			return batchConnection;
+		} else {
+			return Database.getConnection();
+		}
+	}
+	
+	private void closeConnection(Connection con) throws SQLException {
+		if (batchConnection == null) {
+			Database.closeConnection(con);
+		}
 	}
 }

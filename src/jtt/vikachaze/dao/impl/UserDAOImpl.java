@@ -21,10 +21,11 @@ import jtt.vikachaze.queries.UserQueries;
 
 
 public class UserDAOImpl implements UserDAO, UserQueries{
-
+	private Connection batchConnection;
+	
 	@Override
 	public int insert(User value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(INSERT_QUERY, Statement.RETURN_GENERATED_KEYS);
 	    
 	    List<User> users = getAllData();
@@ -56,13 +57,13 @@ public class UserDAOImpl implements UserDAO, UserQueries{
         }
 	    
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return insertedID;
 	}
 
 	@Override
 	public int update(User value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
 	    
 	    statement.setString(1, value.getUsername());
@@ -85,13 +86,13 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int delete(User value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
 	    
 	    statement.setInt(1, value.getId());
@@ -99,13 +100,13 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int getID(User value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setString(1, value.getUsername());
@@ -118,14 +119,14 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return id;
 	}
 
 	@Override
 	public User getByID(int id) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, id);
@@ -154,14 +155,14 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return user;
 	}
 	
 	@Override
 	public User getByUsername(String username) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USERNAME_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setString(1, username);
@@ -194,14 +195,14 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return user;
 	}
 
 	@Override
 	public List<User> getAllData() throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet result = statement.executeQuery();
@@ -231,8 +232,33 @@ public class UserDAOImpl implements UserDAO, UserQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return users;
-	}	
+	}
+	
+	@Override
+	public void startBatchMode() throws SQLException {
+		batchConnection = Database.getConnection();
+	}
+
+	@Override
+	public void stopBatchMode() throws SQLException {
+		Database.closeConnection(batchConnection);
+		batchConnection = null;
+	}
+	
+	private Connection findConnection() throws SQLException {
+		if (batchConnection != null) {
+			return batchConnection;
+		} else {
+			return Database.getConnection();
+		}
+	}
+	
+	private void closeConnection(Connection con) throws SQLException {
+		if (batchConnection == null) {
+			Database.closeConnection(con);
+		}
+	}
 }

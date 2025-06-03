@@ -20,6 +20,7 @@ import jtt.vikachaze.queries.PostQueries;
 
 public class PostDAOImpl implements PostDAO, PostQueries{
 	private UserDAO userDAO;
+	private Connection batchConnection;
 	
 	public PostDAOImpl() {
 		userDAO = new UserDAOImpl();
@@ -27,7 +28,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 
 	@Override
 	public List<Post> getAllData() throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		
@@ -37,6 +38,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 		
 		HashMap<Integer, User> postUsers = new HashMap<Integer, User>();
 		
+		userDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			String text = result.getString("text");
@@ -63,17 +65,18 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 			
 			posts.add(post);
 		}
+		userDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return posts;
 	}
 
 	@Override
 	public int insert(Post value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
 	    
 	    // user_id, title, text
@@ -91,7 +94,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
@@ -102,7 +105,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 
 	@Override
 	public int delete(Post value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
 	    
 	    statement.setInt(1, value.getId());
@@ -110,13 +113,13 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int getID(Post value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY);
 
 	    //sent_time = ? AND user_id = ? AND title = ? AND text = ?
@@ -134,7 +137,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return id;
 	}
 
@@ -154,7 +157,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 
 	@Override
 	public List<Post> getPostByUser(User user) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USER_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, user.getId());
@@ -183,7 +186,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return posts;
 	}
@@ -204,7 +207,7 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 
 	@Override
 	public Post getByID(int id) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY); 
 
 	    statement.setInt(1, id);
@@ -229,19 +232,20 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return post;
 	}
 
 	@Override
 	public List<Post> getSinceIndex(int lastIndex) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY); 
 
 	    statement.setInt(1, lastIndex);
 
 	    ResultSet result = statement.executeQuery();
 	    
+	    userDAO.startBatchMode();
 	    List<Post> posts = new ArrayList<Post>();
 	    while (result.next()) {
 		    int id = result.getInt("id");
@@ -262,16 +266,17 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 			
 			posts.add(post);
 	    }
+	    userDAO.stopBatchMode();
 	    
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return posts;
 	}	
 	
 	@Override
 	public List<Post> getSinceIndexForUser(User user, int lastIndex) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_FOR_USER_QUERY); 
 
 	    statement.setInt(1, user.getId());
@@ -300,7 +305,32 @@ public class PostDAOImpl implements PostDAO, PostQueries{
 	    
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return posts;
-	}	
+	}
+	
+	@Override
+	public void startBatchMode() throws SQLException {
+		batchConnection = Database.getConnection();
+	}
+
+	@Override
+	public void stopBatchMode() throws SQLException {
+		Database.closeConnection(batchConnection);
+		batchConnection = null;
+	}
+	
+	private Connection findConnection() throws SQLException {
+		if (batchConnection != null) {
+			return batchConnection;
+		} else {
+			return Database.getConnection();
+		}
+	}
+	
+	private void closeConnection(Connection con) throws SQLException {
+		if (batchConnection == null) {
+			Database.closeConnection(con);
+		}
+	}
 }

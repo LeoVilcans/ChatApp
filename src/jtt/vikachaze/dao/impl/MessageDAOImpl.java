@@ -23,6 +23,7 @@ import jtt.vikachaze.queries.MessageQueries;
 public class MessageDAOImpl implements MessageDAO, MessageQueries{
 	private RoomDAO roomDAO;
 	private UserDAO userDAO;
+	private Connection batchConnection;
 	
 	public MessageDAOImpl() {
 		roomDAO = new RoomDAOImpl();
@@ -31,7 +32,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 	
 	@Override
 	public int insert(Message message) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
 	    
 	    //room_id, text, sent_time, attachment, user_id
@@ -50,13 +51,13 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int update(Message message) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY);
 	    
 	    //room_id, text, sent_time, attachment, user_id
@@ -75,13 +76,13 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int delete(Message message) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
 	    
 	    statement.setInt(1, message.getId());
@@ -89,13 +90,13 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int getID(Message message) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY);
 
 	    statement.setInt(1, message.getRoom().getId());
@@ -112,13 +113,13 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return id;
 	}
 
 	@Override
 	public List<Message> getSinceIndex(Room room, int index) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, room.getId());
@@ -130,6 +131,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 		
 		HashMap<Integer, User> messageUsers = new HashMap<Integer, User>();
 		
+		userDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			String text = result.getString("text");
@@ -155,17 +157,18 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 			
 			messages.add(message);
 		}
+		userDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return messages;
 	}
 
 	@Override
 	public List<Message> getByRoom(Room room) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_ROOM_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, room.getId());
@@ -176,6 +179,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 		
 		HashMap<Integer, User> messageUsers = new HashMap<Integer, User>();
 		
+		userDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			String text = result.getString("text");
@@ -201,17 +205,18 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 			
 			messages.add(message);
 		}
+		userDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return messages;
 	}
 
 	@Override
 	public List<Message> getByUser(User user) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USER_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, user.getId());
@@ -222,6 +227,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 		
 		HashMap<Integer, Room> messagesRoom = new HashMap<Integer, Room>();
 		
+		roomDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			int room_id = result.getInt("room_id");
@@ -247,10 +253,11 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 			
 			messages.add(message);
 		}
+		roomDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return messages;
 	}
@@ -271,7 +278,7 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 
 	@Override
 	public Message getByID(int id) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_ID_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, id);
@@ -300,14 +307,14 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return messages;
 	}
 
 	@Override
 	public List<Message> getAllData() throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		
@@ -318,6 +325,8 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 		HashMap<Integer, User> messageUsers = new HashMap<Integer, User>();
 		HashMap<Integer, Room> messageRooms = new HashMap<Integer, Room>();
 		
+		userDAO.startBatchMode();
+		roomDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			int room_id = result.getInt("room_id");
@@ -352,11 +361,38 @@ public class MessageDAOImpl implements MessageDAO, MessageQueries{
 			
 			messages.add(message);
 		}
+		userDAO.stopBatchMode();
+		roomDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return messages;
-	}	
+	}
+	
+	@Override
+	public void startBatchMode() throws SQLException {
+		batchConnection = Database.getConnection();
+	}
+
+	@Override
+	public void stopBatchMode() throws SQLException {
+		Database.closeConnection(batchConnection);
+		batchConnection = null;
+	}
+	
+	private Connection findConnection() throws SQLException {
+		if (batchConnection != null) {
+			return batchConnection;
+		} else {
+			return Database.getConnection();
+		}
+	}
+	
+	private void closeConnection(Connection con) throws SQLException {
+		if (batchConnection == null) {
+			Database.closeConnection(con);
+		}
+	}
 }

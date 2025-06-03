@@ -20,7 +20,7 @@ import jtt.vikachaze.queries.PostLikesQueries;
 public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
 	private UserDAO userDAO;
 	private PostDAO postDAO;
-	
+	private Connection batchConnection;
 	
 	public PostLikeDAOImpl(){	
 		userDAO = new UserDAOImpl();
@@ -29,7 +29,7 @@ public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
 
 	@Override
 	public int insert(PostLikes value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
     PreparedStatement statement = connection.prepareStatement(INSERT_QUERY);
     
     
@@ -39,7 +39,7 @@ public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
     int result = statement.executeUpdate();
 
     Database.closePreparedStatement(statement);
-    Database.closeConnection(connection);
+    closeConnection(connection);
     return result;
 	}
 
@@ -50,7 +50,7 @@ public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
 
 	@Override
 	public int delete(PostLikes value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(DELETE_QUERY);
 	    
 	    statement.setInt(1, value.getUserID().getId());
@@ -59,13 +59,13 @@ public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
 	    int result = statement.executeUpdate();
 
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return result;
 	}
 
 	@Override
 	public int getID(PostLikes value) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY);
 
 	    
@@ -81,13 +81,13 @@ public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
 
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return id;
 	}
 
 	@Override
 	public PostLikes getByID(int id) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 	    PreparedStatement statement = connection.prepareStatement(GET_ID_QUERY); 
 
 	    statement.setInt(1, id);
@@ -105,13 +105,13 @@ public class PostLikeDAOImpl implements PostLikesDAO, PostLikesQueries {
 
 	    Database.closeResultSet(result);
 	    Database.closePreparedStatement(statement);
-	    Database.closeConnection(connection);
+	    closeConnection(connection);
 	    return postLikes;
 	}
 
 	@Override
 	public List<PostLikes> getAllData() throws SQLException {
-Connection connection = Database.getConnection();
+Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		
@@ -122,6 +122,8 @@ Connection connection = Database.getConnection();
 		HashMap<Integer, User> postUsers = new HashMap<Integer, User>();
 		HashMap<Integer, Post> postPost = new HashMap<Integer, Post>();
 		
+		userDAO.startBatchMode();
+		postDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			int user_id = result.getInt("user_id");
@@ -147,17 +149,19 @@ Connection connection = Database.getConnection();
 			postLike.setId(id);
 			postLikes.add(postLike);
 		}
+		userDAO.stopBatchMode();
+		postDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return postLikes;
 	}
 
 	@Override
 	public List<PostLikes> getByPostID(Post postID) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_POST_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, postID.getId());
@@ -168,6 +172,7 @@ Connection connection = Database.getConnection();
 		
 		HashMap<Integer, User> postUsers = new HashMap<Integer, User>();
 		
+		userDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			int user_id = result.getInt("user_id");
@@ -186,17 +191,18 @@ Connection connection = Database.getConnection();
 			
 			postLikes.add(postLike);
 		}
+		userDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return postLikes;
 	}
 
 	@Override
 	public List<PostLikes> getByUserID(User userID) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_USER_QUERY, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, userID.getId());
@@ -208,6 +214,7 @@ Connection connection = Database.getConnection();
 
 		HashMap<Integer, Post> postPost = new HashMap<Integer, Post>();
 		
+		postDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			int post_id = result.getInt("post_id");
@@ -226,17 +233,18 @@ Connection connection = Database.getConnection();
 			
 			postLikes.add(postLike);
 		}
+		postDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return postLikes;
 	}
 
 	@Override
 	public PostLikes getOnPostByUser(Post post, User user) throws SQLException {
-		Connection connection = Database.getConnection();
+		Connection connection = findConnection();
 		
 		PreparedStatement statement = connection.prepareStatement(GET_BY_POST_AND_USER, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		statement.setInt(1, post.getId());
@@ -251,9 +259,33 @@ Connection connection = Database.getConnection();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);
-		Database.closeConnection(connection);
+		closeConnection(connection);
 		
 		return postLike;
 	}
+	
+	@Override
+	public void startBatchMode() throws SQLException {
+		batchConnection = Database.getConnection();
+	}
 
+	@Override
+	public void stopBatchMode() throws SQLException {
+		Database.closeConnection(batchConnection);
+		batchConnection = null;
+	}
+	
+	private Connection findConnection() throws SQLException {
+		if (batchConnection != null) {
+			return batchConnection;
+		} else {
+			return Database.getConnection();
+		}
+	}
+	
+	private void closeConnection(Connection con) throws SQLException {
+		if (batchConnection == null) {
+			Database.closeConnection(con);
+		}
+	}
 }

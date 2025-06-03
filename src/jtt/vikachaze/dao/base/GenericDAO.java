@@ -10,4 +10,7 @@ public interface GenericDAO<T> {
 	int getID(T value) throws SQLException;
 	T getByID(int id) throws SQLException;
 	List<T> getAllData() throws SQLException;
+	
+	void startBatchMode() throws SQLException;
+	void stopBatchMode() throws SQLException;
 }
