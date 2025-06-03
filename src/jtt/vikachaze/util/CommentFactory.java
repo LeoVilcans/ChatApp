@@ -17,7 +17,7 @@ public class CommentFactory {
 		Theme currentTheme = Settings.getTheme();
 		
 		JPanel commentPanel = new JPanel();
-		commentPanel.setSize(350, 340);
+		commentPanel.setSize(350, 100);
 		commentPanel.setLayout(null);
 		commentPanel.setBorder(BorderFactory.createDashedBorder(currentTheme.getPrimaryColor()));
 		commentPanel.setBackground(currentTheme.getBackgroundColor());
@@ -38,7 +38,6 @@ public class CommentFactory {
 		titleLabel.setForeground(currentTheme.getTextColor());
 		titleLabel.setBounds(95, 10, 288-95, 25);
 		commentPanel.add(titleLabel);
-		
 		
 		return commentPanel;
 		

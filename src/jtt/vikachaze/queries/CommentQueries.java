@@ -11,7 +11,7 @@ public interface CommentQueries {
     
     public static final String GET_ID_QUERY = "SELECT * FROM " + TABLE + " WHERE sent_time = ?, AND user_id = ? AND post_id = ? AND text = ?";
     
-    public static final String GET_SINCE_INDEX_QUERY = "SELECT * FROM " + TABLE + " WHERE id > ?";
+    public static final String GET_SINCE_INDEX_QUERY = "SELECT * FROM " + TABLE + " WHERE id > ? AND post_id = ?";
     
     public static final String GET_BY_ID_QUERY = "SELECT * FROM " + TABLE + " WHERE id = ?";
     

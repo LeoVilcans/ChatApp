@@ -316,21 +316,20 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 	}
 
 	@Override
-	public List<Comment> getSinceIndex(int lastIndex) throws SQLException {
+	public List<Comment> getSinceIndex(int lastIndex, Post post) throws SQLException {
 		Connection connection = findConnection();
 		PreparedStatement statement = connection.prepareStatement(GET_SINCE_INDEX_QUERY);
 		
 		statement.setInt(1, lastIndex);
+		statement.setInt(2, post.getId());
 		
 		ResultSet result = statement.executeQuery();
 		
 		List<Comment> comments = new ArrayList<Comment>();
 
 		HashMap<Integer, User> commentUser = new HashMap<Integer, User>();
-		HashMap<Integer, Post> commentPost = new HashMap<Integer, Post>();
 
 		userDAO.startBatchMode();
-		postDAO.startBatchMode();
 		while (result.next()) {
 			int id = result.getInt("id");
 			Timestamp sent_time = result.getTimestamp("sent_time");
@@ -346,21 +345,12 @@ public class CommentDAOImpl implements CommentDAO, CommentQueries{
 				commentUser.put(user.getId(), user);
 			}
 			
-			Post post;
-			if (commentPost.containsKey(post_id)) {
-				post = commentPost.get(post_id);
-			} else {
-				post = postDAO.getByID(post_id);
-				commentPost.put(post.getId(), post);
-			}
-			
 			Comment comment = new Comment(sent_time, user, post, text);
 			comment.setId(id);
 			
 			comments.add(comment);
 		}
 		userDAO.stopBatchMode();
-		postDAO.stopBatchMode();
 		
 		Database.closeResultSet(result);
 		Database.closePreparedStatement(statement);

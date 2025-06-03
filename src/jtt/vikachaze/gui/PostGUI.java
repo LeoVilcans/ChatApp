@@ -260,7 +260,7 @@ public class PostGUI extends JFrame{
 		    	}
 
 		        try {
-					List<Comment> newComments = commentDAO.getSinceIndex(lastIndex);
+					List<Comment> newComments = commentDAO.getSinceIndex(lastIndex, post);
 					
 					for (Comment comment : newComments) {
 						comments.add(comment);
