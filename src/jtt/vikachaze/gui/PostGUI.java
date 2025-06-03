@@ -29,6 +29,7 @@ import jtt.vikachaze.dto.Theme;
 import jtt.vikachaze.util.CommentFactory;
 import jtt.vikachaze.util.Settings;
 import jtt.vikachaze.util.StretchIcon;
+import jtt.vikachaze.util.Settings.ThemeChoice;
 
 import javax.swing.JScrollPane;
 import jtt.vikachaze.dao.impl.*;
@@ -120,7 +121,7 @@ public class PostGUI extends JFrame{
 		textArea.setLineWrap(true);
 		postScrollPane.setViewportView(textArea);
 	
-		PostcommentsPanel = new JPanel(null);
+		PostcommentsPanel = new JPanel(null); 
 		PostcommentsPanel.setBounds(367, 0, 317, 581);
 		PostcommentsPanel.setBackground(currentTheme.getBackgroundColor());
 		profilePanel.add(PostcommentsPanel);
@@ -128,7 +129,7 @@ public class PostGUI extends JFrame{
 		commentScrollPane = new JScrollPane();
 		commentScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		commentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		commentScrollPane.setBounds(3, 0, 313, 542);
+		commentScrollPane.setBounds(3, 0, 313, 500);
 		PostcommentsPanel.add(commentScrollPane);
 		
 		commentPanel = new JPanel();
@@ -146,6 +147,25 @@ public class PostGUI extends JFrame{
 		commentButton.setBackground(currentTheme.getButtonColor());
 		commentButton.setForeground(currentTheme.getTextColor());
 		PostcommentsPanel.add(commentButton);
+		
+		likeCheck = new JCheckBox("");
+		likeCheck.setBounds(33, 507, 38, 34);
+		PostcommentsPanel.add(likeCheck);
+		likeCheck.setBackground(Settings.getTheme().getBackgroundColor());
+		
+		likeCheck.setIcon(new StretchIcon("emptyPostLikeIcon.png", false));
+		
+				likeCheck.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try {
+							likePost();
+						} catch (SQLException e1) {
+							e1.printStackTrace();
+						}
+					}
+				});
 		commentButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -158,38 +178,22 @@ public class PostGUI extends JFrame{
 				}
 			}
 		});
-		
-		likeCheck = new JCheckBox("");
-		likeCheck.setBounds(299, 38, 50, 46);
-		profilePanel.add(likeCheck);
-		
-		likeCounterLabel = new JLabel("");
-		likeCounterLabel.setBounds(286, 70, 46, 14);
-		profilePanel.add(likeCounterLabel);
 		try {
 			List<PostLikes> tempPostLikes = postLikeDAO.getByPostID(post);
 			
 			int tempLikeCount = tempPostLikes.size();
 			String likeCount = Integer.toString(tempLikeCount);
+			
+			likeCounterLabel = new JLabel("");
+			likeCounterLabel.setBounds(3, 523, 46, 14);
+			PostcommentsPanel.add(likeCounterLabel);
 			likeCounterLabel.setText(likeCount);
-
+			likeCounterLabel.setForeground(Settings.getTheme().getTextColor());
+				
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		likeCheck.setIcon(new StretchIcon("emptyPostLikeIcon.png", false));
-
-		likeCheck.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					likePost();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
 		loadPost();
 		addCommentTracker();
 	}
@@ -228,10 +232,8 @@ public class PostGUI extends JFrame{
 	private void refrestLikeCheck() {
 		if(likeCheck.isSelected()) {
 			likeCheck.setIcon(new StretchIcon("postLikeIcon.png",false));
-			//likeCheck.setBackground(new Color(255,0,0));
 		}else {
 			likeCheck.setIcon(new StretchIcon("emptyPostLikeIcon.png",false));
-			//likeCheck.setBackground(new Color(0,0,255));
 		}
 	}
 	
